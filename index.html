@@ -4,140 +4,677 @@
 <meta charset="UTF-8">
 <meta name="viewport" content="width=device-width, initial-scale=1.0">
 <title>Club7 — Trainee Evaluation Dashboard</title>
-<link href="https://fonts.googleapis.com/css2?family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600;700;800&family=DM+Sans:wght@300;400;500;600&family=DM+Mono:wght@400;500&display=swap" rel="stylesheet">
 <style>
-*,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
-:root{
-  --bg:#f4f2ee;--surface:#fff;--surface2:#f9f8f5;--surface3:#f1efe8;
-  --border:rgba(0,0,0,.07);--border2:rgba(0,0,0,.13);
-  --text:#1a1916;--muted:#6b6960;--faint:#b0ada5;
-  --accent:#2d5be3;--accent-light:#e8edfb;
-  --rad:12px;--rad-sm:8px;
+*, *::before, *::after { box-sizing: border-box; margin: 0; padding: 0; }
+
+:root {
+  --bg:       #f6f4f0;
+  --surface:  #ffffff;
+  --surface2: #f0ede8;
+  --surface3: #e8e4de;
+  --border:   rgba(0,0,0,0.08);
+  --border2:  rgba(0,0,0,0.14);
+  --text:     #1a1712;
+  --text2:    #5c5850;
+  --text3:    #9c9890;
+  --accent:   #1a1712;
+
+  --rookie:   #dc4c3a;  --rookie-bg:   #fef2f0;
+  --amateur:  #d97706;  --amateur-bg:  #fffbeb;
+  --ir:       #2563b0;  --ir-bg:       #eff6ff;
+  --is:       #16a34a;  --is-bg:       #f0fdf4;
+  --ie:       #7c3aed;  --ie-bg:       #f5f3ff;
+  --ae:       #c2690a;  --ae-bg:       #fff7ed;
+  --elite:    #a16207;  --elite-bg:    #fefce8;
+
+  --cat-fh:  #4f46e5;
+  --cat-bh:  #059669;
+  --cat-ft:  #0284c7;
+  --cat-at:  #ea580c;
+
+  --rad: 14px;
+  --rad-sm: 9px;
+  --shadow: 0 1px 3px rgba(0,0,0,0.08), 0 1px 2px rgba(0,0,0,0.04);
+  --shadow-md: 0 4px 12px rgba(0,0,0,0.08), 0 2px 4px rgba(0,0,0,0.04);
 }
-body{font-family:'DM Sans',sans-serif;background:var(--bg);color:var(--text);min-height:100vh;font-size:14px}
-header{background:var(--surface);border-bottom:1px solid var(--border);padding:0 32px;display:flex;align-items:center;justify-content:space-between;height:60px;position:sticky;top:0;z-index:100}
-.logo{display:flex;align-items:center;gap:10px}
-.logo-mark{width:32px;height:32px;background:var(--text);border-radius:8px;display:flex;align-items:center;justify-content:center}
-.logo-text{font-size:15px;font-weight:600;letter-spacing:-.02em}
-.logo-sub{font-size:12px;color:var(--muted);margin-left:4px;font-weight:400}
-.header-pills{display:flex;gap:8px;flex-wrap:wrap}
-.pill{font-size:11px;font-weight:600;padding:3px 10px;border-radius:20px;letter-spacing:.02em}
-.layout{display:grid;grid-template-columns:272px 1fr;min-height:calc(100vh - 60px)}
-aside{background:var(--surface);border-right:1px solid var(--border);position:sticky;top:60px;height:calc(100vh - 60px);overflow-y:auto;display:flex;flex-direction:column;padding:20px 0}
-.sb-section{padding:0 16px;margin-bottom:20px}
-.sb-label{font-size:10px;font-weight:600;letter-spacing:.08em;text-transform:uppercase;color:var(--faint);margin-bottom:7px;display:block}
-select{width:100%;padding:7px 10px;border:1px solid var(--border2);border-radius:var(--rad-sm);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px;cursor:pointer;appearance:none;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='12' height='12' viewBox='0 0 24 24' fill='none' stroke='%236b6960' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
-select:focus{outline:2px solid var(--accent);outline-offset:1px}
-.search-wrap{position:relative}
-.search-box{width:100%;padding:7px 10px 7px 32px;border:1px solid var(--border2);border-radius:var(--rad-sm);background:var(--surface2);color:var(--text);font-family:'DM Sans',sans-serif;font-size:13px}
-.search-box:focus{outline:2px solid var(--accent);outline-offset:1px}
-.search-icon{position:absolute;left:10px;top:50%;transform:translateY(-50%);pointer-events:none;color:var(--faint)}
-.student-list{flex:1;overflow-y:auto;padding:0 8px}
-.s-item{display:flex;align-items:center;gap:9px;padding:7px 8px;border-radius:var(--rad-sm);cursor:pointer;border:none;background:none;width:100%;text-align:left;color:var(--text);transition:background .12s}
-.s-item:hover{background:var(--surface2)}
-.s-item.active{background:var(--accent-light)}
-.s-item.active .s-name{color:var(--accent);font-weight:500}
-.av-sm{width:30px;height:30px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:11px;font-weight:600;flex-shrink:0}
-.s-info{min-width:0}
-.s-name{font-size:13px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
-.s-lvl{font-size:11px;color:var(--muted)}
-main{padding:26px 28px;overflow-y:auto}
-.stu-head{display:flex;align-items:center;gap:18px;margin-bottom:22px;padding-bottom:22px;border-bottom:1px solid var(--border)}
-.av-lg{width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;flex-shrink:0}
-.stu-title{font-size:21px;font-weight:600;letter-spacing:-.02em}
-.stu-meta{display:flex;align-items:center;gap:10px;margin-top:4px}
-.badge{display:inline-flex;align-items:center;padding:3px 10px;border-radius:20px;font-size:11px;font-weight:600;letter-spacing:.02em}
-.metrics{display:grid;grid-template-columns:repeat(4,1fr);gap:10px;margin-bottom:20px}
-.mc{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:14px 16px}
-.mc-label{font-size:10px;font-weight:600;letter-spacing:.05em;text-transform:uppercase;color:var(--muted);margin-bottom:5px}
-.mc-val{font-size:22px;font-weight:600;letter-spacing:-.03em;line-height:1}
-.mc-val.sm{font-size:12px;line-height:1.4;letter-spacing:0;font-weight:500;margin-top:2px}
-.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.card{background:var(--surface);border:1px solid var(--border);border-radius:var(--rad);padding:18px 20px}
-.card-title{font-size:10px;font-weight:600;letter-spacing:.06em;text-transform:uppercase;color:var(--muted);margin-bottom:14px}
-.cat-block{margin-bottom:18px}
-.cat-head{display:flex;align-items:center;gap:7px;margin-bottom:8px}
-.cat-dot{width:7px;height:7px;border-radius:50%;flex-shrink:0}
-.cat-name{font-size:11px;font-weight:600;letter-spacing:.03em}
-.sk-row{display:flex;align-items:center;gap:8px;margin-bottom:6px}
-.sk-name{font-size:11px;color:var(--muted);width:148px;flex-shrink:0;text-align:right}
-.bar-track{flex:1;height:7px;background:var(--surface3);border-radius:4px;overflow:hidden}
-.bar-fill{height:100%;border-radius:4px;transition:width .45s cubic-bezier(.4,0,.2,1)}
-.sk-val{font-size:11px;font-family:'DM Mono',monospace;font-weight:500;width:24px;text-align:right}
-.hm-grid{display:flex;flex-direction:column;gap:12px}
-.hm-cat-lbl{font-size:9.5px;font-weight:600;letter-spacing:.07em;text-transform:uppercase;color:var(--muted);margin-bottom:6px}
-.hm-tiles{display:flex;flex-wrap:wrap;gap:4px}
-.hm-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;width:68px;height:52px;border-radius:7px;border:1px solid rgba(0,0,0,.06);transition:transform .12s;cursor:default}
-.hm-tile:hover{transform:scale(1.07);z-index:2;position:relative}
-.hm-score{font-size:17px;font-weight:600;font-family:'DM Mono',monospace;line-height:1}
-.hm-name{font-size:8.5px;font-weight:500;text-align:center;line-height:1.2;margin-top:2px;padding:0 3px}
-.hm-legend{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:10px;color:var(--muted)}
-.hm-leg-track{display:flex;gap:2px}
-.hm-swatch{width:14px;height:9px;border-radius:2px}
-::-webkit-scrollbar{width:4px}
-::-webkit-scrollbar-track{background:transparent}
-::-webkit-scrollbar-thumb{background:var(--border2);border-radius:4px}
+
+body {
+  font-family: 'DM Sans', sans-serif;
+  background: var(--bg);
+  color: var(--text);
+  min-height: 100vh;
+  font-size: 13px;
+  line-height: 1.5;
+}
+
+/* ── HEADER ─────────────────────────────── */
+header {
+  background: var(--surface);
+  border-bottom: 1px solid var(--border);
+  padding: 0 28px;
+  height: 64px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  position: sticky;
+  top: 0;
+  z-index: 200;
+  box-shadow: var(--shadow);
+}
+
+.logo-wrap {
+  display: flex;
+  align-items: center;
+  gap: 14px;
+}
+
+.logo-img {
+  height: 46px;
+  width: auto;
+}
+
+.logo-divider {
+  width: 1px;
+  height: 30px;
+  background: var(--border2);
+}
+
+.logo-label {
+  font-family: 'Playfair Display', serif;
+  font-size: 13px;
+  font-weight: 600;
+  color: var(--text2);
+  letter-spacing: 0.03em;
+  line-height: 1.3;
+}
+
+.logo-label span {
+  display: block;
+  font-family: 'DM Sans', sans-serif;
+  font-size: 10px;
+  font-weight: 400;
+  color: var(--text3);
+  letter-spacing: 0.06em;
+  text-transform: uppercase;
+}
+
+.header-pills {
+  display: flex;
+  gap: 6px;
+  flex-wrap: wrap;
+  justify-content: flex-end;
+  max-width: 60%;
+}
+
+.hpill {
+  font-size: 10px;
+  font-weight: 600;
+  padding: 3px 10px;
+  border-radius: 20px;
+  letter-spacing: 0.02em;
+  border: 1px solid transparent;
+}
+
+/* ── LAYOUT ─────────────────────────────── */
+.layout {
+  display: grid;
+  grid-template-columns: 264px 1fr;
+  min-height: calc(100vh - 64px);
+}
+
+/* ── SIDEBAR ─────────────────────────────── */
+aside {
+  background: var(--surface);
+  border-right: 1px solid var(--border);
+  position: sticky;
+  top: 64px;
+  height: calc(100vh - 64px);
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  padding: 20px 0;
+}
+
+.sb-sec { padding: 0 14px; margin-bottom: 18px; }
+
+.sb-label {
+  font-size: 9.5px;
+  font-weight: 600;
+  letter-spacing: 0.1em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 7px;
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+}
+
+.count-chip {
+  background: var(--surface2);
+  border: 1px solid var(--border);
+  border-radius: 20px;
+  padding: 1px 7px;
+  font-size: 10px;
+  color: var(--text3);
+  font-weight: 500;
+  letter-spacing: 0;
+}
+
+select, .search-box {
+  width: 100%;
+  padding: 8px 10px;
+  border: 1px solid var(--border2);
+  border-radius: var(--rad-sm);
+  background: var(--surface2);
+  color: var(--text);
+  font-family: 'DM Sans', sans-serif;
+  font-size: 12.5px;
+  transition: border-color 0.15s;
+}
+
+select {
+  appearance: none;
+  cursor: pointer;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='11' height='11' viewBox='0 0 24 24' fill='none' stroke='%239c9890' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat: no-repeat;
+  background-position: right 10px center;
+  padding-right: 28px;
+}
+
+select:focus, .search-box:focus {
+  outline: none;
+  border-color: var(--accent);
+  background: var(--surface);
+}
+
+.search-wrap { position: relative; }
+.search-icon {
+  position: absolute;
+  left: 10px;
+  top: 50%;
+  transform: translateY(-50%);
+  width: 13px;
+  height: 13px;
+  color: var(--text3);
+  pointer-events: none;
+}
+.search-box { padding-left: 31px; }
+
+.student-list { flex: 1; overflow-y: auto; padding: 0 6px 10px; }
+
+.s-item {
+  display: flex;
+  align-items: center;
+  gap: 9px;
+  padding: 8px 8px;
+  border-radius: var(--rad-sm);
+  cursor: pointer;
+  border: none;
+  background: none;
+  width: 100%;
+  text-align: left;
+  color: var(--text);
+  transition: background 0.12s;
+  margin-bottom: 1px;
+}
+
+.s-item:hover { background: var(--surface2); }
+
+.s-item.active {
+  background: var(--text);
+}
+
+.s-item.active .s-name { color: #fff; font-weight: 600; }
+.s-item.active .s-lvl { color: rgba(255,255,255,0.55); }
+.s-item.active .av-sm { opacity: 1; }
+
+.av-sm {
+  width: 30px;
+  height: 30px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 11px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.s-info { min-width: 0; }
+.s-name { font-size: 12.5px; font-weight: 500; white-space: nowrap; overflow: hidden; text-overflow: ellipsis; }
+.s-lvl { font-size: 10px; color: var(--text3); margin-top: 1px; }
+
+/* ── MAIN ─────────────────────────────── */
+main { padding: 24px 26px; }
+
+/* Profile header */
+.profile-head {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--rad);
+  padding: 22px 24px;
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 20px;
+  box-shadow: var(--shadow);
+  position: relative;
+  overflow: hidden;
+}
+
+.profile-head::after {
+  content: '';
+  position: absolute;
+  left: 0; top: 0; bottom: 0;
+  width: 4px;
+  background: var(--text);
+  border-radius: 4px 0 0 4px;
+}
+
+.av-lg {
+  width: 58px;
+  height: 58px;
+  border-radius: 50%;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  font-family: 'Playfair Display', serif;
+  font-size: 20px;
+  font-weight: 700;
+  flex-shrink: 0;
+}
+
+.profile-info { flex: 1; min-width: 0; }
+
+.profile-name {
+  font-family: 'Playfair Display', serif;
+  font-size: 26px;
+  font-weight: 700;
+  letter-spacing: -0.02em;
+  line-height: 1.1;
+  margin-bottom: 8px;
+}
+
+.profile-meta { display: flex; align-items: center; gap: 10px; flex-wrap: wrap; }
+
+.badge {
+  display: inline-flex;
+  align-items: center;
+  padding: 5px 14px;
+  border-radius: 6px;
+  font-size: 14px;
+  font-weight: 700;
+  font-family: 'Playfair Display', serif;
+  letter-spacing: 0.01em;
+  border: 1.5px solid currentColor;
+}
+
+.rank-tag {
+  font-size: 11px;
+  font-weight: 500;
+  color: var(--text3);
+  padding: 4px 10px;
+  background: var(--surface2);
+  border-radius: 20px;
+  border: 1px solid var(--border);
+}
+
+.profile-score {
+  text-align: right;
+  flex-shrink: 0;
+}
+
+.score-big {
+  font-family: 'Playfair Display', serif;
+  font-size: 48px;
+  font-weight: 800;
+  letter-spacing: -0.04em;
+  line-height: 1;
+  color: var(--text);
+}
+
+.score-big sub {
+  font-size: 18px;
+  font-family: 'DM Sans', sans-serif;
+  font-weight: 400;
+  color: var(--text3);
+  bottom: 0;
+}
+
+.score-label {
+  font-size: 10px;
+  color: var(--text3);
+  text-transform: uppercase;
+  letter-spacing: 0.07em;
+  margin-top: 3px;
+}
+
+/* Metrics */
+.metrics {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 12px;
+  margin-bottom: 16px;
+}
+
+.mc {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--rad);
+  padding: 16px 18px;
+  box-shadow: var(--shadow);
+}
+
+.mc-label {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 8px;
+}
+
+.mc-row {
+  display: flex;
+  align-items: baseline;
+  gap: 6px;
+  margin-bottom: 10px;
+}
+
+.mc-val {
+  font-family: 'Playfair Display', serif;
+  font-size: 30px;
+  font-weight: 700;
+  letter-spacing: -0.03em;
+  line-height: 1;
+  color: var(--text);
+}
+
+.mc-denom {
+  font-size: 13px;
+  color: var(--text3);
+  font-weight: 400;
+}
+
+.mc-sub {
+  font-size: 11px;
+  color: var(--text2);
+}
+
+.mc-track {
+  height: 4px;
+  background: var(--surface3);
+  border-radius: 2px;
+  margin-top: 10px;
+  overflow: hidden;
+}
+
+.mc-fill {
+  height: 100%;
+  border-radius: 2px;
+  background: var(--text);
+  transition: width 0.6s cubic-bezier(0.4,0,0.2,1);
+}
+
+/* Content grid */
+.content-grid {
+  display: grid;
+  grid-template-columns: 1fr 1fr;
+  gap: 14px;
+}
+
+.card {
+  background: var(--surface);
+  border: 1px solid var(--border);
+  border-radius: var(--rad);
+  padding: 20px 22px;
+  box-shadow: var(--shadow);
+}
+
+.card-title {
+  font-size: 10px;
+  font-weight: 600;
+  letter-spacing: 0.09em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 16px;
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.card-title::after {
+  content: '';
+  flex: 1;
+  height: 1px;
+  background: var(--border);
+}
+
+/* Skill bars */
+.cat-block { margin-bottom: 18px; }
+.cat-block:last-child { margin-bottom: 0; }
+
+.cat-head {
+  display: flex;
+  align-items: center;
+  gap: 7px;
+  margin-bottom: 9px;
+  padding-bottom: 6px;
+  border-bottom: 1px solid var(--border);
+}
+
+.cat-pip {
+  width: 10px;
+  height: 4px;
+  border-radius: 2px;
+  flex-shrink: 0;
+}
+
+.cat-name {
+  font-size: 10px;
+  font-weight: 700;
+  letter-spacing: 0.07em;
+  text-transform: uppercase;
+}
+
+.sk-row {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  margin-bottom: 6px;
+}
+
+.sk-name {
+  font-size: 11px;
+  color: var(--text2);
+  width: 145px;
+  flex-shrink: 0;
+  text-align: right;
+}
+
+.bar-track {
+  flex: 1;
+  height: 6px;
+  background: var(--surface3);
+  border-radius: 3px;
+  overflow: hidden;
+}
+
+.bar-fill {
+  height: 100%;
+  border-radius: 3px;
+  transition: width 0.5s cubic-bezier(0.4,0,0.2,1);
+}
+
+.sk-val {
+  font-size: 11px;
+  font-family: 'DM Mono', monospace;
+  font-weight: 500;
+  width: 18px;
+  text-align: right;
+  color: var(--text2);
+}
+
+/* Heatmap */
+.hm-grid { display: flex; flex-direction: column; gap: 14px; }
+
+.hm-cat-lbl {
+  font-size: 9.5px;
+  font-weight: 700;
+  letter-spacing: 0.08em;
+  text-transform: uppercase;
+  color: var(--text3);
+  margin-bottom: 6px;
+}
+
+.hm-tiles { display: flex; flex-wrap: wrap; gap: 4px; }
+
+.hm-tile {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: center;
+  width: 64px;
+  height: 50px;
+  border-radius: 8px;
+  cursor: default;
+  transition: transform 0.12s, box-shadow 0.12s;
+  border: 1px solid rgba(0,0,0,0.06);
+}
+
+.hm-tile:hover {
+  transform: scale(1.07);
+  z-index: 2;
+  position: relative;
+  box-shadow: var(--shadow-md);
+}
+
+.hm-score {
+  font-family: 'DM Mono', monospace;
+  font-size: 16px;
+  font-weight: 500;
+  line-height: 1;
+}
+
+.hm-name {
+  font-size: 8px;
+  font-weight: 500;
+  text-align: center;
+  line-height: 1.2;
+  margin-top: 3px;
+  padding: 0 3px;
+  opacity: 0.7;
+}
+
+.hm-legend {
+  display: flex;
+  align-items: center;
+  gap: 6px;
+  margin-top: 14px;
+  font-size: 10px;
+  color: var(--text3);
+}
+
+.hm-leg-track { display: flex; gap: 2px; }
+.hm-swatch { width: 16px; height: 9px; border-radius: 2px; border: 1px solid rgba(0,0,0,0.08); }
+
+/* Scrollbar */
+::-webkit-scrollbar { width: 4px; }
+::-webkit-scrollbar-track { background: transparent; }
+::-webkit-scrollbar-thumb { background: var(--surface3); border-radius: 4px; }
+
+/* Fade in on student change */
+@keyframes fadeUp {
+  from { opacity: 0; transform: translateY(5px); }
+  to   { opacity: 1; transform: none; }
+}
+.anim { animation: fadeUp 0.2s ease; }
 </style>
 </head>
 <body>
 
 <header>
-  <div class="logo">
-    <div class="logo-mark">
-      <svg width="18" height="18" viewBox="0 0 24 24" fill="none">
-        <path d="M4 18L8 6L12 14L16 10L20 18" stroke="white" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round"/>
-      </svg>
+  <div class="logo-wrap">
+    <img class="logo-img" src="data:image/png;base64,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" alt="Club7 Logo">
+    <div class="logo-divider"></div>
+    <div class="logo-label">
+      Trainee Evaluation
+      <span>Rise to the Challenge</span>
     </div>
-    <div><span class="logo-text">Club7</span><span class="logo-sub">Trainee Evaluation</span></div>
   </div>
   <div class="header-pills" id="levelPills"></div>
 </header>
 
 <div class="layout">
   <aside>
-    <div class="sb-section">
-      <span class="sb-label">Filter by level</span>
+    <div class="sb-sec">
+      <span class="sb-label">Level</span>
       <select id="levelSelect"></select>
     </div>
-    <div class="sb-section">
-      <span class="sb-label">Search trainee</span>
+    <div class="sb-sec">
+      <span class="sb-label">Search</span>
       <div class="search-wrap">
-        <svg class="search-icon" width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-        <input type="text" class="search-box" id="searchBox" placeholder="Name…">
+        <svg class="search-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+          <circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/>
+        </svg>
+        <input type="text" class="search-box" id="searchBox" placeholder="Find trainee…">
       </div>
     </div>
-    <div class="sb-section" style="margin-bottom:8px">
-      <span class="sb-label">Students &nbsp;<span id="countBadge" style="font-weight:400;color:var(--muted)">59</span></span>
+    <div class="sb-sec" style="margin-bottom: 8px;">
+      <span class="sb-label">
+        Students
+        <span class="count-chip" id="countChip">71</span>
+      </span>
     </div>
     <div class="student-list" id="studentList"></div>
   </aside>
 
   <main>
-    <div class="stu-head">
+    <div class="profile-head anim" id="profileHead">
       <div class="av-lg" id="avLg"></div>
-      <div>
-        <div class="stu-title" id="mainName">—</div>
-        <div class="stu-meta">
-          <span class="badge" id="mainBadge"></span>
-          <span style="font-size:12px;color:var(--muted)" id="mainRank"></span>
+      <div class="profile-info">
+        <div class="profile-name" id="profileName">—</div>
+        <div class="profile-meta">
+          <span class="badge" id="profileBadge"></span>
+          <span class="rank-tag" id="profileRank"></span>
         </div>
+      </div>
+      <div class="profile-score">
+        <div class="score-big" id="scoreNum">—<sub>/10</sub></div>
+        <div class="score-label">Overall Average</div>
       </div>
     </div>
 
-    <div class="metrics">
-      <div class="mc"><div class="mc-label">Overall avg</div><div class="mc-val" id="mAvg">—</div></div>
-      <div class="mc"><div class="mc-label">Level avg</div><div class="mc-val" id="mLvlAvg">—</div></div>
-      <div class="mc"><div class="mc-label">Top skill</div><div class="mc-val sm" id="mTop">—</div></div>
-      <div class="mc"><div class="mc-label">Needs work</div><div class="mc-val sm" id="mLow">—</div></div>
+    <div class="metrics anim">
+      <div class="mc">
+        <div class="mc-label">My Average</div>
+        <div class="mc-row">
+          <span class="mc-val" id="mMyVal">—</span>
+          <span class="mc-denom">/10</span>
+        </div>
+        <div class="mc-sub" id="mMySub"></div>
+        <div class="mc-track"><div class="mc-fill" id="mMyFill" style="width:0%"></div></div>
+      </div>
+      <div class="mc">
+        <div class="mc-label">Level Average</div>
+        <div class="mc-row">
+          <span class="mc-val" id="mLvlVal">—</span>
+          <span class="mc-denom">/10</span>
+        </div>
+        <div class="mc-sub" id="mLvlSub"></div>
+        <div class="mc-track"><div class="mc-fill" id="mLvlFill" style="width:0%;background:#4f46e5"></div></div>
+      </div>
     </div>
 
-    <div class="content-grid">
+    <div class="content-grid anim">
       <div class="card">
-        <div class="card-title">Skill ratings — out of 10</div>
+        <div class="card-title">Skill Ratings</div>
         <div id="skillBars"></div>
       </div>
       <div class="card">
-        <div class="card-title">Skill heatmap</div>
+        <div class="card-title">Skill Heatmap</div>
         <div class="hm-grid" id="hmGrid"></div>
         <div class="hm-legend">
           <span>0</span>
@@ -150,97 +687,179 @@ main{padding:26px 28px;overflow-y:auto}
 </div>
 
 <script>
-const RAW=[{"Trainee":"Rishavh Ambrish","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Srivahini Valluru","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":4,"Ready Stance and Balance":4,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":3,"Forehand Netshot":4,"Backhand Serves":4,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":4,"Footwork":4,"Speed and Agility":3,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Eva Chandra","Level":"Rookie","Forehand Grip":1,"Backhand Grip":0,"Ready Stance and Balance":0,"Forehand Tapping":1,"Forehand Serves":1,"Forehand Clear":0,"Forehand Drive":0,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":0,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Luka Khudyakov","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":4,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":7,"Effort and Teamwork":8,"Skill Learning Willingness":7},{"Trainee":"Devansh Challa","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":3,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Smera Abhilash","Level":"Rookie","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":1,"Forehand Serves":2,"Forehand Clear":1,"Forehand Drive":1,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vivaan Patel","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Anushka Barhate","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Avani Prashanth","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":3,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Julie Wang","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":4,"Ready Stance and Balance":4,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Snithika Mahavadi","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Sri Lokesh Grandhe","Level":"Rookie","Forehand Grip":1,"Backhand Grip":0,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":0,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":1,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Kshama Ghantasala","Level":"Rookie","Forehand Grip":1,"Backhand Grip":1,"Ready Stance and Balance":1,"Forehand Tapping":1,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":1,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":1,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Chavi Dawra","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Mansha Sri Selvaraj","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Devika A","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Avaneesh Bokka","Level":"Amateur","Forehand Grip":3,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":3,"Forehand Serves":2,"Forehand Clear":3,"Forehand Drive":3,"Forehand Drops":2,"Forehand Netshot":3,"Backhand Serves":1,"Backhand Clear":0,"Backhand Drive":1,"Backhand Drops":0,"Backhand Netshots":1,"Footwork":4,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Ananya Bokka","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Nikith Kuruwita","Level":"Rookie","Forehand Grip":1,"Backhand Grip":0,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":0,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":1,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Janya Badiga","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Rhythm Muttepawar","Level":"Intermediate - Skilled","Forehand Grip":10,"Backhand Grip":10,"Ready Stance and Balance":6,"Forehand Tapping":10,"Forehand Serves":5,"Forehand Clear":5,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":4,"Backhand Drops":3,"Backhand Netshots":5,"Footwork":6,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vihaan Kankanala","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":7,"Effort and Teamwork":8,"Skill Learning Willingness":7},{"Trainee":"Saya","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":3,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":7,"Effort and Teamwork":9,"Skill Learning Willingness":7},{"Trainee":"Sayan","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":3,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Nia Tolikani","Level":"Intermediate - Skilled","Forehand Grip":10,"Backhand Grip":10,"Ready Stance and Balance":6,"Forehand Tapping":10,"Forehand Serves":6,"Forehand Clear":6,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":4,"Backhand Drops":3,"Backhand Netshots":5,"Footwork":6,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Srivatsa Sayyapureddy","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":3,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":8,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Liam Papali","Level":"Rookie","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":1,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Anwita Dasari","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vedrithvik Dasari","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Arnab Singh","Level":"Amateur","Forehand Grip":3,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":3,"Forehand Serves":3,"Forehand Clear":3,"Forehand Drive":3,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Siddharth Sriram","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Indranil Krishnan","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Atharv Anup","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vihaan Telukutla","Level":"Intermediate - Skilled","Forehand Grip":10,"Backhand Grip":10,"Ready Stance and Balance":6,"Forehand Tapping":10,"Forehand Serves":6,"Forehand Clear":6,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":4,"Backhand Drops":3,"Backhand Netshots":5,"Footwork":6,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Sudeeksha Shashidhar","Level":"Intermediate - Skilled","Forehand Grip":10,"Backhand Grip":10,"Ready Stance and Balance":6,"Forehand Tapping":10,"Forehand Serves":6,"Forehand Clear":6,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":4,"Backhand Drops":3,"Backhand Netshots":5,"Footwork":6,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Diya Ramesh","Level":"Rookie","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":1,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Aanya Bharadwaj","Level":"Intermediate - Skilled","Forehand Grip":10,"Backhand Grip":10,"Ready Stance and Balance":6,"Forehand Tapping":10,"Forehand Serves":6,"Forehand Clear":6,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":4,"Backhand Drops":3,"Backhand Netshots":5,"Footwork":6,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Sai Vandanapu","Level":"Intermediate - Skilled","Forehand Grip":10,"Backhand Grip":10,"Ready Stance and Balance":6,"Forehand Tapping":10,"Forehand Serves":6,"Forehand Clear":6,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":4,"Backhand Drops":3,"Backhand Netshots":5,"Footwork":6,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Aradhya Gautam","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Aadhya Sopalli","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Aarya Sopalli","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Naitik Srivastava","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":3,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Maulik Srivastav","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":1,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vaishnavi Praveen","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":7,"Effort and Teamwork":10,"Skill Learning Willingness":7},{"Trainee":"Prayan Maheshwari","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":3,"Forehand Serves":4,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":2,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":2,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Pushthi Maheshwari","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":3,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Srivansh Reddy Segu","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":3,"Forehand Serves":3,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Srika Segu","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Geeta Mothukuri","Level":"Intermediate - Riser","Forehand Grip":3,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Adrith Nadipalli","Level":"Amateur","Forehand Grip":3,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":3,"Forehand Serves":3,"Forehand Clear":3,"Forehand Drive":3,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":2,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":8,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Nyla Wooten","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":3,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Emily Park","Level":"Rookie","Forehand Grip":1,"Backhand Grip":0,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":0,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":1,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Shreya Nimbala","Level":"Rookie","Forehand Grip":1,"Backhand Grip":0,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":0,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":1,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Wilhelmina Lin","Level":"Amateur","Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":3,"Forehand Serves":3,"Forehand Clear":2,"Forehand Drive":3,"Forehand Drops":0,"Forehand Netshot":2,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":2,"Footwork":3,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"William Lin","Level":"Intermediate - Skilled","Forehand Grip":10,"Backhand Grip":10,"Ready Stance and Balance":6,"Forehand Tapping":10,"Forehand Serves":6,"Forehand Clear":6,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":4,"Backhand Drops":3,"Backhand Netshots":5,"Footwork":6,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vedanvitha Abbaraju","Level":"Intermediate - Skilled","Forehand Grip":10,"Backhand Grip":10,"Ready Stance and Balance":5,"Forehand Tapping":10,"Forehand Serves":6,"Forehand Clear":6,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":4,"Backhand Drops":3,"Backhand Netshots":5,"Footwork":6,"Speed and Agility":4,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Elijah Bell","Level":"Intermediate - Riser","Forehand Grip":4,"Backhand Grip":4,"Ready Stance and Balance":4,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":3,"Forehand Netshot":4,"Backhand Serves":3,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Anjana Chillara","Level":"Intermediate - Skilled","Forehand Grip":10,"Backhand Grip":10,"Ready Stance and Balance":6,"Forehand Tapping":10,"Forehand Serves":5,"Forehand Clear":6,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":4,"Backhand Drops":3,"Backhand Netshots":5,"Footwork":6,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Sai Rahul Alishala","Level":"Intermediate - Riser","Forehand Grip":3,"Backhand Grip":2,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":2,"Forehand Clear":3,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":3,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":7,"Effort and Teamwork":7,"Skill Learning Willingness":7}];
+const DATA=[{"Trainee":"Anishka Sandeep","Level":"Amateur","Average":2.142857142857143,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Anaisha Sandeep","Level":"Intermediate - Riser","Average":3.5238095238095237,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Pranav Abbaraju","Level":"Intermediate - Riser","Average":3.5238095238095237,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Shriya Vanapalli","Level":"Intermediate - Riser","Average":3.5238095238095237,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Rishavh Ambrish","Level":"Intermediate - Riser","Average":3.5238095238095237,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Srivahini Valluru","Level":"Intermediate - Riser","Average":3.7142857142857144,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":3,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":3,"Forehand Netshot":4,"Backhand Serves":3,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":3,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Eva Chandra","Level":"Rookie","Average":1.5714285714285714,"Forehand Grip":1,"Backhand Grip":0,"Ready Stance and Balance":0,"Forehand Tapping":1,"Forehand Serves":1,"Forehand Clear":0,"Forehand Drive":0,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":0,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Luka Khudyakov","Level":"Intermediate - Riser","Average":3.1904761904761907,"Forehand Grip":4,"Backhand Grip":4,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":7,"Effort and Teamwork":8,"Skill Learning Willingness":7},{"Trainee":"Devansh Challa","Level":"Amateur","Average":2.1904761904761907,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":3,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Smera Abhilash","Level":"Rookie","Average":1.9523809523809523,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":1,"Forehand Tapping":1,"Forehand Serves":2,"Forehand Clear":1,"Forehand Drive":1,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vivaan Patel","Level":"Amateur","Average":2.142857142857143,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Anushka Barhate","Level":"Amateur","Average":2.142857142857143,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Avani Prashanth","Level":"Amateur","Average":2.1904761904761907,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":3,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Julie Wang","Level":"Intermediate - Riser","Average":3.619047619047619,"Forehand Grip":4,"Backhand Grip":4,"Ready Stance and Balance":4,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Snithika Mahavadi","Level":"Amateur","Average":2.142857142857143,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Sri Lokesh Grandhe","Level":"Rookie","Average":1.7619047619047619,"Forehand Grip":1,"Backhand Grip":0,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":0,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":1,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Kshama Ghantasala","Level":"Rookie","Average":1.9047619047619047,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":1,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":1,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Chavi Dawra","Level":"Amateur","Average":2.142857142857143,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Mansha Sri Selvaraj","Level":"Intermediate - Riser","Average":3.5238095238095237,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Devika A","Level":"Intermediate - Riser","Average":3.5714285714285716,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Avaneesh Bokka","Level":"Amateur","Average":2.8095238095238093,"Forehand Grip":3,"Backhand Grip":3,"Ready Stance and Balance":2,"Forehand Tapping":3,"Forehand Serves":2,"Forehand Clear":3,"Forehand Drive":3,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":1,"Backhand Clear":0,"Backhand Drive":1,"Backhand Drops":0,"Backhand Netshots":1,"Footwork":4,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Ananya Bokka","Level":"Intermediate - Riser","Average":3.5238095238095237,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Nikith Kuruwita","Level":"Rookie","Average":1.7619047619047619,"Forehand Grip":1,"Backhand Grip":0,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":0,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":1,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Janya Badiga","Level":"Intermediate - Riser","Average":3.4761904761904763,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Rhythm Muttepawar","Level":"Intermediate - Skilled","Average":4.904761904761905,"Forehand Grip":5,"Backhand Grip":5,"Ready Stance and Balance":5,"Forehand Tapping":5,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vihaan Kankanala","Level":"Intermediate - Riser","Average":3.142857142857143,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":7,"Effort and Teamwork":8,"Skill Learning Willingness":7},{"Trainee":"Saya","Level":"Amateur","Average":2.0952380952380953,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":3,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":9,"Effort and Teamwork":9,"Skill Learning Willingness":7},{"Trainee":"Sayan","Level":"Amateur","Average":2.1904761904761907,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":3,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vijith Marre","Level":"Intermediate - Skilled","Average":4.9523809523809526,"Forehand Grip":5,"Backhand Grip":5,"Ready Stance and Balance":5,"Forehand Tapping":5,"Forehand Serves":5,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Nia Tolikani","Level":"Intermediate - Skilled","Average":4.9523809523809526,"Forehand Grip":5,"Backhand Grip":5,"Ready Stance and Balance":5,"Forehand Tapping":5,"Forehand Serves":5,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Srivatsa Sayyapureddy","Level":"Intermediate - Riser","Average":3.380952380952381,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":3,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":8,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Liam Papali","Level":"Rookie","Average":1.9523809523809523,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":1,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Anwita Dasari","Level":"Intermediate - Riser","Average":3.5714285714285716,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vedrithvik Dasari","Level":"Intermediate - Riser","Average":3.5714285714285716,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Arnab Singh","Level":"Intermediate - Riser","Average":3.5238095238095237,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Siddharth Sriram","Level":"Intermediate - Riser","Average":3.5714285714285716,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Indranil Krishnan","Level":"Amateur","Average":2.142857142857143,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Atharv Anup","Level":"Intermediate - Riser","Average":3.5714285714285716,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vihaan Telukutla","Level":"Intermediate - Skilled","Average":4.9523809523809526,"Forehand Grip":5,"Backhand Grip":5,"Ready Stance and Balance":5,"Forehand Tapping":5,"Forehand Serves":5,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Sudeeksha Shashidhar","Level":"Intermediate - Skilled","Average":4.9523809523809526,"Forehand Grip":5,"Backhand Grip":5,"Ready Stance and Balance":5,"Forehand Tapping":5,"Forehand Serves":5,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Diya Ramesh","Level":"Rookie","Average":1.9523809523809523,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":1,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Aanya Bharadwaj","Level":"Intermediate - Skilled","Average":4.9523809523809526,"Forehand Grip":5,"Backhand Grip":5,"Ready Stance and Balance":5,"Forehand Tapping":5,"Forehand Serves":5,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Sai Vandanapu","Level":"Intermediate - Skilled","Average":4.9523809523809526,"Forehand Grip":5,"Backhand Grip":5,"Ready Stance and Balance":5,"Forehand Tapping":5,"Forehand Serves":5,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Aradhya Gautam","Level":"Amateur","Average":2.142857142857143,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Aadhya Sopalli","Level":"Intermediate - Riser","Average":3.5238095238095237,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Aarya Sopalli","Level":"Intermediate - Riser","Average":3.5238095238095237,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Naitik Srivastava","Level":"Intermediate - Riser","Average":3.619047619047619,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":3,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Maulik Srivastav","Level":"Amateur","Average":2.0,"Forehand Grip":2,"Backhand Grip":2,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":8,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Vaishnavi Praveen","Level":"Amateur","Average":2.0952380952380953,"Forehand Grip":2,"Backhand Grip":2,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Prayan Maheshwari","Level":"Amateur","Average":2.4761904761904763,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":3,"Forehand Serves":4,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":2,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":2,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Pushthi Maheshwari","Level":"Intermediate - Riser","Average":3.619047619047619,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":3,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Srivansh Reddy Segu","Level":"Amateur","Average":2.238095238095238,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":3,"Forehand Serves":3,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Srika Segu","Level":"Amateur","Average":2.142857142857143,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":2,"Forehand Serves":2,"Forehand Clear":2,"Forehand Drive":2,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":2,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Geeta Mothukuri","Level":"Intermediate - Riser","Average":3.4761904761904763,"Forehand Grip":3,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":3,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Adrith Nadipalli","Level":"Amateur","Average":2.9523809523809526,"Forehand Grip":3,"Backhand Grip":3,"Ready Stance and Balance":2,"Forehand Tapping":3,"Forehand Serves":3,"Forehand Clear":3,"Forehand Drive":3,"Forehand Drops":1,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":1,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":8,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Nyla Wooten","Level":"Intermediate - Riser","Average":3.619047619047619,"Forehand Grip":4,"Backhand Grip":3,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":3,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Emily Park","Level":"Rookie","Average":1.7619047619047619,"Forehand Grip":1,"Backhand Grip":0,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":0,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":1,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Shreya Nimbala","Level":"Rookie","Average":1.7619047619047619,"Forehand Grip":1,"Backhand Grip":0,"Ready Stance and Balance":1,"Forehand Tapping":2,"Forehand Serves":1,"Forehand Clear":1,"Forehand Drive":0,"Forehand Drops":0,"Forehand Netshot":0,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":0,"Footwork":1,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Wilhelmina Lin","Level":"Amateur","Average":2.5238095238095237,"Forehand Grip":2,"Backhand Grip":1,"Ready Stance and Balance":2,"Forehand Tapping":3,"Forehand Serves":3,"Forehand Clear":2,"Forehand Drive":3,"Forehand Drops":0,"Forehand Netshot":2,"Backhand Serves":0,"Backhand Clear":0,"Backhand Drive":0,"Backhand Drops":0,"Backhand Netshots":2,"Footwork":3,"Speed and Agility":0,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"William Lin","Level":"Intermediate - Skilled","Average":4.9523809523809526,"Forehand Grip":5,"Backhand Grip":5,"Ready Stance and Balance":5,"Forehand Tapping":5,"Forehand Serves":5,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Vedanvitha Abbaraju","Level":"Intermediate - Skilled","Average":4.809523809523809,"Forehand Grip":5,"Backhand Grip":5,"Ready Stance and Balance":5,"Forehand Tapping":5,"Forehand Serves":5,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":4,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":8},{"Trainee":"Elijah Bell","Level":"Intermediate - Riser","Average":3.857142857142857,"Forehand Grip":4,"Backhand Grip":4,"Ready Stance and Balance":4,"Forehand Tapping":4,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":4,"Forehand Drops":3,"Forehand Netshot":4,"Backhand Serves":3,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":4,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Aadithya Pamarthi","Level":"Elite","Average":9.0,"Forehand Grip":9,"Backhand Grip":9,"Ready Stance and Balance":10,"Forehand Tapping":9,"Forehand Serves":9,"Forehand Clear":10,"Forehand Drive":10,"Forehand Drops":9,"Forehand Netshot":9,"Backhand Serves":9,"Backhand Clear":9,"Backhand Drive":9,"Backhand Drops":9,"Backhand Netshots":9,"Footwork":9,"Speed and Agility":7,"Anticipation":7,"Game Strategy":7,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Shreyansh Vanapalli","Level":"Elite","Average":9.0,"Forehand Grip":9,"Backhand Grip":9,"Ready Stance and Balance":10,"Forehand Tapping":9,"Forehand Serves":9,"Forehand Clear":10,"Forehand Drive":10,"Forehand Drops":9,"Forehand Netshot":9,"Backhand Serves":9,"Backhand Clear":9,"Backhand Drive":9,"Backhand Drops":9,"Backhand Netshots":9,"Footwork":9,"Speed and Agility":7,"Anticipation":7,"Game Strategy":7,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Oscar","Level":"Advanced - Expert","Average":8.095238095238095,"Forehand Grip":8,"Backhand Grip":8,"Ready Stance and Balance":8,"Forehand Tapping":8,"Forehand Serves":9,"Forehand Clear":9,"Forehand Drive":9,"Forehand Drops":8,"Forehand Netshot":9,"Backhand Serves":8,"Backhand Clear":8,"Backhand Drive":8,"Backhand Drops":6,"Backhand Netshots":8,"Footwork":8,"Speed and Agility":6,"Anticipation":6,"Game Strategy":6,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"August","Level":"Advanced - Expert","Average":8.095238095238095,"Forehand Grip":8,"Backhand Grip":8,"Ready Stance and Balance":8,"Forehand Tapping":8,"Forehand Serves":9,"Forehand Clear":9,"Forehand Drive":9,"Forehand Drops":8,"Forehand Netshot":9,"Backhand Serves":8,"Backhand Clear":8,"Backhand Drive":8,"Backhand Drops":6,"Backhand Netshots":8,"Footwork":8,"Speed and Agility":6,"Anticipation":6,"Game Strategy":6,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Ethan Luo","Level":"Advanced - Expert","Average":8.095238095238095,"Forehand Grip":8,"Backhand Grip":8,"Ready Stance and Balance":8,"Forehand Tapping":8,"Forehand Serves":9,"Forehand Clear":9,"Forehand Drive":9,"Forehand Drops":8,"Forehand Netshot":9,"Backhand Serves":8,"Backhand Clear":8,"Backhand Drive":8,"Backhand Drops":6,"Backhand Netshots":8,"Footwork":8,"Speed and Agility":6,"Anticipation":6,"Game Strategy":6,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Aiden Luo","Level":"Intermediate - Expert","Average":5.142857142857143,"Forehand Grip":6,"Backhand Grip":6,"Ready Stance and Balance":6,"Forehand Tapping":5,"Forehand Serves":5,"Forehand Clear":5,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Satvik Marre","Level":"Intermediate - Expert","Average":5.142857142857143,"Forehand Grip":6,"Backhand Grip":6,"Ready Stance and Balance":6,"Forehand Tapping":5,"Forehand Serves":5,"Forehand Clear":5,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Anjana Chillara","Level":"Intermediate - Skilled","Average":4.904761904761905,"Forehand Grip":5,"Backhand Grip":5,"Ready Stance and Balance":5,"Forehand Tapping":5,"Forehand Serves":4,"Forehand Clear":4,"Forehand Drive":5,"Forehand Drops":4,"Forehand Netshot":5,"Backhand Serves":5,"Backhand Clear":3,"Backhand Drive":3,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":5,"Speed and Agility":5,"Anticipation":3,"Game Strategy":3,"Follows Instructions":10,"Effort and Teamwork":10,"Skill Learning Willingness":10},{"Trainee":"Sai Rahul Alishala","Level":"Intermediate - Riser","Average":3.0,"Forehand Grip":3,"Backhand Grip":2,"Ready Stance and Balance":3,"Forehand Tapping":4,"Forehand Serves":2,"Forehand Clear":3,"Forehand Drive":4,"Forehand Drops":2,"Forehand Netshot":2,"Backhand Serves":2,"Backhand Clear":1,"Backhand Drive":2,"Backhand Drops":1,"Backhand Netshots":3,"Footwork":3,"Speed and Agility":2,"Anticipation":0,"Game Strategy":0,"Follows Instructions":8,"Effort and Teamwork":8,"Skill Learning Willingness":8}];
 
-const SKILLS=["Forehand Grip","Backhand Grip","Ready Stance and Balance","Forehand Tapping","Forehand Serves","Forehand Clear","Forehand Drive","Forehand Drops","Forehand Netshot","Backhand Serves","Backhand Clear","Backhand Drive","Backhand Drops","Backhand Netshots","Footwork","Speed and Agility","Anticipation","Game Strategy","Follows Instructions","Effort and Teamwork","Skill Learning Willingness"];
-const CATS=[
-  {name:'Forehand shots',color:'#5b44d4',keys:['Forehand Grip','Forehand Tapping','Forehand Serves','Forehand Clear','Forehand Drive','Forehand Drops','Forehand Netshot']},
-  {name:'Backhand shots',color:'#1a9e76',keys:['Backhand Grip','Backhand Serves','Backhand Clear','Backhand Drive','Backhand Drops','Backhand Netshots']},
-  {name:'Fundamentals',  color:'#2a6fc7',keys:['Ready Stance and Balance','Footwork','Speed and Agility','Anticipation','Game Strategy']},
-  {name:'Attitude',      color:'#c05c28',keys:['Follows Instructions','Effort and Teamwork','Skill Learning Willingness']}
+const SKILLS = ["Forehand Grip","Backhand Grip","Ready Stance and Balance","Forehand Tapping","Forehand Serves","Forehand Clear","Forehand Drive","Forehand Drops","Forehand Netshot","Backhand Serves","Backhand Clear","Backhand Drive","Backhand Drops","Backhand Netshots","Footwork","Speed and Agility","Anticipation","Game Strategy","Follows Instructions","Effort and Teamwork","Skill Learning Willingness"];
+
+const CATS = [
+  { name: 'Forehand', color: '#4f46e5', keys: ['Forehand Grip','Forehand Tapping','Forehand Serves','Forehand Clear','Forehand Drive','Forehand Drops','Forehand Netshot'] },
+  { name: 'Backhand', color: '#059669', keys: ['Backhand Grip','Backhand Serves','Backhand Clear','Backhand Drive','Backhand Drops','Backhand Netshots'] },
+  { name: 'Fundamentals', color: '#0284c7', keys: ['Ready Stance and Balance','Footwork','Speed and Agility','Anticipation','Game Strategy'] },
+  { name: 'Attitude', color: '#ea580c', keys: ['Follows Instructions','Effort and Teamwork','Skill Learning Willingness'] }
 ];
-const LVL={
-  'Rookie':                 {c:'#c84b1e',bg:'#fdf0eb'},
-  'Amateur':                {c:'#9a6c00',bg:'#fdf6e3'},
-  'Intermediate - Riser':   {c:'#1d6fa4',bg:'#e8f3fb'},
-  'Intermediate - Skilled': {c:'#2a7a3b',bg:'#e8f5ec'}
+
+const SHORT = {
+  'Forehand Grip':'FH Grip','Backhand Grip':'BH Grip','Ready Stance and Balance':'Stance',
+  'Forehand Tapping':'FH Tap','Forehand Serves':'FH Serve','Forehand Clear':'FH Clear',
+  'Forehand Drive':'FH Drive','Forehand Drops':'FH Drops','Forehand Netshot':'FH Net',
+  'Backhand Serves':'BH Serve','Backhand Clear':'BH Clear','Backhand Drive':'BH Drive',
+  'Backhand Drops':'BH Drops','Backhand Netshots':'BH Net','Footwork':'Footwork',
+  'Speed and Agility':'Speed','Anticipation':'Anticip.','Game Strategy':'Strategy',
+  'Follows Instructions':'Follows','Effort and Teamwork':'Effort','Skill Learning Willingness':'Learning'
 };
-const LEVELS=['Rookie','Amateur','Intermediate - Riser','Intermediate - Skilled'];
-const AVCOL=['#5b44d4','#1a9e76','#2a6fc7','#c05c28','#9a3b6e','#336699','#8b4513','#2e8b57'];
-const SHORT={'Forehand Grip':'FH Grip','Backhand Grip':'BH Grip','Ready Stance and Balance':'Stance','Forehand Tapping':'FH Tap','Forehand Serves':'FH Serve','Forehand Clear':'FH Clear','Forehand Drive':'FH Drive','Forehand Drops':'FH Drops','Forehand Netshot':'FH Net','Backhand Serves':'BH Serve','Backhand Clear':'BH Clear','Backhand Drive':'BH Drive','Backhand Drops':'BH Drops','Backhand Netshots':'BH Net','Footwork':'Footwork','Speed and Agility':'Speed','Anticipation':'Anticip.','Game Strategy':'Strategy','Follows Instructions':'Follows','Effort and Teamwork':'Effort','Skill Learning Willingness':'Learning'};
 
-const ini=n=>n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-const avc=n=>{let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))&0xffffffff;return AVCOL[Math.abs(h)%AVCOL.length]};
-const calcAvg=s=>SKILLS.reduce((a,k)=>a+(s[k]??0),0)/SKILLS.length;
-const hc=v=>{const t=v/10;if(t===0)return{bg:'#f1efe8',sc:'#b0ada5',nm:'#b0ada5'};if(t<0.2)return{bg:'#fdf0eb',sc:'#c84b1e',nm:'#993c1d'};if(t<0.4)return{bg:'#fdf6e3',sc:'#9a6c00',nm:'#7a5500'};if(t<0.65)return{bg:'#e8f3fb',sc:'#1d6fa4',nm:'#185fa5'};return{bg:'#e8f5ec',sc:'#2a7a3b',nm:'#1f5e2c'}};
+const LEVEL_ORDER = ['Rookie','Amateur','Intermediate - Riser','Intermediate - Skilled','Intermediate - Expert','Advanced - Expert','Elite'];
 
-const data=RAW.map(s=>({...s,_avg:calcAvg(s)}));
-let view=data;
+const LEVEL_CFG = {
+  'Rookie':               { col:'#dc4c3a', bg:'#fef2f0', border:'#fca5a5' },
+  'Amateur':              { col:'#d97706', bg:'#fffbeb', border:'#fcd34d' },
+  'Intermediate - Riser': { col:'#2563b0', bg:'#eff6ff', border:'#93c5fd' },
+  'Intermediate - Skilled':{ col:'#16a34a', bg:'#f0fdf4', border:'#86efac' },
+  'Intermediate - Expert':{ col:'#7c3aed', bg:'#f5f3ff', border:'#c4b5fd' },
+  'Advanced - Expert':    { col:'#c2690a', bg:'#fff7ed', border:'#fdba74' },
+  'Elite':                { col:'#a16207', bg:'#fefce8', border:'#fde047' },
+};
 
-function init(){
-  const lsel=document.getElementById('levelSelect');
-  lsel.innerHTML='<option value="">All levels</option>'+LEVELS.map(l=>`<option value="${l}">${l}</option>`).join('');
-  lsel.addEventListener('change',filter);
-  document.getElementById('searchBox').addEventListener('input',filter);
+const AV_PALETTE = ['#4f46e5','#059669','#0284c7','#ea580c','#7c3aed','#c2690a','#dc4c3a','#0891b2'];
+const ini = n => n.split(' ').map(w => w[0]).join('').slice(0, 2).toUpperCase();
+const avc = n => { let h = 0; for (let i = 0; i < n.length; i++) h = (h * 31 + n.charCodeAt(i)) & 0xffffffff; return AV_PALETTE[Math.abs(h) % AV_PALETTE.length]; };
 
-  const pills=document.getElementById('levelPills');
-  LEVELS.forEach(l=>{
-    const s=LVL[l],cnt=data.filter(d=>d.Level===l).length;
-    pills.innerHTML+=`<span class="pill" style="background:${s.bg};color:${s.c}">${l.replace('Intermediate - ','')} · ${cnt}</span>`;
+function heatColor(v) {
+  if (v === 0) return { bg: '#f6f4f0', sc: '#c8c4bc', nm: '#c8c4bc' };
+  if (v <= 2)  return { bg: '#fef2f0', sc: '#dc4c3a', nm: '#b83a2a' };
+  if (v <= 4)  return { bg: '#fffbeb', sc: '#d97706', nm: '#b45309' };
+  if (v <= 6)  return { bg: '#eff6ff', sc: '#2563b0', nm: '#1d4ed8' };
+  if (v <= 8)  return { bg: '#f0fdf4', sc: '#16a34a', nm: '#15803d' };
+  return { bg: '#fefce8', sc: '#a16207', nm: '#854d0e' };
+}
+
+const sorted = [...DATA].sort((a, b) =>
+  LEVEL_ORDER.indexOf(a.Level) - LEVEL_ORDER.indexOf(b.Level) || a.Trainee.localeCompare(b.Trainee)
+);
+
+let view = sorted;
+
+function init() {
+  // Level select
+  const lsel = document.getElementById('levelSelect');
+  lsel.innerHTML = '<option value="">All levels</option>' +
+    LEVEL_ORDER.filter(l => DATA.some(d => d.Level === l))
+      .map(l => `<option value="${l}">${l}</option>`).join('');
+  lsel.addEventListener('change', applyFilter);
+  document.getElementById('searchBox').addEventListener('input', applyFilter);
+
+  // Header level pills
+  const pills = document.getElementById('levelPills');
+  LEVEL_ORDER.forEach(l => {
+    const cnt = DATA.filter(d => d.Level === l).length;
+    if (!cnt) return;
+    const cfg = LEVEL_CFG[l];
+    const short = l.replace('Intermediate - ','Int. ').replace('Advanced - ','Adv. ');
+    pills.innerHTML += `<span class="hpill" style="background:${cfg.bg};color:${cfg.col};border-color:${cfg.border}">${short} · ${cnt}</span>`;
   });
 
-  document.getElementById('hmLegend').innerHTML=['#f1efe8','#fdf0eb','#fdf6e3','#e8f3fb','#e8f5ec'].map(c=>`<div class="hm-swatch" style="background:${c}"></div>`).join('');
-  filter();
+  // Heatmap legend
+  document.getElementById('hmLegend').innerHTML =
+    [0,2,4,6,8,10].map(v => {
+      const c = heatColor(v);
+      return `<div class="hm-swatch" style="background:${c.bg}"></div>`;
+    }).join('');
+
+  applyFilter();
 }
 
-function filter(){
-  const lv=document.getElementById('levelSelect').value;
-  const q=document.getElementById('searchBox').value.toLowerCase();
-  view=data.filter(s=>(!lv||s.Level===lv)&&(!q||s.Trainee.toLowerCase().includes(q)))
-    .sort((a,b)=>LEVELS.indexOf(a.Level)-LEVELS.indexOf(b.Level)||a.Trainee.localeCompare(b.Trainee));
-  document.getElementById('countBadge').textContent=view.length;
-  const list=document.getElementById('studentList');
-  list.innerHTML=view.map(s=>{
-    const ac=avc(s.Trainee);
-    return`<button class="s-item" data-name="${s.Trainee}" onclick="pick('${s.Trainee.replace(/'/g,"\\'")}')">
-      <div class="av-sm" style="background:${ac}22;color:${ac}">${ini(s.Trainee)}</div>
-      <div class="s-info"><div class="s-name">${s.Trainee}</div><div class="s-lvl">${s.Level}</div></div>
+function applyFilter() {
+  const lv = document.getElementById('levelSelect').value;
+  const q  = document.getElementById('searchBox').value.toLowerCase();
+  view = sorted.filter(s => (!lv || s.Level === lv) && (!q || s.Trainee.toLowerCase().includes(q)));
+  document.getElementById('countChip').textContent = view.length;
+  buildList();
+  if (view.length) pick(view[0].Trainee);
+}
+
+function buildList() {
+  const list = document.getElementById('studentList');
+  list.innerHTML = view.map(s => {
+    const ac = avc(s.Trainee);
+    const cfg = LEVEL_CFG[s.Level] || { col: '#888' };
+    return `<button class="s-item" data-name="${s.Trainee}" onclick="pick('${s.Trainee.replace(/'/g,"\\'")}')">
+      <div class="av-sm" style="background:${ac}18;color:${ac}">${ini(s.Trainee)}</div>
+      <div class="s-info">
+        <div class="s-name">${s.Trainee}</div>
+        <div class="s-lvl" style="color:${cfg.col}">${s.Level}</div>
+      </div>
     </button>`;
   }).join('');
-  if(view.length) pick(view[0].Trainee);
 }
 
-function pick(name){
-  document.querySelectorAll('.s-item').forEach(el=>el.classList.toggle('active',el.dataset.name===name));
-  const s=data.find(d=>d.Trainee===name); if(!s)return;
-  const ls=LVL[s.Level]||{c:'#666',bg:'#eee'},ac=avc(s.Trainee);
-  const avLg=document.getElementById('avLg');
-  avLg.textContent=ini(s.Trainee);
-  avLg.style.cssText=`background:${ac}22;color:${ac};width:54px;height:54px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-size:17px;font-weight:600;flex-shrink:0`;
-  document.getElementById('mainName').textContent=s.Trainee;
-  const b=document.getElementById('mainBadge');b.textContent=s.Level;b.style.background=ls.bg;b.style.color=ls.c;
-  const rank=data.slice().sort((a,b)=>b._avg-a._avg).findIndex(d=>d.Trainee===s.Trainee)+1;
-  document.getElementById('mainRank').textContent=`#${rank} of ${data.length} overall`;
-  const lvlPeers=data.filter(d=>d.Level===s.Level);
-  const lvlAvg=lvlPeers.reduce((a,d)=>a+d._avg,0)/lvlPeers.length;
-  document.getElementById('mAvg').textContent=s._avg.toFixed(2)+'/10';
-  document.getElementById('mLvlAvg').textContent=lvlAvg.toFixed(2)+'/10';
-  const topK=SKILLS.reduce((a,b)=>(s[a]??0)>=(s[b]??0)?a:b);
-  const nonMax=SKILLS.filter(k=>(s[k]??0)<10);
-  const lowK=nonMax.length?nonMax.reduce((a,b)=>(s[a]??0)<=(s[b]??0)?a:b):null;
-  document.getElementById('mTop').textContent=topK+' ('+s[topK]+')';
-  document.getElementById('mLow').textContent=lowK?lowK+' ('+(s[lowK]??0)+')':'—';
+function pick(name) {
+  document.querySelectorAll('.s-item').forEach(el => el.classList.toggle('active', el.dataset.name === name));
+  const s = DATA.find(d => d.Trainee === name);
+  if (!s) return;
 
-  document.getElementById('skillBars').innerHTML=CATS.map(cat=>`
+  const cfg = LEVEL_CFG[s.Level] || { col:'#888', bg:'#eee', border:'#ccc' };
+  const ac = avc(s.Trainee);
+
+  // Profile header
+  const avEl = document.getElementById('avLg');
+  avEl.textContent = ini(s.Trainee);
+  avEl.style.cssText = `background:${ac}18;color:${ac};width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;flex-shrink:0`;
+
+  document.getElementById('profileName').textContent = s.Trainee;
+  document.getElementById('profileBadge').textContent = s.Level;
+  document.getElementById('profileBadge').style.cssText = `color:${cfg.col};background:${cfg.bg};border:1.5px solid ${cfg.border};display:inline-flex;align-items:center;padding:5px 14px;border-radius:6px;font-size:14px;font-weight:700;font-family:'Playfair Display',serif`;
+
+  const rank = [...DATA].sort((a,b) => b.Average - a.Average).findIndex(d => d.Trainee === name) + 1;
+  document.getElementById('profileRank').textContent = `#${rank} of ${DATA.length}`;
+  document.getElementById('scoreNum').innerHTML = `${s.Average.toFixed(2)}<sub>/10</sub>`;
+
+  // Metrics
+  const lvlPeers = DATA.filter(d => d.Level === s.Level);
+  const lvlAvg = lvlPeers.reduce((a, d) => a + d.Average, 0) / lvlPeers.length;
+
+  document.getElementById('mMyVal').textContent  = s.Average.toFixed(2);
+  document.getElementById('mMySub').textContent  = `Ranked #${rank} overall`;
+  document.getElementById('mMyFill').style.width = `${s.Average * 10}%`;
+  document.getElementById('mMyFill').style.background = cfg.col;
+
+  document.getElementById('mLvlVal').textContent  = lvlAvg.toFixed(2);
+  document.getElementById('mLvlSub').textContent  = `${lvlPeers.length} trainees in ${s.Level}`;
+  document.getElementById('mLvlFill').style.width = `${lvlAvg * 10}%`;
+  document.getElementById('mLvlFill').style.background = cfg.col;
+
+  // Skill bars
+  document.getElementById('skillBars').innerHTML = CATS.map(cat => `
     <div class="cat-block">
-      <div class="cat-head"><div class="cat-dot" style="background:${cat.color}"></div><span class="cat-name" style="color:${cat.color}">${cat.name}</span></div>
-      ${cat.keys.map(k=>{const v=s[k]??0;return`<div class="sk-row"><span class="sk-name">${k}</span><div class="bar-track"><div class="bar-fill" style="width:${v*10}%;background:${cat.color}"></div></div><span class="sk-val" style="color:${cat.color}">${v}</span></div>`}).join('')}
+      <div class="cat-head">
+        <div class="cat-pip" style="background:${cat.color}"></div>
+        <span class="cat-name" style="color:${cat.color}">${cat.name}</span>
+      </div>
+      ${cat.keys.map(k => {
+        const v = s[k] ?? 0;
+        return `<div class="sk-row">
+          <span class="sk-name">${k}</span>
+          <div class="bar-track">
+            <div class="bar-fill" style="width:${v * 10}%;background:${cat.color}"></div>
+          </div>
+          <span class="sk-val">${v}</span>
+        </div>`;
+      }).join('')}
     </div>`).join('');
 
-  document.getElementById('hmGrid').innerHTML=CATS.map(cat=>`
-    <div class="hm-cat">
+  // Heatmap
+  document.getElementById('hmGrid').innerHTML = CATS.map(cat => `
+    <div>
       <div class="hm-cat-lbl" style="color:${cat.color}">${cat.name}</div>
-      <div class="hm-tiles">${cat.keys.map(k=>{const v=s[k]??0,c=hc(v);return`<div class="hm-tile" style="background:${c.bg}" title="${k}: ${v}/10"><span class="hm-score" style="color:${c.sc}">${v}</span><span class="hm-name" style="color:${c.nm}">${SHORT[k]||k}</span></div>`}).join('')}</div>
+      <div class="hm-tiles">
+        ${cat.keys.map(k => {
+          const v = s[k] ?? 0;
+          const c = heatColor(v);
+          return `<div class="hm-tile" style="background:${c.bg}" title="${k}: ${v}/10">
+            <span class="hm-score" style="color:${c.sc}">${v}</span>
+            <span class="hm-name" style="color:${c.nm}">${SHORT[k]||k}</span>
+          </div>`;
+        }).join('')}
+      </div>
     </div>`).join('');
 }
 
