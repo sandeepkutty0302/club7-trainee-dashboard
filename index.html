@@ -383,12 +383,35 @@ select.fc{appearance:none;cursor:pointer;background-image:url("data:image/svg+xm
 .fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
 .fields-grid.three{grid-template-columns:1fr 1fr 1fr}
 .field-full{grid-column:1/-1}
-.rank-group{display:flex;flex-direction:column;gap:5px}
-.rank-row{display:flex;align-items:center;gap:10px}
-.rank-track{flex:1}
-.rank-input{width:100%;height:5px;-webkit-appearance:none;appearance:none;background:var(--surface3);border-radius:3px;outline:none;cursor:pointer}
-.rank-input::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ink);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.2)}
-.rank-val{width:28px;height:28px;border-radius:var(--rad-xs);background:var(--surface2);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;flex-shrink:0}
+.rank-group{display:flex;flex-direction:column;gap:6px}
+.rank-header{display:flex;align-items:center;justify-content:space-between;gap:8px}
+.rank-label{font-size:11.5px;font-weight:600;color:var(--ink2)}
+.rank-badges{display:flex;align-items:center;gap:6px;flex-shrink:0}
+.rank-current-wrap{display:flex;align-items:center;gap:5px}
+.rank-current-lbl{font-size:10px;color:var(--ink4);font-weight:500}
+.rank-current{
+  width:30px;height:24px;border-radius:5px;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:12px;font-weight:600;
+  flex-shrink:0;border:1.5px solid transparent;
+}
+.rank-arrow{color:var(--ink4);font-size:12px;line-height:1}
+.rank-row{display:flex;align-items:center;gap:10px;margin-top:2px}
+.rank-track{flex:1;position:relative}
+.rank-input{width:100%;height:6px;-webkit-appearance:none;appearance:none;background:var(--surface3);border-radius:3px;outline:none;cursor:pointer;display:block}
+.rank-input::-webkit-slider-thumb{-webkit-appearance:none;width:20px;height:20px;border-radius:50%;background:var(--ink);cursor:pointer;box-shadow:0 1px 4px rgba(0,0,0,.25);border:2px solid #fff;transition:transform .1s}
+.rank-input::-webkit-slider-thumb:hover{transform:scale(1.15)}
+.rank-input:focus::-webkit-slider-thumb{transform:scale(1.1)}
+.rank-val{
+  width:32px;height:32px;border-radius:var(--rad-xs);
+  background:var(--ink);color:#fff;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'DM Mono',monospace;font-size:14px;font-weight:600;
+  flex-shrink:0;box-shadow:var(--shadow);
+  transition:background .2s;
+}
+.rank-pip-row{display:flex;justify-content:space-between;padding:0 1px;margin-top:3px}
+.rank-pip{font-size:8.5px;color:var(--ink4);font-family:'DM Mono',monospace;text-align:center;width:10%}
 .form-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding-top:6px}
 
 /* ─ SHARED ─ */
@@ -995,14 +1018,52 @@ function buildSkillSliders() {
     const c = document.getElementById(cm[sk.cat]);
     const d = document.createElement('div');
     d.className = 'rank-group';
-    d.innerHTML = `<label class="field-lbl">${sk.label}</label><div class="rank-row"><div class="rank-track"><input type="range" class="rank-input" id="sk-${sk.id}" min="0" max="10" value="0" oninput="document.getElementById('sv-${sk.id}').textContent=this.value;updateSlider(this)"></div><div class="rank-val" id="sv-${sk.id}">0</div></div>`;
+    d.innerHTML = `
+      <div class="rank-header">
+        <span class="rank-label">${sk.label}</span>
+        <div class="rank-badges">
+          <div class="rank-current-wrap">
+            <span class="rank-current-lbl">Saved</span>
+            <div class="rank-current" id="sc-${sk.id}" title="Current saved rank">0</div>
+          </div>
+          <span class="rank-arrow">→</span>
+          <div class="rank-val" id="sv-${sk.id}" title="New rank">0</div>
+        </div>
+      </div>
+      <div class="rank-row">
+        <div class="rank-track">
+          <input type="range" class="rank-input" id="sk-${sk.id}"
+            min="0" max="10" value="0"
+            oninput="updateSlider(this,'${sk.id}')">
+          <div class="rank-pip-row">
+            ${[0,1,2,3,4,5,6,7,8,9,10].map(n=>`<span class="rank-pip">${n}</span>`).join('')}
+          </div>
+        </div>
+      </div>`;
     c.appendChild(d);
   });
 }
 
-function updateSlider(inp) {
-  const p = parseInt(inp.value)*10;
+function updateSlider(inp, id) {
+  const v = parseInt(inp.value);
+  const p = v * 10;
   inp.style.background = `linear-gradient(to right,#1c1917 0%,#1c1917 ${p}%,#eceae5 ${p}%,#eceae5 100%)`;
+  const sv = document.getElementById('sv-' + id);
+  if (sv) {
+    sv.textContent = v;
+    // Colour-code the new value badge based on score level
+    const colors = ['#a8a29e','#dc4c3a','#dc4c3a','#d97706','#d97706','#2563b0','#2563b0','#16a34a','#16a34a','#a16207','#a16207'];
+    sv.style.background = colors[v] || '#1c1917';
+  }
+  // Show arrow only when value differs from saved
+  const sc = document.getElementById('sc-' + id);
+  const arrow = inp.closest('.rank-group').querySelector('.rank-arrow');
+  if (sc && arrow) {
+    const savedVal = parseInt(sc.dataset.saved ?? sc.textContent);
+    arrow.style.opacity = (v !== savedVal) ? '1' : '0.25';
+    arrow.style.color = (v !== savedVal) ? '#ea580c' : 'var(--ink4)';
+    arrow.textContent = (v !== savedVal) ? (v > savedVal ? '↑' : '↓') : '→';
+  }
 }
 
 function resetEntryForm() {
@@ -1012,7 +1073,17 @@ function resetEntryForm() {
   document.getElementById('saveBtnTxt').textContent = 'Save Trainee';
   ['f-name','f-pname','f-pemail','f-pphone'].forEach(id=>{const e=document.getElementById(id);e.value='';e.classList.remove('err')});
   document.getElementById('f-level').value = '';
-  SKILLS_META.forEach(sk=>{const e=document.getElementById('sk-'+sk.id);e.value=0;document.getElementById('sv-'+sk.id).textContent='0';updateSlider(e)});
+  SKILLS_META.forEach(sk=>{
+    const e = document.getElementById('sk-'+sk.id);
+    e.value = 0;
+    const sv = document.getElementById('sv-'+sk.id);
+    if (sv) { sv.textContent='0'; sv.style.background='#a8a29e'; }
+    const sc = document.getElementById('sc-'+sk.id);
+    if (sc) { sc.textContent='—'; sc.style.background=''; sc.style.color=''; sc.dataset.saved='0'; sc.style.border='1.5px solid var(--border2)'; }
+    const arrow = e.closest('.rank-group')?.querySelector('.rank-arrow');
+    if (arrow) { arrow.textContent='→'; arrow.style.opacity='0.25'; arrow.style.color='var(--ink4)'; }
+    updateSlider(e, sk.id);
+  });
 }
 
 function editTrainee(id) {
@@ -1028,7 +1099,28 @@ function editTrainee(id) {
   document.getElementById('f-pemail').value  = t.parentEmail||'';
   document.getElementById('f-pphone').value  = t.parentPhone||'';
   document.getElementById('f-level').value   = t.level||'';
-  SKILLS_META.forEach(sk=>{const e=document.getElementById('sk-'+sk.id);e.value=t[sk.id]??0;document.getElementById('sv-'+sk.id).textContent=e.value;updateSlider(e)});
+  const scoreColors = ['#a8a29e','#dc4c3a','#dc4c3a','#d97706','#d97706','#2563b0','#2563b0','#16a34a','#16a34a','#a16207','#a16207'];
+  SKILLS_META.forEach(sk=>{
+    const val = t[sk.id] ?? 0;
+    const e = document.getElementById('sk-'+sk.id);
+    e.value = val;
+    // New value badge
+    const sv = document.getElementById('sv-'+sk.id);
+    if (sv) { sv.textContent = val; sv.style.background = scoreColors[val] || '#1c1917'; }
+    // Saved (current) rank badge
+    const sc = document.getElementById('sc-'+sk.id);
+    if (sc) {
+      sc.textContent = val;
+      sc.dataset.saved = val;
+      sc.style.background = (scoreColors[val] || '#1c1917') + '18';
+      sc.style.color = scoreColors[val] || '#1c1917';
+      sc.style.border = `1.5px solid ${scoreColors[val] || '#1c1917'}`;
+    }
+    // Arrow starts neutral (same value)
+    const arrow = e.closest('.rank-group')?.querySelector('.rank-arrow');
+    if (arrow) { arrow.textContent='→'; arrow.style.opacity='0.25'; arrow.style.color='var(--ink4)'; }
+    updateSlider(e, sk.id);
+  });
   switchTab('entry');
   window.scrollTo(0,0);
 }
