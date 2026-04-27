@@ -119,12 +119,12 @@ body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);mi
 }
 .btn-logout:hover{background:#fef2f0;border-color:#dc4c3a;color:#dc4c3a}
 
-.admin-content{flex:1;overflow:hidden}
-.admin-section{display:none}
-.admin-section.active{display:block}
+.admin-content{flex:1;overflow:hidden;display:flex;flex-direction:column}
+.admin-section{display:none;flex:1;overflow:hidden}
+.admin-section.active{display:flex;flex-direction:column;flex:1}
 
 /* ─ USER MANAGER ─ */
-.um-layout{display:grid;grid-template-columns:380px 1fr;height:calc(100vh - 62px)}
+.um-layout{display:grid;grid-template-columns:380px 1fr;flex:1;min-height:0;height:100%}
 .um-left{
   border-right:1.5px solid var(--border);background:var(--surface);
   display:flex;flex-direction:column;overflow:hidden;
@@ -296,7 +296,7 @@ select.field-inp{appearance:none;cursor:pointer;
 .log-time{font-size:11px;color:var(--ink4);font-family:'DM Mono',monospace;flex-shrink:0}
 
 /* ─ DASHBOARD (same as before, compacted) ─ */
-.dash-layout{display:grid;grid-template-columns:268px 1fr;height:calc(100vh - 62px)}
+.dash-layout{display:grid;grid-template-columns:268px 1fr;flex:1;min-height:0;height:100%}
 .dash-sidebar{
   background:var(--surface);border-right:1.5px solid var(--border);
   display:flex;flex-direction:column;overflow:hidden;
@@ -440,6 +440,68 @@ section-head{display:flex;align-items:center;justify-content:space-between;margi
 ::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px}
 @keyframes fadeUp{from{opacity:0;transform:translateY(6px)}to{opacity:1;transform:none}}
 .anim{animation:fadeUp .22s ease}
+
+/* ─ OPEN PLAY ─ */
+.op-layout{display:grid;grid-template-columns:320px 1fr;flex:1;min-height:0;height:100%}
+.op-sidebar{background:var(--surface);border-right:1.5px solid var(--border);display:flex;flex-direction:column;overflow:hidden;min-height:0}
+.op-sidebar-head{padding:18px 16px 12px;border-bottom:1px solid var(--border);flex-shrink:0}
+.op-sidebar-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:700;margin-bottom:3px}
+.op-sidebar-sub{font-size:11.5px;color:var(--ink3)}
+.op-filters{padding:10px 14px;border-bottom:1px solid var(--border);flex-shrink:0;display:flex;gap:8px}
+.op-member-list{flex:1;overflow-y:auto;padding:6px}
+.op-item{display:flex;align-items:center;gap:10px;padding:9px 10px;border-radius:var(--rad-sm);cursor:pointer;border:none;background:none;width:100%;text-align:left;color:var(--ink);transition:background .12s;margin-bottom:2px}
+.op-item:hover{background:var(--surface2)}
+.op-item.active{background:var(--ink)}
+.op-item.active .op-iname{color:#fff;font-weight:600}
+.op-item.active .op-imeta{color:rgba(255,255,255,.5)}
+.op-item.active .op-ibadge{background:rgba(255,255,255,.15);color:rgba(255,255,255,.8)}
+.op-iav{width:34px;height:34px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:12px;font-weight:700;flex-shrink:0}
+.op-iinfo{flex:1;min-width:0}
+.op-iname{font-size:13px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.op-imeta{font-size:10.5px;color:var(--ink4);margin-top:1px}
+.op-ibadge{font-size:9.5px;font-weight:700;padding:2px 8px;border-radius:20px;flex-shrink:0;letter-spacing:.02em}
+.op-main{padding:24px 28px;overflow-y:auto;background:var(--cream);min-height:0}
+.op-header-row{display:flex;align-items:center;justify-content:space-between;margin-bottom:22px;gap:16px}
+.op-page-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;letter-spacing:-.02em}
+.op-page-sub{font-size:12.5px;color:var(--ink3);margin-top:3px}
+.op-form-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rad);padding:22px 24px;box-shadow:var(--shadow);margin-bottom:16px}
+.op-section-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:10px;padding-bottom:12px;border-bottom:1px solid var(--border)}
+.op-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px}
+.op-grid.three{grid-template-columns:1fr 1fr 1fr}
+.op-grid.one{grid-template-columns:1fr}
+.op-full{grid-column:1/-1}
+.op-field{display:flex;flex-direction:column;gap:5px}
+.op-label{font-size:11.5px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:5px}
+.op-label .req{color:#dc4c3a;font-weight:700}
+.op-label .hint{font-size:10px;font-weight:400;color:var(--ink4)}
+.op-inp{width:100%;padding:9px 12px;border:1.5px solid var(--border2);border-radius:var(--rad-xs);background:var(--surface2);color:var(--ink);font-family:'Outfit',sans-serif;font-size:13px;transition:.15s}
+.op-inp:focus{outline:none;border-color:var(--ink);background:var(--surface)}
+.op-inp.err{border-color:#dc4c3a;background:#fef2f0}
+.op-inp:disabled{opacity:.55;cursor:default;background:var(--surface3)}
+select.op-inp{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a8a29e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+select.op-inp:disabled{cursor:default}
+.op-inferred{display:flex;align-items:center;gap:8px;padding:9px 12px;background:var(--surface2);border:1.5px solid var(--border);border-radius:var(--rad-xs)}
+.op-inferred-val{font-family:'DM Mono',monospace;font-size:13px;font-weight:600;color:var(--ink)}
+.op-inferred-note{font-size:11px;color:var(--ink4)}
+.op-summary-card{background:var(--ink);border-radius:var(--rad);padding:20px 22px;margin-bottom:16px;color:#fff;display:flex;align-items:center;gap:18px;box-shadow:var(--shadow-md)}
+.op-sum-av{width:52px;height:52px;border-radius:50%;background:rgba(255,255,255,.1);display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:18px;font-weight:700;flex-shrink:0}
+.op-sum-info{flex:1;min-width:0}
+.op-sum-name{font-family:'Playfair Display',serif;font-size:21px;font-weight:700;letter-spacing:-.02em;margin-bottom:5px}
+.op-sum-meta{display:flex;align-items:center;gap:8px;flex-wrap:wrap}
+.op-sum-pill{font-size:10px;font-weight:700;padding:3px 10px;border-radius:20px;background:rgba(255,255,255,.15);color:rgba(255,255,255,.9)}
+.op-sum-right{text-align:right;flex-shrink:0}
+.op-sum-price{font-family:'Playfair Display',serif;font-size:36px;font-weight:800;letter-spacing:-.03em;line-height:1}
+.op-sum-plbl{font-size:10px;color:rgba(255,255,255,.6);text-transform:uppercase;letter-spacing:.07em;margin-top:3px}
+.op-actions-row{display:flex;align-items:center;justify-content:space-between;padding-top:4px}
+.op-empty{display:flex;flex-direction:column;align-items:center;justify-content:center;height:55vh;color:var(--ink3);text-align:center;gap:10px}
+.op-empty h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--ink2)}
+.mtype-monthly{background:#eff6ff;color:#2563b0}
+.mtype-annual{background:#f0fdf4;color:#16a34a}
+.mtype-package{background:#f5f3ff;color:#7c3aed}
+.mtype-walkin{background:#fff7ed;color:#c2690a}
+.memtype-primary{background:#1c191718;color:#1c1917}
+.memtype-spouse{background:#fdf2f8;color:#be185d}
+.memtype-child{background:#ecfeff;color:#0891b2}
 </style>
 </head>
 <body>
@@ -477,7 +539,7 @@ section-head{display:flex;align-items:center;justify-content:space-between;margi
       <div class="login-hint">
         <strong>Demo credentials</strong><br>
         Admin: <code>admin / admin123</code> &nbsp;·&nbsp; Coach: <code>coach / coach123</code><br>
-        Viewer: <code>viewer / view123</code>
+        Viewer: <code>viewer / view123</code> &nbsp;·&nbsp; Front Desk: <code>frontdesk / desk123</code>
       </div>
     </div>
   </div>
@@ -510,6 +572,11 @@ section-head{display:flex;align-items:center;justify-content:space-between;margi
         <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
         User Access
         <span class="tc" id="tc-users">0</span>
+      </button>
+      <button class="admin-tab" id="tab-openplay" onclick="switchTab('openplay')" style="display:none">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+        Open Play
+        <span class="tc" id="tc-openplay">0</span>
       </button>
     </div>
 
@@ -580,7 +647,7 @@ section-head{display:flex;align-items:center;justify-content:space-between;margi
     </div>
 
     <!-- ADD/EDIT TRAINEE -->
-    <div class="admin-section" id="sec-entry" style="overflow-y:auto;height:calc(100vh - 62px)">
+    <div class="admin-section" id="sec-entry" style="overflow-y:auto;">
       <div class="entry-wrap">
         <div class="entry-header">
           <div>
@@ -657,6 +724,196 @@ section-head{display:flex;align-items:center;justify-content:space-between;margi
             <p style="font-size:12.5px">Choose a user from the list to edit their access, or create a new user.</p>
           </div>
         </div>
+      </div>
+    </div>
+
+
+    <!-- OPEN PLAY MEMBERS -->
+    <div class="admin-section" id="sec-openplay">
+      <div class="op-layout">
+        <!-- Sidebar list -->
+        <div class="op-sidebar">
+          <div class="op-sidebar-head">
+            <div class="op-sidebar-title">Open Play Members</div>
+            <div class="op-sidebar-sub" id="op-count-sub">0 members</div>
+          </div>
+          <div class="op-filters">
+            <select class="fc" id="op-filter-mtype" onchange="opApplyFilter()" style="margin-bottom:0;flex:1">
+              <option value="">All types</option>
+              <option value="Monthly">Monthly</option>
+              <option value="Annual">Annual</option>
+              <option value="Package">Package</option>
+              <option value="Walk-in">Walk-in</option>
+            </select>
+            <div class="search-wrap" style="flex:1.5">
+              <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" class="fc" id="op-filter-search" placeholder="Search…" oninput="opApplyFilter()" style="margin-bottom:0">
+            </div>
+          </div>
+          <div class="op-member-list" id="opMemberList"></div>
+        </div>
+
+        <!-- Main area -->
+        <main class="op-main">
+          <!-- Empty / new state -->
+          <div class="op-empty" id="opEmpty">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><line x1="22" y1="8" x2="16" y2="14"/><line x1="16" y1="8" x2="22" y2="14"/></svg>
+            <h3>No members yet</h3>
+            <p style="font-size:13px;max-width:300px">Add your first open play member using the button below.</p>
+            <button class="btn-primary" onclick="opNewMember()">
+              <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+              Add Member
+            </button>
+          </div>
+
+          <!-- Form (add / edit) -->
+          <div id="opFormArea" style="display:none">
+            <div class="op-header-row">
+              <div>
+                <div class="op-page-title" id="opFormTitle">Add Open Play Member</div>
+                <div class="op-page-sub" id="opFormSub">Fill in the member details below. Fields marked <span style="color:#dc4c3a">*</span> are required.</div>
+              </div>
+              <div style="display:flex;gap:8px">
+                <button class="btn-secondary" onclick="opCancel()">Cancel</button>
+                <button class="btn-primary" onclick="opSave()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+                  <span id="opSaveTxt">Save Member</span>
+                </button>
+              </div>
+            </div>
+
+            <!-- Personal Info -->
+            <div class="op-form-card">
+              <div class="op-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
+                Member Information
+              </div>
+              <div class="op-grid">
+                <div class="op-field op-full">
+                  <label class="op-label">Member Name <span class="req">*</span></label>
+                  <input type="text" class="op-inp" id="op-name" placeholder="Full name">
+                </div>
+                <div class="op-field">
+                  <label class="op-label">Email Address <span class="req">*</span></label>
+                  <input type="email" class="op-inp" id="op-email" placeholder="email@example.com">
+                </div>
+                <div class="op-field">
+                  <label class="op-label">Phone Number <span class="req">*</span></label>
+                  <input type="tel" class="op-inp" id="op-phone" placeholder="+61 4xx xxx xxx">
+                </div>
+                <div class="op-field">
+                  <label class="op-label">Member Since <span class="req">*</span></label>
+                  <input type="date" class="op-inp" id="op-since">
+                </div>
+                <div class="op-field">
+                  <label class="op-label">Member Type <span class="req">*</span></label>
+                  <select class="op-inp" id="op-memtype">
+                    <option value="">— Select —</option>
+                    <option value="Primary">Primary</option>
+                    <option value="Spouse">Spouse</option>
+                    <option value="Child1">Child 1</option>
+                    <option value="Child2">Child 2</option>
+                    <option value="Child3">Child 3</option>
+                  </select>
+                </div>
+              </div>
+            </div>
+
+            <!-- Membership Details -->
+            <div class="op-form-card">
+              <div class="op-section-title">
+                <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/></svg>
+                Membership Details
+              </div>
+              <div class="op-grid">
+                <div class="op-field">
+                  <label class="op-label">Membership Type <span class="req">*</span></label>
+                  <select class="op-inp" id="op-mshiptype" onchange="opMshipTypeChanged()">
+                    <option value="">— Select —</option>
+                    <option value="Monthly">Monthly</option>
+                    <option value="Annual">Annual</option>
+                    <option value="Package">Package</option>
+                    <option value="Walk-in">Walk-in</option>
+                  </select>
+                </div>
+
+                <!-- Monthly / Annual: price input -->
+                <div class="op-field" id="op-price-field" style="display:none">
+                  <label class="op-label">Membership Price <span class="req">*</span> <span class="hint">Monthly or Annual fee</span></label>
+                  <input type="number" class="op-inp" id="op-price" placeholder="e.g. 49.00" min="0" step="0.01">
+                </div>
+
+                <!-- Package: dropdown -->
+                <div class="op-field" id="op-pkg-field" style="display:none">
+                  <label class="op-label">Package <span class="req">*</span></label>
+                  <select class="op-inp" id="op-pkg" onchange="opPackageChanged()">
+                    <option value="">— Select package —</option>
+                    <option value="125_10">$125 for 10 sessions</option>
+                    <option value="220_20">$220 for 20 sessions</option>
+                  </select>
+                </div>
+
+                <!-- Package: expiry (auto-set, read-only) -->
+                <div class="op-field" id="op-expiry-field" style="display:none">
+                  <label class="op-label">Package Expiry <span class="hint">Auto-calculated</span></label>
+                  <div class="op-inferred">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#7c3aed" stroke-width="2"><circle cx="12" cy="12" r="10"/><path d="M12 8v4l3 3"/></svg>
+                    <span class="op-inferred-val" id="op-expiry-val">—</span>
+                    <span class="op-inferred-note" id="op-expiry-note"></span>
+                  </div>
+                </div>
+
+                <!-- Walk-in: price (auto-set $15, read-only) -->
+                <div class="op-field" id="op-walkin-field" style="display:none">
+                  <label class="op-label">Walk-in Price <span class="hint">Auto-set to $15</span></label>
+                  <div class="op-inferred">
+                    <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="#c2690a" stroke-width="2"><line x1="12" y1="1" x2="12" y2="23"/><path d="M17 5H9.5a3.5 3.5 0 0 0 0 7h5a3.5 3.5 0 0 1 0 7H6"/></svg>
+                    <span class="op-inferred-val">$15.00</span>
+                    <span class="op-inferred-note">per session</span>
+                  </div>
+                </div>
+
+              </div>
+            </div>
+          </div>
+
+          <!-- View mode (when a member is selected) -->
+          <div id="opViewArea" style="display:none">
+            <div class="op-summary-card" id="opSummaryCard">
+              <div class="op-sum-av" id="opSumAv"></div>
+              <div class="op-sum-info">
+                <div class="op-sum-name" id="opSumName">—</div>
+                <div class="op-sum-meta" id="opSumMeta"></div>
+              </div>
+              <div class="op-sum-right">
+                <div class="op-sum-price" id="opSumPrice">—</div>
+                <div class="op-sum-plbl" id="opSumPlbl">membership</div>
+              </div>
+            </div>
+
+            <div class="op-form-card">
+              <div style="display:grid;grid-template-columns:1fr 1fr 1fr;gap:14px 20px" id="opViewDetails"></div>
+            </div>
+
+            <div class="op-actions-row">
+              <div></div>
+              <div style="display:flex;gap:8px">
+                <button class="btn-danger" onclick="opDeleteCurrent()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
+                  Delete
+                </button>
+                <button class="btn-secondary" onclick="opNewMember()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+                  Add New
+                </button>
+                <button class="btn-primary" onclick="opEditCurrent()">
+                  <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
+                  Edit Member
+                </button>
+              </div>
+            </div>
+          </div>
+        </main>
       </div>
     </div>
 
@@ -737,18 +994,21 @@ const AV_PAL = ['#4f46e5','#059669','#0284c7','#ea580c','#7c3aed','#0891b2','#c2
 
 // ══════════════ STORAGE KEYS ══════════════
 const T_KEY = 'club7_trainees_v2';
+const OP_KEY = 'club7_openplay_v1';
 const U_KEY = 'club7_users_v1';
 const S_KEY = 'club7_session_v1';
 const L_KEY = 'club7_log_v1';
 
 // ══════════════ DEFAULT USERS ══════════════
 const DEFAULT_USERS = [
-  {id:'u1', username:'admin',  password:'admin123',  name:'Club7 Admin',     role:'admin',   active:true,
-   perms:{viewDashboard:true, editTrainees:true, manageUsers:true}},
-  {id:'u2', username:'coach',  password:'coach123',  name:'Head Coach',      role:'coach',   active:true,
-   perms:{viewDashboard:true, editTrainees:true, manageUsers:false}},
-  {id:'u3', username:'viewer', password:'view123',   name:'Parent Viewer',   role:'viewer',  active:true,
-   perms:{viewDashboard:true, editTrainees:false, manageUsers:false}},
+  {id:'u1', username:'admin',     password:'admin123',  name:'Club7 Admin',     role:'admin',      active:true,
+   perms:{viewDashboard:true, editTrainees:true, manageUsers:true,  manageOpenPlay:true}},
+  {id:'u2', username:'coach',     password:'coach123',  name:'Head Coach',      role:'coach',      active:true,
+   perms:{viewDashboard:true, editTrainees:true, manageUsers:false, manageOpenPlay:false}},
+  {id:'u3', username:'viewer',    password:'view123',   name:'Parent Viewer',   role:'viewer',     active:true,
+   perms:{viewDashboard:true, editTrainees:false,manageUsers:false, manageOpenPlay:false}},
+  {id:'u4', username:'frontdesk', password:'desk123',   name:'Front Desk',      role:'frontdesk',  active:true,
+   perms:{viewDashboard:true, editTrainees:false,manageUsers:false, manageOpenPlay:true}},
 ];
 
 // ══════════════ SEED TRAINEES ══════════════
@@ -757,7 +1017,20 @@ const SEED_TRAINEES = [{"id":"seed_1","name":"Anishka Sandeep","parentName":"","
 // ══════════════ DB HELPERS ══════════════
 const loadDB   = () => { try { return JSON.parse(localStorage.getItem(T_KEY)||'[]'); } catch(e){return []} };
 const saveDB   = d => localStorage.setItem(T_KEY, JSON.stringify(d));
-const loadUsers = () => { try { return JSON.parse(localStorage.getItem(U_KEY)||'null') || DEFAULT_USERS; } catch(e){return DEFAULT_USERS} };
+const loadUsers = () => {
+  try {
+    const stored = JSON.parse(localStorage.getItem(U_KEY) || 'null');
+    if (!stored) return DEFAULT_USERS;
+    // Merge: ensure all DEFAULT_USERS system accounts exist (add any missing ones)
+    let merged = [...stored];
+    DEFAULT_USERS.forEach(def => {
+      if (!merged.find(u => u.id === def.id)) merged.push(def);
+    });
+    // Update stored if anything was added
+    if (merged.length !== stored.length) localStorage.setItem(U_KEY, JSON.stringify(merged));
+    return merged;
+  } catch(e) { return DEFAULT_USERS; }
+};
 const saveUsers = u => localStorage.setItem(U_KEY, JSON.stringify(u));
 const loadLog   = () => { try { return JSON.parse(localStorage.getItem(L_KEY)||'[]'); } catch(e){return []} };
 const saveLog   = l => localStorage.setItem(L_KEY, JSON.stringify(l.slice(0,100)));
@@ -843,8 +1116,8 @@ function doLogout() {
 function initApp() {
   // Seed trainees on first load
   if (loadDB().length === 0) saveDB(SEED_TRAINEES);
-  // Ensure users exist
-  if (!localStorage.getItem(U_KEY)) saveUsers(DEFAULT_USERS);
+  // Ensure users exist and are up to date (merge in any new default users)
+  loadUsers(); // this call automatically merges and saves DEFAULT_USERS if needed
 
   const u = currentUser;
   document.getElementById('currentUserLabel').textContent = `${u.name} (${u.role})`;
@@ -852,6 +1125,7 @@ function initApp() {
   // Show tabs based on permissions
   document.getElementById('tab-entry').style.display = u.perms.editTrainees ? 'flex' : 'none';
   document.getElementById('tab-users').style.display = u.perms.manageUsers ? 'flex' : 'none';
+  document.getElementById('tab-openplay').style.display = u.perms.manageOpenPlay ? 'flex' : 'none';
   document.getElementById('tc-users').textContent = loadUsers().length;
 
   buildSkillSliders();
@@ -864,7 +1138,8 @@ let currentTab = 'dash';
 function switchTab(tab) {
   // Permission check
   if (tab === 'entry' && !currentUser.perms.editTrainees) { showToast('You do not have permission to edit trainees.','error'); return; }
-  if (tab === 'users' && !currentUser.perms.manageUsers)  { showToast('Admin access required.','error'); return; }
+  if (tab === 'users' && !currentUser.perms.manageUsers)      { showToast('Admin access required.','error'); return; }
+  if (tab === 'openplay' && !currentUser.perms.manageOpenPlay) { showToast('Front desk or admin access required.','error'); return; }
 
   currentTab = tab;
   document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
@@ -873,6 +1148,7 @@ function switchTab(tab) {
   document.getElementById('sec-'+tab).classList.add('active');
 
   if (tab === 'users') renderUserList();
+  if (tab === 'openplay') opRefresh();
 }
 
 // ══════════════ HELPERS ══════════════
@@ -1231,20 +1507,21 @@ function renderUserEditForm(u) {
       </div>
       <div class="field-lbl" style="margin-bottom:10px">Role</div>
       <div class="role-cards">
-        ${['admin','coach','viewer'].map(r=>`
+        ${['admin','coach','viewer','frontdesk'].map(r=>`
           <div class="role-card${u.role===r?' selected':''}" onclick="selectRole(this,'${r}','${u.id}')" data-role="${r}">
-            <div class="rc-icon">${{admin:'🔑',coach:'🏸',viewer:'👁️'}[r]}</div>
-            <div class="rc-title">${r.charAt(0).toUpperCase()+r.slice(1)}</div>
-            <div class="rc-desc">${{admin:'Full access',coach:'Edit & view',viewer:'View only'}[r]}</div>
+            <div class="rc-icon">${{admin:'🔑',coach:'🏸',viewer:'👁️',frontdesk:'🎫'}[r]}</div>
+            <div class="rc-title">${{admin:'Admin',coach:'Coach',viewer:'Viewer',frontdesk:'Front Desk'}[r]}</div>
+            <div class="rc-desc">${{admin:'Full access',coach:'Edit & view',viewer:'View only',frontdesk:'Open play access'}[r]}</div>
           </div>`).join('')}
       </div>
       <div style="margin-top:16px">
         <div class="field-lbl" style="margin-bottom:10px">Permissions</div>
         <div class="perms-grid">
           ${[
-            {id:'viewDashboard',label:'View Dashboard',desc:'Access the main dashboard'},
-            {id:'editTrainees', label:'Edit Trainees',  desc:'Add, edit, delete trainees'},
-            {id:'manageUsers',  label:'Manage Users',   desc:'Access & edit user access'},
+            {id:'viewDashboard',  label:'View Dashboard',   desc:'Access the main dashboard'},
+            {id:'editTrainees',   label:'Edit Trainees',    desc:'Add, edit, delete trainees'},
+            {id:'manageUsers',    label:'Manage Users',     desc:'Access & edit user access'},
+            {id:'manageOpenPlay', label:'Open Play',        desc:'Manage open play members'},
           ].map(p=>`<div class="perm-toggle">
             <div><div class="perm-label">${p.label}</div><div class="perm-sub">${p.desc}</div></div>
             <label class="toggle-switch"><input type="checkbox" id="perm-${u.id}-${p.id}" ${u.perms[p.id]?'checked':''}><span class="toggle-slider"></span></label>
@@ -1287,11 +1564,11 @@ function renderNewUserForm() {
       </div>
       <div class="field-lbl" style="margin-bottom:10px">Role</div>
       <div class="role-cards">
-        ${['admin','coach','viewer'].map((r,i)=>`
+        ${['admin','coach','viewer','frontdesk'].map((r,i)=>`
           <div class="role-card${i===1?' selected':''}" onclick="selectRoleNew(this,'${r}')" data-role="${r}">
-            <div class="rc-icon">${{admin:'🔑',coach:'🏸',viewer:'👁️'}[r]}</div>
-            <div class="rc-title">${r.charAt(0).toUpperCase()+r.slice(1)}</div>
-            <div class="rc-desc">${{admin:'Full access',coach:'Edit & view',viewer:'View only'}[r]}</div>
+            <div class="rc-icon">${{admin:'🔑',coach:'🏸',viewer:'👁️',frontdesk:'🎫'}[r]}</div>
+            <div class="rc-title">${{admin:'Admin',coach:'Coach',viewer:'Viewer',frontdesk:'Front Desk'}[r]}</div>
+            <div class="rc-desc">${{admin:'Full access',coach:'Edit & view',viewer:'View only',frontdesk:'Open play access'}[r]}</div>
           </div>`).join('')}
       </div>
       <div class="form-row-actions">
@@ -1311,9 +1588,10 @@ function selectRole(el, role, uid) {
   el.classList.add('selected');
   // Auto-set permissions based on role
   const rolePerms = {
-    admin:  {viewDashboard:true, editTrainees:true,  manageUsers:true},
-    coach:  {viewDashboard:true, editTrainees:true,  manageUsers:false},
-    viewer: {viewDashboard:true, editTrainees:false, manageUsers:false},
+    admin:      {viewDashboard:true, editTrainees:true,  manageUsers:true,  manageOpenPlay:true},
+    coach:      {viewDashboard:true, editTrainees:true,  manageUsers:false, manageOpenPlay:false},
+    viewer:     {viewDashboard:true, editTrainees:false, manageUsers:false, manageOpenPlay:false},
+    frontdesk:  {viewDashboard:true, editTrainees:false, manageUsers:false, manageOpenPlay:true},
   }[role];
   Object.entries(rolePerms).forEach(([k,v])=>{
     const cb = document.getElementById(`perm-${uid}-${k}`);
@@ -1342,9 +1620,10 @@ function saveUser(id) {
 
   const role = document.querySelector(`#userEditArea .role-card.selected`)?.dataset.role || u.role;
   const perms = {
-    viewDashboard: document.getElementById(`perm-${id}-viewDashboard`)?.checked ?? u.perms.viewDashboard,
-    editTrainees:  document.getElementById(`perm-${id}-editTrainees`)?.checked  ?? u.perms.editTrainees,
-    manageUsers:   document.getElementById(`perm-${id}-manageUsers`)?.checked   ?? u.perms.manageUsers,
+    viewDashboard:  document.getElementById(`perm-${id}-viewDashboard`)?.checked  ?? u.perms.viewDashboard,
+    editTrainees:   document.getElementById(`perm-${id}-editTrainees`)?.checked   ?? u.perms.editTrainees,
+    manageUsers:    document.getElementById(`perm-${id}-manageUsers`)?.checked    ?? u.perms.manageUsers,
+    manageOpenPlay: document.getElementById(`perm-${id}-manageOpenPlay`)?.checked ?? u.perms.manageOpenPlay,
   };
 
   users[idx] = {...u, name, username:uname, role, active, perms};
@@ -1376,9 +1655,10 @@ function createUser() {
 
   const role = document.querySelector('#userEditArea .role-card.selected')?.dataset.role || 'viewer';
   const rolePerms = {
-    admin:  {viewDashboard:true, editTrainees:true,  manageUsers:true},
-    coach:  {viewDashboard:true, editTrainees:true,  manageUsers:false},
-    viewer: {viewDashboard:true, editTrainees:false, manageUsers:false},
+    admin:      {viewDashboard:true, editTrainees:true,  manageUsers:true,  manageOpenPlay:true},
+    coach:      {viewDashboard:true, editTrainees:true,  manageUsers:false, manageOpenPlay:false},
+    viewer:     {viewDashboard:true, editTrainees:false, manageUsers:false, manageOpenPlay:false},
+    frontdesk:  {viewDashboard:true, editTrainees:false, manageUsers:false, manageOpenPlay:true},
   }[role];
 
   const newUser = {id:uid(), username:uname, password:pass, name, role, active, perms:rolePerms};
@@ -1440,6 +1720,351 @@ document.getElementById('confirmOverlay').addEventListener('click', function(e){
     }
   }
 })();
+
+
+// ══════════════ OPEN PLAY MEMBERS ══════════════
+const loadOP   = () => { try { return JSON.parse(localStorage.getItem(OP_KEY)||'[]'); } catch(e){return[]} };
+const saveOP   = d => localStorage.setItem(OP_KEY, JSON.stringify(d));
+
+const OP_AV_PAL = ['#4f46e5','#059669','#0284c7','#ea580c','#7c3aed','#0891b2','#be185d','#c2690a'];
+const opAvc = n => { let h=0; for(let i=0;i<n.length;i++) h=(h*31+n.charCodeAt(i))&0xffffffff; return OP_AV_PAL[Math.abs(h)%OP_AV_PAL.length]; };
+const opIni = n => n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+
+const MSHIP_CFG = {
+  'Monthly': {cls:'mtype-monthly', label:'Monthly'},
+  'Annual':  {cls:'mtype-annual',  label:'Annual'},
+  'Package': {cls:'mtype-package', label:'Package'},
+  'Walk-in': {cls:'mtype-walkin',  label:'Walk-in'},
+};
+const MEMTYPE_CFG = {
+  'Primary': {cls:'memtype-primary'},
+  'Spouse':  {cls:'memtype-spouse'},
+  'Child1':  {cls:'memtype-child'},
+  'Child2':  {cls:'memtype-child'},
+  'Child3':  {cls:'memtype-child'},
+};
+
+let opCurrentId = null;
+let opEditingId = null;
+
+function opRefresh() {
+  const members = loadOP();
+  document.getElementById('tc-openplay').textContent = members.length;
+  opApplyFilter();
+}
+
+function opApplyFilter() {
+  const members = loadOP();
+  const mtype = document.getElementById('op-filter-mtype').value;
+  const q     = document.getElementById('op-filter-search').value.toLowerCase();
+  const view  = members.filter(m =>
+    (!mtype || m.membershipType === mtype) &&
+    (!q || m.name.toLowerCase().includes(q) || (m.email||'').toLowerCase().includes(q))
+  ).sort((a,b) => a.name.localeCompare(b.name));
+
+  document.getElementById('op-count-sub').textContent = view.length + ' member' + (view.length!==1?'s':'');
+  const list = document.getElementById('opMemberList');
+
+  list.innerHTML = view.map(m => {
+    const ac  = opAvc(m.name);
+    const mc  = MSHIP_CFG[m.membershipType] || {cls:'',label:m.membershipType};
+    const mtc = MEMTYPE_CFG[m.memberType]   || {cls:''};
+    return `<button class="op-item${opCurrentId===m.id?' active':''}" data-id="${m.id}" onclick="opSelectMember('${m.id}')">
+      <div class="op-iav" style="background:${ac}18;color:${ac}">${opIni(m.name)}</div>
+      <div class="op-iinfo">
+        <div class="op-iname">${m.name}</div>
+        <div class="op-imeta">${m.memberType} · ${m.email||'—'}</div>
+      </div>
+      <span class="op-ibadge ${mc.cls}">${mc.label}</span>
+    </button>`;
+  }).join('');
+
+  if (members.length === 0) {
+    document.getElementById('opEmpty').style.display = 'flex';
+    document.getElementById('opFormArea').style.display = 'none';
+    document.getElementById('opViewArea').style.display = 'none';
+    return;
+  }
+
+  document.getElementById('opEmpty').style.display = 'none';
+
+  if (!opCurrentId || !members.find(m=>m.id===opCurrentId)) {
+    if (view.length > 0) { opSelectMember(view[0].id); }
+    else { document.getElementById('opViewArea').style.display='none'; document.getElementById('opFormArea').style.display='none'; }
+  }
+}
+
+function opSelectMember(id) {
+  opCurrentId = id;
+  opEditingId = null;
+  document.querySelectorAll('.op-item').forEach(el=>el.classList.toggle('active', el.dataset.id===id));
+  const m = loadOP().find(x=>x.id===id);
+  if (!m) return;
+  document.getElementById('opFormArea').style.display = 'none';
+  document.getElementById('opViewArea').style.display = 'block';
+  opRenderView(m);
+}
+
+function opRenderView(m) {
+  const ac  = opAvc(m.name);
+  const mc  = MSHIP_CFG[m.membershipType] || {cls:'',label:m.membershipType};
+
+  const av = document.getElementById('opSumAv');
+  av.textContent = opIni(m.name);
+  av.style.background = opAvc(m.name) + '30';
+  av.style.color = '#fff';
+
+  document.getElementById('opSumName').textContent = m.name;
+
+  const meta = document.getElementById('opSumMeta');
+  meta.innerHTML = `
+    <span class="op-sum-pill">${m.memberType}</span>
+    <span class="op-sum-pill ${mc.cls}" style="background:rgba(255,255,255,.15)">${mc.label}</span>
+    ${m.memberSince ? '<span class="op-sum-pill">Since ' + m.memberSince + '</span>' : ''}
+  `;
+
+  // Price display
+  let priceDisplay = '—', priceLabel = 'membership';
+  if (m.membershipType === 'Monthly' || m.membershipType === 'Annual') {
+    priceDisplay = m.membershipPrice ? '$' + parseFloat(m.membershipPrice).toFixed(2) : '—';
+    priceLabel   = m.membershipType.toLowerCase() + ' fee';
+  } else if (m.membershipType === 'Package') {
+    const pkg = m.packageOption === '125_10' ? '$125' : m.packageOption === '220_20' ? '$220' : '—';
+    priceDisplay = pkg;
+    priceLabel   = m.packageOption === '125_10' ? '10 sessions' : '20 sessions';
+  } else if (m.membershipType === 'Walk-in') {
+    priceDisplay = '$15.00';
+    priceLabel   = 'per session';
+  }
+  document.getElementById('opSumPrice').textContent = priceDisplay;
+  document.getElementById('opSumPlbl').textContent  = priceLabel;
+
+  // Detail grid
+  const fields = [
+    {label:'Email', value: m.email || '—'},
+    {label:'Phone', value: m.phone || '—'},
+    {label:'Member Since', value: m.memberSince || '—'},
+    {label:'Member Type', value: m.memberType || '—'},
+    {label:'Membership Type', value: m.membershipType || '—'},
+  ];
+
+  if (m.membershipType === 'Monthly' || m.membershipType === 'Annual') {
+    fields.push({label:'Membership Price', value: m.membershipPrice ? '$' + parseFloat(m.membershipPrice).toFixed(2) : '—'});
+  }
+  if (m.membershipType === 'Package') {
+    const pkgLabels = {'125_10':'$125 for 10 sessions', '220_20':'$220 for 20 sessions'};
+    fields.push({label:'Package', value: pkgLabels[m.packageOption] || '—'});
+    fields.push({label:'Package Expiry', value: m.packageExpiry || '—'});
+  }
+  if (m.membershipType === 'Walk-in') {
+    fields.push({label:'Walk-in Price', value: '$15.00 per session'});
+  }
+
+  document.getElementById('opViewDetails').innerHTML = fields.map(f => `
+    <div style="display:flex;flex-direction:column;gap:4px">
+      <div style="font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink4)">${f.label}</div>
+      <div style="font-size:13px;font-weight:500;color:var(--ink)">${f.value}</div>
+    </div>`).join('');
+}
+
+function opNewMember() {
+  opCurrentId = null;
+  opEditingId = null;
+  document.querySelectorAll('.op-item').forEach(el=>el.classList.remove('active'));
+  document.getElementById('opEmpty').style.display   = 'none';
+  document.getElementById('opViewArea').style.display = 'none';
+  document.getElementById('opFormArea').style.display = 'block';
+  document.getElementById('opFormTitle').textContent  = 'Add Open Play Member';
+  document.getElementById('opFormSub').innerHTML      = 'Fill in the member details below. Fields marked <span style="color:#dc4c3a">*</span> are required.';
+  document.getElementById('opSaveTxt').textContent    = 'Save Member';
+  opResetForm();
+}
+
+function opEditCurrent() {
+  const m = loadOP().find(x=>x.id===opCurrentId);
+  if (!m) return;
+  opEditingId = m.id;
+  document.getElementById('opViewArea').style.display  = 'none';
+  document.getElementById('opFormArea').style.display  = 'block';
+  document.getElementById('opFormTitle').textContent   = 'Edit Member';
+  document.getElementById('opFormSub').textContent     = 'Editing: ' + m.name;
+  document.getElementById('opSaveTxt').textContent     = 'Update Member';
+  opPopulateForm(m);
+}
+
+function opResetForm() {
+  ['op-name','op-email','op-phone','op-since'].forEach(id=>{
+    const e=document.getElementById(id); e.value=''; e.classList.remove('err');
+  });
+  document.getElementById('op-memtype').value    = '';
+  document.getElementById('op-mshiptype').value  = '';
+  document.getElementById('op-price').value      = '';
+  document.getElementById('op-pkg').value        = '';
+  // Today's date as default
+  document.getElementById('op-since').value = new Date().toISOString().split('T')[0];
+  opHideAllPriceFields();
+}
+
+function opPopulateForm(m) {
+  document.getElementById('op-name').value    = m.name || '';
+  document.getElementById('op-email').value   = m.email || '';
+  document.getElementById('op-phone').value   = m.phone || '';
+  document.getElementById('op-since').value   = m.memberSince || '';
+  document.getElementById('op-memtype').value = m.memberType || '';
+  document.getElementById('op-mshiptype').value = m.membershipType || '';
+  opMshipTypeChanged();
+  if (m.membershipType === 'Monthly' || m.membershipType === 'Annual') {
+    document.getElementById('op-price').value = m.membershipPrice || '';
+  }
+  if (m.membershipType === 'Package') {
+    document.getElementById('op-pkg').value = m.packageOption || '';
+    opPackageChanged();
+  }
+}
+
+function opHideAllPriceFields() {
+  ['op-price-field','op-pkg-field','op-expiry-field','op-walkin-field'].forEach(id=>{
+    document.getElementById(id).style.display = 'none';
+  });
+}
+
+function opMshipTypeChanged() {
+  const type = document.getElementById('op-mshiptype').value;
+  opHideAllPriceFields();
+  document.getElementById('op-price').classList.remove('err');
+  document.getElementById('op-pkg').classList.remove('err');
+
+  if (type === 'Monthly' || type === 'Annual') {
+    document.getElementById('op-price-field').style.display = 'flex';
+    document.getElementById('op-price').value = '';
+  } else if (type === 'Package') {
+    document.getElementById('op-pkg-field').style.display    = 'flex';
+    document.getElementById('op-expiry-field').style.display = 'flex';
+    document.getElementById('op-expiry-val').textContent     = '—';
+    document.getElementById('op-expiry-note').textContent    = 'Select a package first';
+    document.getElementById('op-pkg').value = '';
+  } else if (type === 'Walk-in') {
+    document.getElementById('op-walkin-field').style.display = 'flex';
+  }
+}
+
+function opPackageChanged() {
+  const pkg = document.getElementById('op-pkg').value;
+  const expiryEl   = document.getElementById('op-expiry-val');
+  const expiryNote = document.getElementById('op-expiry-note');
+  if (!pkg) { expiryEl.textContent='—'; expiryNote.textContent='Select a package first'; return; }
+
+  const months = pkg === '125_10' ? 3 : 4;
+  const expiry = new Date();
+  expiry.setMonth(expiry.getMonth() + months);
+  const expiryStr = expiry.toLocaleDateString('en-AU', {day:'2-digit', month:'short', year:'numeric'});
+  expiryEl.textContent  = expiryStr;
+  expiryNote.textContent = `(${months} months from today)`;
+}
+
+function opGetPackageExpiry(pkg) {
+  if (!pkg) return '';
+  const months = pkg === '125_10' ? 3 : 4;
+  const d = new Date();
+  d.setMonth(d.getMonth() + months);
+  return d.toLocaleDateString('en-AU', {day:'2-digit', month:'short', year:'numeric'});
+}
+
+function opSave() {
+  let ok = true;
+  const name  = document.getElementById('op-name');
+  const email = document.getElementById('op-email');
+  const phone = document.getElementById('op-phone');
+  const since = document.getElementById('op-since');
+  const mtype = document.getElementById('op-memtype');
+  const mstype= document.getElementById('op-mshiptype');
+
+  [name, phone, since, mtype, mstype].forEach(el=>{
+    const v = el.value.trim ? el.value.trim() : el.value;
+    el.classList.toggle('err', !v);
+    if (!v) ok = false;
+  });
+  const emailOk = /^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(email.value.trim());
+  email.classList.toggle('err', !emailOk);
+  if (!emailOk) ok = false;
+
+  const type = mstype.value;
+
+  if (type === 'Monthly' || type === 'Annual') {
+    const p = document.getElementById('op-price');
+    if (!p.value || parseFloat(p.value) <= 0) { p.classList.add('err'); ok=false; }
+    else p.classList.remove('err');
+  }
+  if (type === 'Package') {
+    const p = document.getElementById('op-pkg');
+    if (!p.value) { p.classList.add('err'); ok=false; }
+    else p.classList.remove('err');
+  }
+
+  if (!ok) { showToast('Please fill in all required fields.', 'error'); return; }
+
+  const db = loadOP();
+  const pkg = document.getElementById('op-pkg').value;
+  const member = {
+    id:              opEditingId || uid(),
+    name:            name.value.trim(),
+    email:           email.value.trim(),
+    phone:           phone.value.trim(),
+    memberSince:     since.value,
+    memberType:      mtype.value,
+    membershipType:  type,
+    membershipPrice: (type==='Monthly'||type==='Annual') ? document.getElementById('op-price').value : '',
+    packageOption:   type==='Package' ? pkg : '',
+    packageExpiry:   type==='Package' ? opGetPackageExpiry(pkg) : '',
+    walkinPrice:     type==='Walk-in' ? '15.00' : '',
+  };
+
+  if (opEditingId) {
+    const i = db.findIndex(x=>x.id===opEditingId);
+    if (i!==-1) db[i]=member;
+    addLog('Updated open play member: '+member.name, 'edit');
+    showToast('Member updated!', 'success');
+  } else {
+    db.push(member);
+    addLog('Added open play member: '+member.name, 'add');
+    showToast('Member added!', 'success');
+  }
+  saveOP(db);
+  opCurrentId = member.id;
+  opEditingId = null;
+  opRefresh();
+  setTimeout(()=>opSelectMember(member.id), 80);
+}
+
+function opCancel() {
+  opEditingId = null;
+  document.getElementById('opFormArea').style.display = 'none';
+  if (opCurrentId) {
+    const m = loadOP().find(x=>x.id===opCurrentId);
+    if (m) { document.getElementById('opViewArea').style.display='block'; opRenderView(m); return; }
+  }
+  if (loadOP().length > 0) {
+    opApplyFilter();
+  } else {
+    document.getElementById('opEmpty').style.display = 'flex';
+  }
+}
+
+function opDeleteCurrent() {
+  const m = loadOP().find(x=>x.id===opCurrentId);
+  if (!m) return;
+  showConfirm('Delete Member?', `Remove "${m.name}" from open play members? This cannot be undone.`, ()=>{
+    const db = loadOP().filter(x=>x.id!==opCurrentId);
+    saveOP(db);
+    addLog('Deleted open play member: '+m.name, 'delete');
+    showToast('Member deleted.', 'success');
+    opCurrentId = null;
+    document.getElementById('opViewArea').style.display='none';
+    document.getElementById('tc-openplay').textContent = db.length;
+    opRefresh();
+  }, 'Delete Member');
+}
+
 </script>
 </body>
 </html>
