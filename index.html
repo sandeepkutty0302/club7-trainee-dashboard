@@ -8,51 +8,309 @@
 <style>
 *,*::before,*::after{box-sizing:border-box;margin:0;padding:0}
 :root{
-  --cream:#faf8f4;--warm-white:#fff;--ink:#1c1917;--ink2:#44403c;--ink3:#78716c;--ink4:#a8a29e;
-  --border:#e7e5e0;--border2:#d6d3ce;--surface:#ffffff;--surface2:#f5f3ef;--surface3:#eceae5;
-  --c-rookie:#dc4c3a;--b-rookie:#fef2f0;--br-rookie:#fca5a5;
-  --c-amateur:#d97706;--b-amateur:#fffbeb;--br-amateur:#fcd34d;
-  --c-ir:#2563b0;--b-ir:#eff6ff;--br-ir:#93c5fd;
-  --c-is:#16a34a;--b-is:#f0fdf4;--br-is:#86efac;
-  --c-ie:#7c3aed;--b-ie:#f5f3ff;--br-ie:#c4b5fd;
-  --c-as:#0891b2;--b-as:#ecfeff;--br-as:#67e8f9;
-  --c-ae:#c2690a;--b-ae:#fff7ed;--br-ae:#fdba74;
-  --c-elite:#a16207;--b-elite:#fefce8;--br-elite:#fde047;
-  --c-pro:#be185d;--b-pro:#fdf2f8;--br-pro:#f9a8d4;
+  --cream:#faf8f4;--surface:#fff;--surface2:#f5f3ef;--surface3:#eceae5;
+  --border:#e7e5e0;--border2:#d6d3ce;
+  --ink:#1c1917;--ink2:#44403c;--ink3:#78716c;--ink4:#a8a29e;
   --fh:#4f46e5;--bh:#059669;--ft:#0284c7;--at:#ea580c;
   --rad:12px;--rad-sm:8px;--rad-xs:6px;
   --shadow:0 1px 3px rgba(0,0,0,.07),0 1px 2px rgba(0,0,0,.04);
   --shadow-md:0 4px 16px rgba(0,0,0,.08),0 2px 6px rgba(0,0,0,.04);
-  --shadow-lg:0 12px 40px rgba(0,0,0,.1),0 4px 12px rgba(0,0,0,.06);
+  --shadow-lg:0 16px 48px rgba(0,0,0,.12),0 4px 14px rgba(0,0,0,.07);
 }
 html{scroll-behavior:smooth}
 body{font-family:'Outfit',sans-serif;background:var(--cream);color:var(--ink);min-height:100vh;font-size:14px;line-height:1.5}
-.topnav{background:var(--surface);border-bottom:1.5px solid var(--border);height:62px;display:flex;align-items:center;justify-content:space-between;padding:0 32px;position:sticky;top:0;z-index:300;box-shadow:var(--shadow)}
+
+/* ─ LAYER SYSTEM ─ */
+.layer{display:none;position:fixed;inset:0;z-index:10;overflow-y:auto}
+.layer.active{display:flex}
+
+/* ─ LOGIN SCREEN ─ */
+#loginLayer{
+  background:linear-gradient(135deg,#faf8f4 0%,#f0ede8 50%,#e8e4de 100%);
+  align-items:center;justify-content:center;
+}
+.login-wrap{width:100%;max-width:420px;padding:20px}
+.login-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:18px;padding:40px 38px;
+  box-shadow:var(--shadow-lg);
+}
+.login-logo-wrap{display:flex;flex-direction:column;align-items:center;margin-bottom:28px;gap:10px}
+.login-logo{height:70px;width:auto}
+.login-tagline{font-size:10px;letter-spacing:.12em;text-transform:uppercase;color:var(--ink4);font-weight:600}
+.login-title{font-family:'Playfair Display',serif;font-size:22px;font-weight:700;text-align:center;margin-bottom:6px}
+.login-sub{font-size:12.5px;color:var(--ink3);text-align:center;margin-bottom:28px}
+.login-field{margin-bottom:14px}
+.login-field label{display:block;font-size:11.5px;font-weight:600;color:var(--ink2);margin-bottom:6px;letter-spacing:.02em}
+.login-input{
+  width:100%;padding:11px 14px;
+  border:1.5px solid var(--border2);border-radius:var(--rad-sm);
+  background:var(--surface2);color:var(--ink);
+  font-family:'Outfit',sans-serif;font-size:14px;
+  transition:.15s;
+}
+.login-input:focus{outline:none;border-color:var(--ink);background:var(--surface)}
+.login-input.shake{animation:shake .4s ease}
+@keyframes shake{0%,100%{transform:translateX(0)}20%,60%{transform:translateX(-6px)}40%,80%{transform:translateX(6px)}}
+.login-err{
+  background:#fef2f0;border:1px solid #fca5a5;
+  border-radius:var(--rad-xs);padding:10px 13px;
+  font-size:12.5px;color:#dc4c3a;margin-bottom:14px;
+  display:none;align-items:center;gap:8px;
+}
+.login-err.show{display:flex}
+.btn-login{
+  width:100%;padding:12px;border-radius:var(--rad-sm);
+  background:var(--ink);color:#fff;
+  font-family:'Outfit',sans-serif;font-size:14px;font-weight:600;
+  border:none;cursor:pointer;transition:.15s;
+  display:flex;align-items:center;justify-content:center;gap:8px;
+}
+.btn-login:hover{background:#292524}
+.btn-login:disabled{opacity:.6;cursor:default}
+.login-hint{
+  margin-top:20px;padding:12px 14px;
+  background:var(--surface2);border-radius:var(--rad-xs);
+  border:1px solid var(--border);
+  font-size:11.5px;color:var(--ink3);text-align:center;
+}
+
+/* ─ ADMIN PANEL ─ */
+#adminLayer{background:var(--cream);flex-direction:column}
+
+.admin-nav{
+  background:var(--surface);border-bottom:1.5px solid var(--border);
+  height:62px;display:flex;align-items:center;justify-content:space-between;
+  padding:0 32px;position:sticky;top:0;z-index:100;box-shadow:var(--shadow);
+  flex-shrink:0;
+}
 .nav-brand{display:flex;align-items:center;gap:14px}
-.nav-logo{height:48px;width:auto}
-.nav-sep{width:1.5px;height:32px;background:var(--border2)}
-.nav-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;line-height:1.2;color:var(--ink)}
-.nav-sub{font-size:10px;font-weight:400;color:var(--ink4);letter-spacing:.07em;text-transform:uppercase;font-family:'Outfit',sans-serif}
-.nav-tabs{display:flex;gap:4px;background:var(--surface2);border-radius:10px;padding:4px;border:1px solid var(--border)}
-.nav-tab{padding:7px 20px;border-radius:7px;border:none;background:none;font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;color:var(--ink3);cursor:pointer;transition:.15s;display:flex;align-items:center;gap:7px}
-.nav-tab:hover{background:var(--surface);color:var(--ink)}
-.nav-tab.active{background:var(--ink);color:#fff;box-shadow:var(--shadow)}
-.nav-tab .tab-count{background:rgba(255,255,255,.2);padding:1px 7px;border-radius:20px;font-size:11px;font-weight:600}
-.nav-tab:not(.active) .tab-count{background:var(--border);color:var(--ink3)}
-.page{display:none}
-.page.active{display:block}
-.dash-layout{display:grid;grid-template-columns:268px 1fr;min-height:calc(100vh - 62px)}
-.dash-sidebar{background:var(--surface);border-right:1.5px solid var(--border);position:sticky;top:62px;height:calc(100vh - 62px);overflow-y:auto;display:flex;flex-direction:column;padding:18px 0}
-.sb-sec{padding:0 14px;margin-bottom:18px}
+.nav-logo{height:46px;width:auto}
+.nav-sep{width:1.5px;height:30px;background:var(--border2)}
+.nav-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600}
+.nav-sub{font-size:10px;color:var(--ink4);letter-spacing:.07em;text-transform:uppercase}
+
+.admin-tabs{display:flex;gap:3px;background:var(--surface2);border-radius:10px;padding:4px;border:1px solid var(--border)}
+.admin-tab{
+  padding:7px 18px;border-radius:7px;border:none;background:none;
+  font-family:'Outfit',sans-serif;font-size:12.5px;font-weight:500;
+  color:var(--ink3);cursor:pointer;transition:.15s;
+  display:flex;align-items:center;gap:6px;
+}
+.admin-tab:hover{background:var(--surface);color:var(--ink)}
+.admin-tab.active{background:var(--ink);color:#fff;box-shadow:var(--shadow)}
+.admin-tab .tc{background:rgba(255,255,255,.2);padding:1px 6px;border-radius:20px;font-size:10px;font-weight:600}
+.admin-tab:not(.active) .tc{background:var(--border);color:var(--ink3)}
+
+.nav-right{display:flex;align-items:center;gap:12px}
+.user-pill{
+  display:flex;align-items:center;gap:8px;
+  padding:6px 14px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:20px;
+  font-size:12px;font-weight:500;color:var(--ink2);
+}
+.user-dot{width:8px;height:8px;border-radius:50%;background:#16a34a;flex-shrink:0}
+.btn-logout{
+  padding:6px 14px;border-radius:var(--rad-xs);
+  background:none;border:1.5px solid var(--border2);
+  font-family:'Outfit',sans-serif;font-size:12px;font-weight:500;
+  color:var(--ink3);cursor:pointer;transition:.15s;
+  display:flex;align-items:center;gap:6px;
+}
+.btn-logout:hover{background:#fef2f0;border-color:#dc4c3a;color:#dc4c3a}
+
+.admin-content{flex:1;overflow:hidden}
+.admin-section{display:none}
+.admin-section.active{display:block}
+
+/* ─ USER MANAGER ─ */
+.um-layout{display:grid;grid-template-columns:380px 1fr;height:calc(100vh - 62px)}
+.um-left{
+  border-right:1.5px solid var(--border);background:var(--surface);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.um-panel-head{
+  padding:20px 20px 14px;border-bottom:1px solid var(--border);
+  flex-shrink:0;
+}
+.um-panel-title{font-family:'Playfair Display',serif;font-size:17px;font-weight:700;margin-bottom:4px}
+.um-panel-sub{font-size:12px;color:var(--ink3)}
+.um-user-list{flex:1;overflow-y:auto;padding:10px}
+.u-item{
+  display:flex;align-items:center;gap:11px;
+  padding:10px 12px;border-radius:var(--rad-sm);
+  cursor:pointer;border:none;background:none;
+  width:100%;text-align:left;color:var(--ink);
+  transition:background .12s;margin-bottom:2px;
+  border:1px solid transparent;
+}
+.u-item:hover{background:var(--surface2)}
+.u-item.selected{background:var(--ink);border-color:transparent}
+.u-item.selected .u-name{color:#fff;font-weight:600}
+.u-item.selected .u-meta{color:rgba(255,255,255,.5)}
+.u-item.selected .u-role-chip{background:rgba(255,255,255,.15);color:rgba(255,255,255,.8)}
+
+.u-av{
+  width:36px;height:36px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:12px;font-weight:700;
+  flex-shrink:0;
+}
+.u-details{flex:1;min-width:0}
+.u-name{font-size:13px;font-weight:600;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-meta{font-size:11px;color:var(--ink3);margin-top:1px;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
+.u-role-chip{
+  font-size:10px;font-weight:700;padding:2px 8px;border-radius:20px;
+  letter-spacing:.03em;flex-shrink:0;
+}
+.u-status-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+
+.um-right{
+  padding:28px 32px;overflow-y:auto;background:var(--cream);
+}
+.um-empty{
+  display:flex;flex-direction:column;align-items:center;justify-content:center;
+  height:60%;color:var(--ink3);text-align:center;gap:10px;
+}
+.um-empty h3{font-family:'Playfair Display',serif;font-size:18px;font-weight:600;color:var(--ink2)}
+
+/* Edit user form */
+.user-form-card{
+  background:var(--surface);border:1.5px solid var(--border);
+  border-radius:var(--rad);padding:26px 28px;
+  box-shadow:var(--shadow);margin-bottom:16px;
+}
+.ufc-header{
+  display:flex;align-items:center;gap:14px;margin-bottom:22px;
+  padding-bottom:16px;border-bottom:1px solid var(--border);
+}
+.ufc-av{
+  width:50px;height:50px;border-radius:50%;
+  display:flex;align-items:center;justify-content:center;
+  font-family:'Playfair Display',serif;font-size:17px;font-weight:700;flex-shrink:0;
+}
+.ufc-name{font-family:'Playfair Display',serif;font-size:20px;font-weight:700}
+.ufc-email{font-size:12px;color:var(--ink3);margin-top:2px}
+
+.form-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 20px;margin-bottom:18px}
+.form-grid.one{grid-template-columns:1fr}
+.fg-full{grid-column:1/-1}
+.field-g{display:flex;flex-direction:column;gap:5px}
+.field-lbl{font-size:11.5px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:4px}
+.req{color:#dc4c3a;font-weight:700}
+.field-inp{
+  width:100%;padding:9px 12px;
+  border:1.5px solid var(--border2);border-radius:var(--rad-xs);
+  background:var(--surface2);color:var(--ink);
+  font-family:'Outfit',sans-serif;font-size:13px;
+  transition:.15s;
+}
+.field-inp:focus{outline:none;border-color:var(--ink);background:var(--surface)}
+.field-inp.err{border-color:#dc4c3a;background:#fef2f0}
+select.field-inp{appearance:none;cursor:pointer;
+  background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a8a29e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");
+  background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+
+.role-cards{display:grid;grid-template-columns:1fr 1fr 1fr;gap:8px}
+.role-card{
+  border:1.5px solid var(--border2);border-radius:var(--rad-sm);
+  padding:12px;cursor:pointer;transition:.15s;text-align:center;
+  background:var(--surface2);
+}
+.role-card:hover{border-color:var(--ink3)}
+.role-card.selected{border-color:var(--ink);background:var(--ink);color:#fff}
+.role-card.selected .rc-title{color:#fff}
+.role-card.selected .rc-desc{color:rgba(255,255,255,.6)}
+.rc-icon{font-size:20px;margin-bottom:6px}
+.rc-title{font-size:12px;font-weight:700;letter-spacing:.02em}
+.rc-desc{font-size:10px;color:var(--ink3);margin-top:2px}
+
+.perms-grid{display:grid;grid-template-columns:1fr 1fr;gap:8px;margin-top:12px}
+.perm-toggle{
+  display:flex;align-items:center;justify-content:space-between;
+  padding:10px 14px;background:var(--surface2);
+  border:1px solid var(--border);border-radius:var(--rad-xs);
+}
+.perm-label{font-size:12px;font-weight:500;color:var(--ink2)}
+.perm-sub{font-size:10px;color:var(--ink4);margin-top:1px}
+.toggle-switch{position:relative;width:36px;height:20px;flex-shrink:0}
+.toggle-switch input{opacity:0;width:0;height:0}
+.toggle-slider{
+  position:absolute;inset:0;cursor:pointer;
+  background:#d6d3ce;border-radius:20px;transition:.2s;
+}
+.toggle-slider:before{
+  content:'';position:absolute;width:14px;height:14px;
+  left:3px;top:3px;background:#fff;border-radius:50%;transition:.2s;
+  box-shadow:0 1px 3px rgba(0,0,0,.2);
+}
+.toggle-switch input:checked + .toggle-slider{background:var(--ink)}
+.toggle-switch input:checked + .toggle-slider:before{transform:translateX(16px)}
+
+.form-row-actions{display:flex;align-items:center;justify-content:space-between;gap:10px;margin-top:20px;padding-top:16px;border-top:1px solid var(--border)}
+.action-group{display:flex;gap:8px}
+
+.btn-primary{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 20px;border-radius:var(--rad-sm);
+  background:var(--ink);color:#fff;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;
+  border:none;cursor:pointer;transition:.15s;box-shadow:var(--shadow);
+}
+.btn-primary:hover{background:#292524}
+.btn-secondary{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 16px;border-radius:var(--rad-sm);
+  background:var(--surface);color:var(--ink);
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;
+  border:1.5px solid var(--border2);cursor:pointer;transition:.15s;
+}
+.btn-secondary:hover{background:var(--surface2)}
+.btn-danger{
+  display:inline-flex;align-items:center;gap:7px;
+  padding:9px 16px;border-radius:var(--rad-sm);
+  background:#fef2f0;color:#dc4c3a;
+  font-family:'Outfit',sans-serif;font-size:13px;font-weight:600;
+  border:1.5px solid #fca5a5;cursor:pointer;transition:.15s;
+}
+.btn-danger:hover{background:#fde8e5}
+.btn-sm{
+  display:inline-flex;align-items:center;gap:5px;
+  padding:5px 12px;border-radius:var(--rad-xs);
+  font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:600;
+  cursor:pointer;border:1.5px solid var(--border2);
+  background:var(--surface2);color:var(--ink2);transition:.15s;
+}
+.btn-sm:hover{background:var(--surface3);border-color:var(--ink3)}
+.btn-sm.danger:hover{background:#fef2f0;border-color:#dc4c3a;color:#dc4c3a}
+
+/* Access log */
+.log-list{display:flex;flex-direction:column;gap:6px}
+.log-item{
+  display:flex;align-items:center;gap:12px;
+  padding:10px 14px;background:var(--surface);
+  border:1px solid var(--border);border-radius:var(--rad-xs);
+}
+.log-dot{width:8px;height:8px;border-radius:50%;flex-shrink:0}
+.log-text{flex:1;font-size:12px;color:var(--ink2)}
+.log-time{font-size:11px;color:var(--ink4);font-family:'DM Mono',monospace;flex-shrink:0}
+
+/* ─ DASHBOARD (same as before, compacted) ─ */
+.dash-layout{display:grid;grid-template-columns:268px 1fr;height:calc(100vh - 62px)}
+.dash-sidebar{
+  background:var(--surface);border-right:1.5px solid var(--border);
+  display:flex;flex-direction:column;overflow:hidden;
+}
+.sb-top{padding:16px 14px 10px;flex-shrink:0}
 .sb-lbl{font-size:9.5px;font-weight:700;letter-spacing:.1em;text-transform:uppercase;color:var(--ink4);margin-bottom:7px;display:flex;align-items:center;justify-content:space-between}
-.sb-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:1px 7px;font-size:10px;color:var(--ink3);font-weight:500;letter-spacing:0}
-.form-control{width:100%;padding:8px 11px;border:1.5px solid var(--border2);border-radius:var(--rad-sm);background:var(--surface2);color:var(--ink);font-family:'Outfit',sans-serif;font-size:12.5px;transition:border-color .15s,background .15s}
-.form-control:focus{outline:none;border-color:var(--ink);background:var(--surface)}
-select.form-control{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a8a29e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
+.sb-chip{background:var(--surface2);border:1px solid var(--border);border-radius:20px;padding:1px 7px;font-size:10px;color:var(--ink3);font-weight:500}
+.fc{width:100%;padding:8px 11px;border:1.5px solid var(--border2);border-radius:var(--rad-sm);background:var(--surface2);color:var(--ink);font-family:'Outfit',sans-serif;font-size:12.5px;transition:.15s;margin-bottom:10px}
+.fc:focus{outline:none;border-color:var(--ink);background:var(--surface)}
+select.fc{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a8a29e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
 .search-wrap{position:relative}
 .search-ico{position:absolute;left:10px;top:50%;transform:translateY(-50%);width:13px;height:13px;color:var(--ink4);pointer-events:none}
-.search-wrap .form-control{padding-left:31px}
-.student-list{flex:1;overflow-y:auto;padding:0 6px 10px}
+.search-wrap .fc{padding-left:31px;margin-bottom:0}
+.student-list{flex:1;overflow-y:auto;padding:6px}
 .s-item{display:flex;align-items:center;gap:9px;padding:8px 8px;border-radius:var(--rad-sm);cursor:pointer;border:none;background:none;width:100%;text-align:left;color:var(--ink);transition:background .12s;margin-bottom:1px}
 .s-item:hover{background:var(--surface2)}
 .s-item.active{background:var(--ink)}
@@ -62,39 +320,36 @@ select.form-control{appearance:none;cursor:pointer;background-image:url("data:im
 .si-info{min-width:0}
 .si-name{font-size:12.5px;font-weight:500;white-space:nowrap;overflow:hidden;text-overflow:ellipsis}
 .si-lvl{font-size:10px;color:var(--ink4);margin-top:1px}
-.dash-main{padding:24px 28px}
-.profile-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rad);padding:22px 24px;margin-bottom:16px;display:flex;align-items:center;gap:20px;box-shadow:var(--shadow);position:relative;overflow:hidden}
+.dash-main{padding:22px 26px;overflow-y:auto;background:var(--cream)}
+.profile-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rad);padding:20px 22px;margin-bottom:14px;display:flex;align-items:center;gap:18px;box-shadow:var(--shadow);position:relative;overflow:hidden}
 .profile-card::before{content:'';position:absolute;left:0;top:0;bottom:0;width:4px;background:var(--ink);border-radius:4px 0 0 4px}
-.prof-av{width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;flex-shrink:0}
+.prof-av{width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:19px;font-weight:700;flex-shrink:0}
 .prof-info{flex:1;min-width:0}
-.prof-name{font-family:'Playfair Display',serif;font-size:25px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:8px}
+.prof-name{font-family:'Playfair Display',serif;font-size:24px;font-weight:700;letter-spacing:-.02em;line-height:1.1;margin-bottom:7px}
 .prof-meta{display:flex;align-items:center;gap:10px;flex-wrap:wrap}
 .badge{display:inline-flex;align-items:center;padding:5px 14px;border-radius:6px;font-size:14px;font-weight:700;font-family:'Playfair Display',serif;border:1.5px solid currentColor}
 .rank-tag{font-size:11px;font-weight:500;color:var(--ink3);padding:4px 10px;background:var(--surface2);border-radius:20px;border:1px solid var(--border)}
+.prof-actions{display:flex;gap:7px;margin-top:9px}
 .prof-score{text-align:right;flex-shrink:0}
-.score-big{font-family:'Playfair Display',serif;font-size:46px;font-weight:800;letter-spacing:-.04em;line-height:1;color:var(--ink)}
-.score-big sub{font-size:16px;font-family:'Outfit',sans-serif;font-weight:300;color:var(--ink3);bottom:0}
+.score-big{font-family:'Playfair Display',serif;font-size:44px;font-weight:800;letter-spacing:-.04em;line-height:1}
+.score-big sub{font-size:15px;font-family:'Outfit',sans-serif;font-weight:300;color:var(--ink3);bottom:0}
 .score-lbl{font-size:10px;color:var(--ink4);letter-spacing:.07em;text-transform:uppercase;margin-top:3px}
-.prof-actions{display:flex;gap:8px;margin-top:10px}
-.btn-sm{display:inline-flex;align-items:center;gap:5px;padding:5px 12px;border-radius:var(--rad-xs);font-family:'Outfit',sans-serif;font-size:11.5px;font-weight:600;cursor:pointer;border:1.5px solid var(--border2);background:var(--surface2);color:var(--ink2);transition:.15s}
-.btn-sm:hover{background:var(--surface3);border-color:var(--ink3)}
-.btn-sm.danger:hover{background:#fef2f0;border-color:#dc4c3a;color:#dc4c3a}
-.metrics-row{display:grid;grid-template-columns:1fr 1fr;gap:12px;margin-bottom:16px}
-.mc{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rad);padding:16px 18px;box-shadow:var(--shadow)}
-.mc-label{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink4);margin-bottom:8px}
-.mc-row{display:flex;align-items:baseline;gap:5px;margin-bottom:8px}
-.mc-val{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;letter-spacing:-.03em;line-height:1}
+.metrics-row{display:grid;grid-template-columns:1fr 1fr;gap:11px;margin-bottom:14px}
+.mc{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rad);padding:14px 16px;box-shadow:var(--shadow)}
+.mc-label{font-size:9.5px;font-weight:700;letter-spacing:.08em;text-transform:uppercase;color:var(--ink4);margin-bottom:7px}
+.mc-row{display:flex;align-items:baseline;gap:5px;margin-bottom:7px}
+.mc-val{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;letter-spacing:-.03em;line-height:1}
 .mc-denom{font-size:12px;color:var(--ink3);font-weight:300}
 .mc-sub{font-size:10.5px;color:var(--ink3)}
-.mc-track{height:4px;background:var(--surface3);border-radius:2px;margin-top:10px;overflow:hidden}
+.mc-track{height:4px;background:var(--surface3);border-radius:2px;margin-top:9px;overflow:hidden}
 .mc-fill{height:100%;border-radius:2px;background:var(--ink);transition:width .6s cubic-bezier(.4,0,.2,1)}
-.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px}
-.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rad);padding:20px 22px;box-shadow:var(--shadow)}
-.card-title{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:16px;display:flex;align-items:center;gap:8px}
+.content-grid{display:grid;grid-template-columns:1fr 1fr;gap:12px}
+.card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rad);padding:18px 20px;box-shadow:var(--shadow)}
+.card-title{font-size:10px;font-weight:700;letter-spacing:.09em;text-transform:uppercase;color:var(--ink4);margin-bottom:14px;display:flex;align-items:center;gap:8px}
 .card-title::after{content:'';flex:1;height:1px;background:var(--border)}
-.cat-block{margin-bottom:17px}
+.cat-block{margin-bottom:16px}
 .cat-block:last-child{margin-bottom:0}
-.cat-head{display:flex;align-items:center;gap:7px;margin-bottom:9px;padding-bottom:6px;border-bottom:1px solid var(--border)}
+.cat-head{display:flex;align-items:center;gap:7px;margin-bottom:8px;padding-bottom:5px;border-bottom:1px solid var(--border)}
 .cat-pip{width:10px;height:4px;border-radius:2px;flex-shrink:0}
 .cat-name{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase}
 .sk-row{display:flex;align-items:center;gap:8px;margin-bottom:5px}
@@ -102,62 +357,61 @@ select.form-control{appearance:none;cursor:pointer;background-image:url("data:im
 .bar-track{flex:1;height:6px;background:var(--surface3);border-radius:3px;overflow:hidden}
 .bar-fill{height:100%;border-radius:3px;transition:width .45s cubic-bezier(.4,0,.2,1)}
 .sk-val{font-size:10.5px;font-family:'DM Mono',monospace;font-weight:500;width:18px;text-align:right;color:var(--ink3)}
-.hm-grid{display:flex;flex-direction:column;gap:13px}
+.hm-grid{display:flex;flex-direction:column;gap:12px}
 .hm-cat-lbl{font-size:9.5px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;color:var(--ink4);margin-bottom:6px}
 .hm-tiles{display:flex;flex-wrap:wrap;gap:4px}
-.hm-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;width:63px;height:49px;border-radius:7px;cursor:default;transition:transform .12s,box-shadow .12s;border:1px solid rgba(0,0,0,.06)}
+.hm-tile{display:flex;flex-direction:column;align-items:center;justify-content:center;width:62px;height:48px;border-radius:7px;cursor:default;transition:transform .12s,box-shadow .12s;border:1px solid rgba(0,0,0,.06)}
 .hm-tile:hover{transform:scale(1.07);z-index:2;position:relative;box-shadow:var(--shadow-md)}
-.hm-score{font-family:'DM Mono',monospace;font-size:15.5px;font-weight:500;line-height:1}
+.hm-score{font-family:'DM Mono',monospace;font-size:15px;font-weight:500;line-height:1}
 .hm-name{font-size:7.5px;font-weight:500;text-align:center;line-height:1.2;margin-top:2px;padding:0 3px;opacity:.7}
-.hm-legend{display:flex;align-items:center;gap:6px;margin-top:13px;font-size:10px;color:var(--ink4)}
+.hm-legend{display:flex;align-items:center;gap:6px;margin-top:12px;font-size:10px;color:var(--ink4)}
 .hm-leg-track{display:flex;gap:2px}
 .hm-swatch{width:14px;height:8px;border-radius:2px;border:1px solid rgba(0,0,0,.07)}
 .nav-pills{display:flex;gap:5px;flex-wrap:wrap;justify-content:flex-end;max-width:55%}
 .hpill{font-size:9.5px;font-weight:600;padding:3px 9px;border-radius:20px;letter-spacing:.02em;border:1px solid transparent;white-space:nowrap}
-.empty-dash{display:flex;flex-direction:column;align-items:center;justify-content:center;height:60vh;color:var(--ink3);text-align:center;gap:12px}
-.empty-dash h3{font-family:'Playfair Display',serif;font-size:22px;font-weight:600;color:var(--ink2)}
-.empty-dash p{font-size:13px;max-width:320px}
-.entry-page{max-width:900px;margin:0 auto;padding:32px 28px 60px}
-.entry-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:28px;gap:20px}
-.entry-title{font-family:'Playfair Display',serif;font-size:28px;font-weight:700;letter-spacing:-.02em;color:var(--ink)}
-.entry-sub{font-size:13px;color:var(--ink3);margin-top:5px}
-.btn-primary{display:inline-flex;align-items:center;gap:7px;padding:10px 22px;border-radius:var(--rad-sm);background:var(--ink);color:#fff;font-family:'Outfit',sans-serif;font-size:13.5px;font-weight:600;border:none;cursor:pointer;transition:.15s;white-space:nowrap;box-shadow:var(--shadow)}
-.btn-primary:hover{background:#292524;box-shadow:var(--shadow-md)}
-.btn-secondary{display:inline-flex;align-items:center;gap:7px;padding:10px 18px;border-radius:var(--rad-sm);background:var(--surface);color:var(--ink);font-family:'Outfit',sans-serif;font-size:13px;font-weight:500;border:1.5px solid var(--border2);cursor:pointer;transition:.15s}
-.btn-secondary:hover{background:var(--surface2)}
-.form-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rad);padding:24px 26px;box-shadow:var(--shadow);margin-bottom:18px}
-.form-card-title{font-family:'Playfair Display',serif;font-size:16px;font-weight:600;color:var(--ink);margin-bottom:18px;display:flex;align-items:center;gap:10px}
-.form-card-title .cat-pill{font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:20px}
-.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:16px 20px}
+.empty-state{display:flex;flex-direction:column;align-items:center;justify-content:center;height:55vh;color:var(--ink3);text-align:center;gap:10px}
+.empty-state h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:600;color:var(--ink2)}
+
+/* ─ TRAINEE ENTRY ─ */
+.entry-wrap{max-width:900px;margin:0 auto;padding:28px 26px 60px}
+.entry-header{display:flex;align-items:flex-start;justify-content:space-between;margin-bottom:24px;gap:20px}
+.entry-title{font-family:'Playfair Display',serif;font-size:26px;font-weight:700;letter-spacing:-.02em}
+.entry-sub{font-size:13px;color:var(--ink3);margin-top:4px}
+.form-card{background:var(--surface);border:1.5px solid var(--border);border-radius:var(--rad);padding:22px 24px;box-shadow:var(--shadow);margin-bottom:16px}
+.form-card-title{font-family:'Playfair Display',serif;font-size:15px;font-weight:600;margin-bottom:16px;display:flex;align-items:center;gap:10px}
+.cat-pill{font-family:'Outfit',sans-serif;font-size:10px;font-weight:700;letter-spacing:.07em;text-transform:uppercase;padding:3px 10px;border-radius:20px}
+.fields-grid{display:grid;grid-template-columns:1fr 1fr;gap:14px 18px}
 .fields-grid.three{grid-template-columns:1fr 1fr 1fr}
 .field-full{grid-column:1/-1}
-.field-group{display:flex;flex-direction:column;gap:5px}
-.field-label{font-size:11.5px;font-weight:600;color:var(--ink2);display:flex;align-items:center;gap:4px}
-.field-label .req{color:#dc4c3a;font-weight:700}
-.field-input{width:100%;padding:9px 12px;border:1.5px solid var(--border2);border-radius:var(--rad-xs);background:var(--surface2);color:var(--ink);font-family:'Outfit',sans-serif;font-size:13px;transition:.15s}
-.field-input:focus{outline:none;border-color:var(--ink);background:var(--surface)}
-.field-input.error{border-color:#dc4c3a;background:#fef2f0}
-.field-error{font-size:10.5px;color:#dc4c3a;margin-top:2px;display:none}
-.field-input.error ~ .field-error{display:block}
-select.field-input{appearance:none;cursor:pointer;background-image:url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='10' height='10' viewBox='0 0 24 24' fill='none' stroke='%23a8a29e' stroke-width='2'%3E%3Cpath d='M6 9l6 6 6-6'/%3E%3C/svg%3E");background-repeat:no-repeat;background-position:right 10px center;padding-right:28px}
 .rank-group{display:flex;flex-direction:column;gap:5px}
 .rank-row{display:flex;align-items:center;gap:10px}
-.rank-track{flex:1;position:relative}
-.rank-input{width:100%;height:5px;-webkit-appearance:none;appearance:none;background:var(--surface3);border-radius:3px;outline:none;cursor:pointer;background:linear-gradient(to right,#1c1917 0%,#1c1917 0%,#eceae5 0%,#eceae5 100%)}
-.rank-input::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ink);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.2);transition:background .15s}
-.rank-input::-webkit-slider-thumb:hover{background:#44403c}
-.rank-val{width:28px;height:28px;border-radius:var(--rad-xs);background:var(--surface2);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;color:var(--ink);flex-shrink:0}
+.rank-track{flex:1}
+.rank-input{width:100%;height:5px;-webkit-appearance:none;appearance:none;background:var(--surface3);border-radius:3px;outline:none;cursor:pointer}
+.rank-input::-webkit-slider-thumb{-webkit-appearance:none;width:18px;height:18px;border-radius:50%;background:var(--ink);cursor:pointer;box-shadow:0 1px 3px rgba(0,0,0,.2)}
+.rank-val{width:28px;height:28px;border-radius:var(--rad-xs);background:var(--surface2);border:1.5px solid var(--border2);display:flex;align-items:center;justify-content:center;font-family:'DM Mono',monospace;font-size:13px;font-weight:500;flex-shrink:0}
 .form-actions{display:flex;align-items:center;justify-content:flex-end;gap:10px;padding-top:6px}
-.toast{position:fixed;bottom:28px;right:28px;background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--rad-sm);font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);transform:translateY(20px);opacity:0;transition:.3s cubic-bezier(.4,0,.2,1);z-index:9999;max-width:340px;display:flex;align-items:center;gap:9px}
+
+/* ─ SHARED ─ */
+.toast{position:fixed;bottom:28px;right:28px;background:var(--ink);color:#fff;padding:12px 20px;border-radius:var(--rad-sm);font-size:13px;font-weight:500;box-shadow:var(--shadow-lg);transform:translateY(20px);opacity:0;transition:.3s cubic-bezier(.4,0,.2,1);z-index:9999;display:flex;align-items:center;gap:9px}
 .toast.show{transform:translateY(0);opacity:1}
 .toast.success{background:#16a34a}
 .toast.error{background:#dc4c3a}
-.overlay{position:fixed;inset:0;background:rgba(0,0,0,.4);z-index:500;display:none;align-items:center;justify-content:center}
+.toast.warn{background:#d97706}
+.overlay{position:fixed;inset:0;background:rgba(0,0,0,.45);z-index:800;display:none;align-items:center;justify-content:center}
 .overlay.open{display:flex}
-.dialog{background:var(--surface);border-radius:var(--rad);padding:28px 30px;max-width:400px;width:90%;box-shadow:var(--shadow-lg)}
-.dialog h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:10px}
+.dialog{background:var(--surface);border-radius:var(--rad);padding:28px 30px;max-width:420px;width:92%;box-shadow:var(--shadow-lg)}
+.dialog h3{font-family:'Playfair Display',serif;font-size:20px;font-weight:700;margin-bottom:8px}
 .dialog p{font-size:13px;color:var(--ink3);margin-bottom:22px;line-height:1.6}
 .dialog-actions{display:flex;gap:10px;justify-content:flex-end}
+section-head{display:flex;align-items:center;justify-content:space-between;margin-bottom:16px}
+
+/* ─ PERMISSION INDICATOR ─ */
+.no-access-bar{
+  background:#fef2f0;border-bottom:1px solid #fca5a5;
+  padding:10px 28px;font-size:12px;color:#dc4c3a;
+  display:flex;align-items:center;gap:8px;
+}
+
 ::-webkit-scrollbar{width:4px}
 ::-webkit-scrollbar-track{background:transparent}
 ::-webkit-scrollbar-thumb{background:var(--surface3);border-radius:4px}
@@ -167,255 +421,285 @@ select.field-input{appearance:none;cursor:pointer;background-image:url("data:ima
 </head>
 <body>
 
-<nav class="topnav">
-  <div class="nav-brand">
-    <img class="nav-logo" id="navLogo" src="" alt="Club7">
-    <div class="nav-sep"></div>
-    <div>
-      <div class="nav-title">Club7 Badminton</div>
-      <div class="nav-sub">Trainee Management</div>
-    </div>
-  </div>
-  <div class="nav-tabs">
-    <button class="nav-tab active" onclick="showPage('dashboard')" id="tab-dashboard">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
-      Dashboard
-      <span class="tab-count" id="dash-count">0</span>
-    </button>
-    <button class="nav-tab" onclick="showPage('entry')" id="tab-entry">
-      <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-      Add / Edit Trainee
-    </button>
-  </div>
-  <div class="nav-pills" id="levelPills"></div>
-</nav>
+<!-- ══════════ LOGIN LAYER ══════════ -->
+<div id="loginLayer" class="layer active">
+  <div class="login-wrap">
+    <div class="login-card">
+      <div class="login-logo-wrap">
+        <img id="loginLogo" src="" alt="Club7" class="login-logo">
+        <span class="login-tagline">Rise to the Challenge</span>
+      </div>
+      <div class="login-title">Welcome Back</div>
+      <div class="login-sub">Sign in to access the Club7 Trainee Management System</div>
 
-<div id="page-dashboard" class="page active">
-  <div class="dash-layout">
-    <aside class="dash-sidebar">
-      <div class="sb-sec">
-        <span class="sb-lbl">Level</span>
-        <select class="form-control" id="filterLevel"></select>
+      <div class="login-err" id="loginErr">
+        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg>
+        <span id="loginErrMsg">Invalid username or password.</span>
       </div>
-      <div class="sb-sec">
-        <span class="sb-lbl">Search</span>
-        <div class="search-wrap">
-          <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
-          <input type="text" class="form-control" id="filterSearch" placeholder="Find trainee...">
-        </div>
+
+      <div class="login-field">
+        <label>Username</label>
+        <input type="text" class="login-input" id="loginUser" placeholder="Enter your username" autocomplete="username" onkeydown="if(event.key==='Enter')doLogin()">
       </div>
-      <div class="sb-sec" style="margin-bottom:8px">
-        <span class="sb-lbl">Students <span class="sb-chip" id="studentCount">0</span></span>
+      <div class="login-field" style="margin-bottom:20px">
+        <label>Password</label>
+        <input type="password" class="login-input" id="loginPass" placeholder="Enter your password" autocomplete="current-password" onkeydown="if(event.key==='Enter')doLogin()">
       </div>
-      <div class="student-list" id="studentList"></div>
-    </aside>
-    <main class="dash-main" id="dashMain">
-      <div class="empty-dash" id="emptyDash">
-        <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
-        <h3>No trainees found</h3>
-        <p>Add your first trainee using the Add / Edit Trainee tab to get started.</p>
-        <button class="btn-primary" onclick="showPage('entry')">
-          <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
-          Add Trainee
-        </button>
+
+      <button class="btn-login" onclick="doLogin()" id="loginBtn">
+        <svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>
+        Sign In
+      </button>
+
+      <div class="login-hint">
+        <strong>Demo credentials</strong><br>
+        Admin: <code>admin / admin123</code> &nbsp;·&nbsp; Coach: <code>coach / coach123</code><br>
+        Viewer: <code>viewer / view123</code>
       </div>
-      <div id="dashContent" style="display:none">
-        <div class="profile-card anim" id="profileCard">
-          <div class="prof-av" id="profAv"></div>
-          <div class="prof-info">
-            <div class="prof-name" id="profName">—</div>
-            <div class="prof-meta">
-              <span class="badge" id="profBadge"></span>
-              <span class="rank-tag" id="profRank"></span>
-            </div>
-            <div class="prof-actions">
-              <button class="btn-sm" onclick="editCurrent()">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>
-                Edit
-              </button>
-              <button class="btn-sm danger" onclick="confirmDelete()">
-                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/><path d="M10 11v6M14 11v6M9 6V4h6v2"/></svg>
-                Delete
-              </button>
-            </div>
-          </div>
-          <div class="prof-score">
-            <div class="score-big" id="profScore">—<sub>/10</sub></div>
-            <div class="score-lbl">Overall Average</div>
-          </div>
-        </div>
-        <div class="metrics-row anim">
-          <div class="mc">
-            <div class="mc-label">My Average</div>
-            <div class="mc-row"><span class="mc-val" id="mMyVal">—</span><span class="mc-denom">/10</span></div>
-            <div class="mc-sub" id="mMySub"></div>
-            <div class="mc-track"><div class="mc-fill" id="mMyFill" style="width:0%"></div></div>
-          </div>
-          <div class="mc">
-            <div class="mc-label">Level Average</div>
-            <div class="mc-row"><span class="mc-val" id="mLvlVal">—</span><span class="mc-denom">/10</span></div>
-            <div class="mc-sub" id="mLvlSub"></div>
-            <div class="mc-track"><div class="mc-fill" id="mLvlFill" style="width:0%"></div></div>
-          </div>
-        </div>
-        <div class="content-grid anim">
-          <div class="card">
-            <div class="card-title">Skill Ratings</div>
-            <div id="skillBars"></div>
-          </div>
-          <div class="card">
-            <div class="card-title">Skill Heatmap</div>
-            <div class="hm-grid" id="hmGrid"></div>
-            <div class="hm-legend"><span>0</span><div class="hm-leg-track" id="hmLegend"></div><span>10</span></div>
-          </div>
-        </div>
-      </div>
-    </main>
+    </div>
   </div>
 </div>
 
-<div id="page-entry" class="page">
-  <div class="entry-page">
-    <div class="entry-header">
+<!-- ══════════ ADMIN / APP LAYER ══════════ -->
+<div id="adminLayer" class="layer">
+
+  <nav class="admin-nav">
+    <div class="nav-brand">
+      <img id="appLogo" src="" alt="Club7" class="nav-logo">
+      <div class="nav-sep"></div>
       <div>
-        <div class="entry-title" id="formTitle">Add New Trainee</div>
-        <div class="entry-sub" id="formSubtitle">Fill in the trainee details below. Fields marked <span style="color:#dc4c3a">*</span> are required.</div>
-      </div>
-      <div style="display:flex;gap:10px;align-items:center">
-        <button class="btn-secondary" onclick="resetForm()">
-          <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>
-          Reset
-        </button>
+        <div class="nav-title">Club7 Badminton</div>
+        <div class="nav-sub">Trainee Management</div>
       </div>
     </div>
-    <div class="form-card">
-      <div class="form-card-title">
-        <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>
-        Trainee Information
-      </div>
-      <div class="fields-grid">
-        <div class="field-group field-full">
-          <label class="field-label">Trainee Name <span class="req">*</span></label>
-          <input type="text" class="field-input" id="f-name" placeholder="Full name">
-          <div class="field-error">Name is required</div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Parent's Name <span class="req">*</span></label>
-          <input type="text" class="field-input" id="f-parent-name" placeholder="Parent / guardian name">
-          <div class="field-error">Parent's name is required</div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Parent's Email <span class="req">*</span></label>
-          <input type="email" class="field-input" id="f-parent-email" placeholder="email@example.com">
-          <div class="field-error">Valid email is required</div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Parent's Phone <span class="req">*</span></label>
-          <input type="tel" class="field-input" id="f-parent-phone" placeholder="+61 4xx xxx xxx">
-          <div class="field-error">Phone number is required</div>
-        </div>
-        <div class="field-group">
-          <label class="field-label">Level <span class="req">*</span></label>
-          <select class="field-input" id="f-level">
-            <option value="">— Select level —</option>
-            <option>Rookie</option><option>Amateur</option>
-            <option>Intermediate - Riser</option><option>Intermediate - Skilled</option>
-            <option>Intermediate - Expert</option><option>Advanced - Skilled</option>
-            <option>Advanced - Expert</option><option>Elite</option><option>Pro</option>
-          </select>
-          <div class="field-error">Level is required</div>
-        </div>
-      </div>
-    </div>
-    <div class="form-card">
-      <div class="form-card-title">
-        <span class="cat-pill" style="background:#eef2ff;color:#4f46e5">Forehand</span>
-        Forehand Skills
-      </div>
-      <div class="fields-grid three" id="fh-skills"></div>
-    </div>
-    <div class="form-card">
-      <div class="form-card-title">
-        <span class="cat-pill" style="background:#ecfdf5;color:#059669">Backhand</span>
-        Backhand Skills
-      </div>
-      <div class="fields-grid three" id="bh-skills"></div>
-    </div>
-    <div class="form-card">
-      <div class="form-card-title">
-        <span class="cat-pill" style="background:#e0f2fe;color:#0284c7">Fundamentals</span>
-        Fundamentals
-      </div>
-      <div class="fields-grid three" id="ft-skills"></div>
-    </div>
-    <div class="form-card">
-      <div class="form-card-title">
-        <span class="cat-pill" style="background:#fff7ed;color:#ea580c">Attitude</span>
-        Attitude &amp; Character
-      </div>
-      <div class="fields-grid three" id="at-skills"></div>
-    </div>
-    <div class="form-actions">
-      <button class="btn-secondary" onclick="cancelEdit()">Cancel</button>
-      <button class="btn-primary" onclick="saveTrainee()" id="saveBtn">
-        <svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
-        <span id="saveBtnTxt">Save Trainee</span>
+
+    <div class="admin-tabs">
+      <button class="admin-tab active" id="tab-dash" onclick="switchTab('dash')">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><rect x="3" y="3" width="7" height="7" rx="1"/><rect x="14" y="3" width="7" height="7" rx="1"/><rect x="3" y="14" width="7" height="7" rx="1"/><rect x="14" y="14" width="7" height="7" rx="1"/></svg>
+        Dashboard
+        <span class="tc" id="tc-dash">0</span>
+      </button>
+      <button class="admin-tab" id="tab-entry" onclick="switchTab('entry')" style="display:none">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>
+        Add / Edit Trainee
+      </button>
+      <button class="admin-tab" id="tab-users" onclick="switchTab('users')" style="display:none">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+        User Access
+        <span class="tc" id="tc-users">0</span>
       </button>
     </div>
-  </div>
-</div>
 
+    <div class="nav-right">
+      <div class="nav-pills" id="levelPills"></div>
+      <div class="user-pill">
+        <div class="user-dot"></div>
+        <span id="currentUserLabel">—</span>
+      </div>
+      <button class="btn-logout" onclick="doLogout()">
+        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M9 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h4"/><polyline points="16 17 21 12 16 7"/><line x1="21" y1="12" x2="9" y2="12"/></svg>
+        Sign Out
+      </button>
+    </div>
+  </nav>
+
+  <div class="admin-content">
+
+    <!-- DASHBOARD -->
+    <div class="admin-section active" id="sec-dash">
+      <div class="dash-layout">
+        <aside class="dash-sidebar">
+          <div class="sb-top">
+            <div class="sb-lbl" style="margin-bottom:8px">Level</div>
+            <select class="fc" id="filterLevel" onchange="applyFilter()"></select>
+            <div class="sb-lbl" style="margin-bottom:8px">Search</div>
+            <div class="search-wrap">
+              <svg class="search-ico" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><circle cx="11" cy="11" r="8"/><path d="M21 21l-4.35-4.35"/></svg>
+              <input type="text" class="fc" id="filterSearch" placeholder="Find trainee..." oninput="applyFilter()">
+            </div>
+            <div style="margin-top:12px" class="sb-lbl">Students <span class="sb-chip" id="studentCount">0</span></div>
+          </div>
+          <div class="student-list" id="studentList"></div>
+        </aside>
+        <main class="dash-main">
+          <div class="empty-state" id="emptyState">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/></svg>
+            <h3>No trainees found</h3>
+            <p style="font-size:13px">Adjust your filters or add a new trainee.</p>
+          </div>
+          <div id="dashContent" style="display:none">
+            <div class="profile-card anim">
+              <div class="prof-av" id="profAv"></div>
+              <div class="prof-info">
+                <div class="prof-name" id="profName">—</div>
+                <div class="prof-meta">
+                  <span class="badge" id="profBadge"></span>
+                  <span class="rank-tag" id="profRank"></span>
+                </div>
+                <div class="prof-actions" id="profActions"></div>
+              </div>
+              <div class="prof-score">
+                <div class="score-big" id="profScore">—<sub>/10</sub></div>
+                <div class="score-lbl">Overall Average</div>
+              </div>
+            </div>
+            <div class="metrics-row anim">
+              <div class="mc"><div class="mc-label">My Average</div><div class="mc-row"><span class="mc-val" id="mMyVal">—</span><span class="mc-denom">/10</span></div><div class="mc-sub" id="mMySub"></div><div class="mc-track"><div class="mc-fill" id="mMyFill" style="width:0%"></div></div></div>
+              <div class="mc"><div class="mc-label">Level Average</div><div class="mc-row"><span class="mc-val" id="mLvlVal">—</span><span class="mc-denom">/10</span></div><div class="mc-sub" id="mLvlSub"></div><div class="mc-track"><div class="mc-fill" id="mLvlFill" style="width:0%"></div></div></div>
+            </div>
+            <div class="content-grid anim">
+              <div class="card"><div class="card-title">Skill Ratings</div><div id="skillBars"></div></div>
+              <div class="card"><div class="card-title">Skill Heatmap</div><div class="hm-grid" id="hmGrid"></div><div class="hm-legend"><span>0</span><div class="hm-leg-track" id="hmLegend"></div><span>10</span></div></div>
+            </div>
+          </div>
+        </main>
+      </div>
+    </div>
+
+    <!-- ADD/EDIT TRAINEE -->
+    <div class="admin-section" id="sec-entry" style="overflow-y:auto;height:calc(100vh - 62px)">
+      <div class="entry-wrap">
+        <div class="entry-header">
+          <div>
+            <div class="entry-title" id="formTitle">Add New Trainee</div>
+            <div class="entry-sub" id="formSub">Fill in all details. Fields marked <span style="color:#dc4c3a">*</span> are required.</div>
+          </div>
+          <button class="btn-secondary" onclick="resetEntryForm()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M3 12a9 9 0 1 0 9-9 9.75 9.75 0 0 0-6.74 2.74L3 8"/><path d="M3 3v5h5"/></svg>Reset
+          </button>
+        </div>
+        <div class="form-card">
+          <div class="form-card-title"><svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/><circle cx="12" cy="7" r="4"/></svg>Trainee Information</div>
+          <div class="fields-grid">
+            <div class="field-g field-full"><label class="field-lbl">Trainee Name <span class="req">*</span></label><input type="text" class="field-inp" id="f-name" placeholder="Full name"></div>
+            <div class="field-g"><label class="field-lbl">Parent's Name <span class="req">*</span></label><input type="text" class="field-inp" id="f-pname" placeholder="Parent / guardian name"></div>
+            <div class="field-g"><label class="field-lbl">Parent's Email <span class="req">*</span></label><input type="email" class="field-inp" id="f-pemail" placeholder="email@example.com"></div>
+            <div class="field-g"><label class="field-lbl">Parent's Phone <span class="req">*</span></label><input type="tel" class="field-inp" id="f-pphone" placeholder="+61 4xx xxx xxx"></div>
+            <div class="field-g"><label class="field-lbl">Level <span class="req">*</span></label>
+              <select class="field-inp" id="f-level">
+                <option value="">— Select level —</option>
+                <option>Rookie</option><option>Amateur</option>
+                <option>Intermediate - Riser</option><option>Intermediate - Skilled</option>
+                <option>Intermediate - Expert</option><option>Advanced - Skilled</option>
+                <option>Advanced - Expert</option><option>Elite</option><option>Pro</option>
+              </select>
+            </div>
+          </div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-title"><span class="cat-pill" style="background:#eef2ff;color:#4f46e5">Forehand</span>Forehand Skills</div>
+          <div class="fields-grid three" id="fh-skills"></div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-title"><span class="cat-pill" style="background:#ecfdf5;color:#059669">Backhand</span>Backhand Skills</div>
+          <div class="fields-grid three" id="bh-skills"></div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-title"><span class="cat-pill" style="background:#e0f2fe;color:#0284c7">Fundamentals</span>Fundamentals</div>
+          <div class="fields-grid three" id="ft-skills"></div>
+        </div>
+        <div class="form-card">
+          <div class="form-card-title"><span class="cat-pill" style="background:#fff7ed;color:#ea580c">Attitude</span>Attitude &amp; Character</div>
+          <div class="fields-grid three" id="at-skills"></div>
+        </div>
+        <div class="form-actions">
+          <button class="btn-secondary" onclick="switchTab('dash')">Cancel</button>
+          <button class="btn-primary" onclick="saveTrainee()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            <span id="saveBtnTxt">Save Trainee</span>
+          </button>
+        </div>
+      </div>
+    </div>
+
+    <!-- USER ACCESS MANAGEMENT -->
+    <div class="admin-section" id="sec-users">
+      <div class="um-layout">
+        <div class="um-left">
+          <div class="um-panel-head">
+            <div style="display:flex;align-items:center;justify-content:space-between;margin-bottom:4px">
+              <div class="um-panel-title">System Users</div>
+              <button class="btn-primary" style="padding:6px 14px;font-size:12px" onclick="startNewUser()">
+                <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>New User
+              </button>
+            </div>
+            <div class="um-panel-sub">Manage who can access this system and what they can do</div>
+          </div>
+          <div class="um-user-list" id="userList"></div>
+        </div>
+        <div class="um-right" id="userEditArea">
+          <div class="um-empty">
+            <svg width="44" height="44" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.2" opacity=".3"><path d="M17 21v-2a4 4 0 0 0-4-4H5a4 4 0 0 0-4 4v2"/><circle cx="9" cy="7" r="4"/><path d="M23 21v-2a4 4 0 0 0-3-3.87"/><path d="M16 3.13a4 4 0 0 1 0 7.75"/></svg>
+            <h3>Select a user</h3>
+            <p style="font-size:12.5px">Choose a user from the list to edit their access, or create a new user.</p>
+          </div>
+        </div>
+      </div>
+    </div>
+
+  </div><!-- /admin-content -->
+</div><!-- /adminLayer -->
+
+<!-- Confirm Dialog -->
 <div class="overlay" id="confirmOverlay">
   <div class="dialog">
-    <h3>Delete Trainee?</h3>
-    <p id="confirmMsg">This action cannot be undone.</p>
+    <h3 id="confirmTitle">Confirm Action</h3>
+    <p id="confirmMsg">Are you sure?</p>
     <div class="dialog-actions">
       <button class="btn-secondary" onclick="closeConfirm()">Cancel</button>
-      <button class="btn-primary" style="background:#dc4c3a" onclick="deleteConfirmed()">
-        <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>
-        Delete
-      </button>
+      <button class="btn-danger" id="confirmOkBtn" onclick="">Confirm</button>
     </div>
   </div>
 </div>
+
 <div class="toast" id="toast"></div>
 
 <script>
+// ══════════════ CONSTANTS ══════════════
 const LOGO_B64 = 'iVBORw0KGgoAAAANSUhEUgAAAEoAAAA4CAYAAABaOm67AAAO/UlEQVR42u1be2xT5f9+zqXr2q7bIGMbA8YY3SAsXDZuE4aCkRl0pAoICo7whwomaIQYFTUGTAQTxUSMCEKEcYkbRhFGlM1houjYpWLmZJOysUtHoczRtd2lXXvO5/vHL+/5tVvHugugfL+fZNnWnfOe933e5/N8Lu8ZR0SE/9mAxv9bJ+71eu8voHp6ekZsLEb+9vZ2tLa2Bnz2rwWKLaCpqQkej2dEx/7tt98QFRUFAOA47v4AqrW1FVarddi7L8syAODy5cuw2+3Q6XSQJOn+cT2O41BdXR2w2OGM9dVXX2HevHn/N3me//cDxVwiJiYGJpNpWGPJsgyO41BRUYG2tjYkJiZCkqS75nZ3hVEJCQmora2Fx+OBIAhDdmOO4/Dhhx9ixYoVd0Qi7imjZFmGTqdDe3v7kN1PkiQIgoAff/wRVqsVixYtgizLQwY92Abcc0YxUCIjI3Hu3Llh6dQbb7yB9evXj4jWMRZxHAen04nOzs5/RsI5efJkFBcXDzqcMzadPn0aly9fRm5uLohoWGxi2kZEMJlMuHnzJsLDwwd0QX6kfTmYpaWloby8HG63G4IghDwWA3XLli1Yv349NBrNkEWciBSXra+vR15eHiIiImAwGCAIwsBjUj8myzLJskyNjY3U09OjfDYY8/l8RER04cIFAkC//vprwOe3M6/XS0RER48eJQBUV1dHRESSJNFgjY1FRHT48GHatWsX2Wy2Qa1pQKDa2tqooKCAJElSPgvV2KJaWloIAL3zzjt9Jt7fsyVJIo/HQ2PHjqXFixcPCSRZlpVNaWhooA0bNtAnn3zSZ37DAsp/IJPJRO+++27IbPCfKBGRx+MhvV5Pc+fODWmCDMg9e/YQADpz5gzJsjwgwP2xaN++fbRgwQL64YcflOcP1jsQqvvs27ePtmzZEhIjgoGVnp5OoigOSHnGpvb2dho9ejRNmDCBPB5PyGz2Z5HVaqVly5bR0qVLlecOZu7+NqCYC4IAn8+HjRs3wmq14rXXXoMoiiG3OVgoT01NBRGhoqJCiT79Xc/zPD766CPcunULL7zwAsLCwkIScZ/PB47jIAgC8vLyMGPGDEyfPh3FxcWIjY2FJEkQRXHIOUVIuyRJErndbho3bhy99957RESKyIfiAlu3biUAlJub2+/OMpe0Wq0UFRVFGo2GGhoaBnRXSZIC7s3JySG9Xk+nT59WvGKwrjZo1+vtgpcuXSIA9Omnn4YEFrvv5MmTtGnTJioqKurXjdi169atIwC0cuXKAXXRH/AjR46QVqulWbNmUXNz87BcbchA+T/0wIEDBIDy8vJCZlao2iJJEp08eZKys7Pp7NmzAZrTH4saGxvJaDQSANq0aZOyCSMF0qCB8n/42rVrCQAVFBSENKn+WOHz+airq2vIedHBgwdJp9MRADp8+HCAVIykYag773Q6yWAwEMdxdOrUqZDC/vXr16m9vZ3+/vtv+uWXX0iSJDp06BDl5+dTfX09VVZWktfrJY/HM+A8zGYzLV++nACQwWCgixcvKiAOV4+GFPX6Kyv0ej2OHTsGURRhNBpRUlICnuchSZJSoni9XhARzGYzjh8/DrfbjerqakRGRqKtrQ08z+P69esYN24cbty4ga+//hplZWVoaWlBSUkJHA6HUn6wEqS7uxufffYZ5syZg8LCQqxatQqVlZVIT0+Hz+eDKIp3pE8lbN++ffugm1g8D5/Ph8TERACAy+XCxo0bER0dDSICz/Po6uqCKIr4/vvvkZSUhCNHjkCWZXg8Hmg0Gly4cAGiKKKhoQHjxo1De3s7BEGAxWJBZ2cnVCoVrl69iuTkZKUW4zgOu3fvxtatW+HxeLBz507s2bMH4eHhwwv9oRBkOOd6LEeSJAkqlUrp71y/fh0WiwVXr15Fc3MzoqOjodFoEBMTA6vViokTJ2LUqFEIDw8Hz/Ow2+1ISEjAzZs3UVJSgoULF0KSJERERKCmpgYcx+GJJ56AXq9HR0cHXnnlFeTk5GDFihVK9/NOdzuHBVTvZE8QBNTU1OD8+fPIycnBiRMnkJ2djebmZsyePRtxcXEDjuPxeFBYWIimpiZERUWhq6sLmZmZmDRpEmJiYgIAYW2Yu2EjwlUiUmhvt9uRlpaGhIQExMTEQKPR4LHHHhuw4cYAUKvVWLVqFex2O44ePYrMzEykpqYqbs20imXgd8uGzSjmbq2trbDb7UhJSUFhYSGam5vxwAMPYPbs2QrbQnEPBgbP83A4HLh27RqmTZumlDb3yhSg2E6x3fVf1O0WyBZw8OBBxMbGIi0tDePHj0dPTw/0ev2g+tL99bOHOsYdcb3bUVmWZWWn/a9jv7e0tCA+Ph41NTXo6elBXV0dHn300WFpCGvXMnbdiQPawYAvEhE8Hg8uX76MlpYWEBFGjx6NsWPHIi4uDlqt9rYTlWUZGo0G165dgyAIsNlsMBqNQXvbRKR0DfzB5nleyb3YpgAIOSeSZVnxBp7nQwKWnRL1p5u9pULkOA5qtRqTJ08Gx3EoLy9Hfn4+fv/9d9y4cQNhYWGIj49HUlISEhISkJWVhWeeeUYRVI/Hg59//hmtra1YuXIlkpKSlFQhmIv2znUYc9ikhsLAUMHpraljxowJ+b5+xdzlcqGyshJnz55FUVER/vjjDwDAyy+/jI8//hgejwdqtRrFxcUYM2YMXC4XBEHAwoUL+9CagdTW1oaCggL89NNPGDNmDObOnYspU6YgMzMTly5dgtfrxalTp+BwOKDT6fDmm29Co9EEdRP/N1uKiopgMpkgyzIeeughGI3GfsWfycFbb70Fm82G+Ph4pdfFNt/lcsFoNGLp0qX/P07vitzn8wUtYC0WC+Xl5dGff/6p1FSSJNEHH3xAX3zxBX3zzTdksVj6tFBY/Xfu3DkaP348AaCUlBRqaGggp9NJpaWltGbNGsrNzSWv10tZWVkEgFQqFd26dUspcNm4/l+sz1RZWUkAAroHbrc7aM3H7p0+fbpyT++vzMxMstlsAS1jDFT83q7IZAcAREROp5OcTmefv8uyTH/99RdptVoCQIIg0JkzZwK6AG+//TbNmzePiIieeuopEkWREhISyOFwhFSw1tfXk1arJVEU6dVXXw3aDPT/ubq6ul+QFi9erBDFf93i7cTOXy+Y8DE9YCJsNpthNpsxa9YsJCcnB7iJLMsQRRG7du1CV1cXBEFAeHg45syZo1wnyzJefPFFNDQ0KK7h8/kgSRLcbjfsdjs0Gg0AQKfTwel0BiS4rMXr8/ng8/kAAFeuXIHdbsfMmTOhVquVZzF3vXjxInbu3ImEhASliNfr9SgtLcXrr78OQRD6uu5Qm2xERFeuXKG9e/fSjRs3aP/+/dTY2BhAb8aayZMnE8dxBICSk5MVJvnvWFFRkcIoABQbG0sOh4OOHDlCkZGRpNfraceOHVRbW0szZswgvV5PKSkpJEkS1dfXk0qlIgD09NNPU2VlJU2aNIlSU1OpvLw8gE2yLFNTU1OfNe3bt09p1QSTHn44eUh0dDT0ej3q6uoQERERNMF0u93o6OhQdlOlUgWNbNnZ2QEiLcsytFotFi1aBKfTCZfLhY6ODkydOhVxcXFwuVxwOp19xomKisKcOXPwyCOPwGw2Y926dejq6gqIromJifB6vUob6Nlnn8X58+eVVk2w+Q3qSJ3RlAGh1WqRnJwMr9eLlJQU6HS6PvdpNBpERkYq9zidTnR3d/cZm/WeekdLdgzPpIC5BMdxAakGu0+n0ym5Hc/zqKurQ1VVleLmbFxBECAIAtauXYvjx49j9+7dt01uQwLKvwhlE2Lfv/32W3R3d6Ozs7NP2cN2Z8mSJSAihIWFwWazobGxEZIkQZZlJTSXlpYGLZf8yxh/3WBZu3+CyABk3xkwXV1dfWpJjuOwbt065OfnY/ny5YiLixs6UEQEn8+niPeBAwdw8+ZN5W9arRbPP/88li1bhsWLF8NsNgeIJrtv27ZtGDVqFHp6epTXC9mOCoKgvOPJgBFFMcBFWVMuPDxcydjZNQyU7u5uZUP9E0udToe0tDRlPoxNO3bsQH5+PgRBwLRp0wJq3UGd6/kLWllZGS1YsIAA0Pnz5wNOXsxmM5WWllJxcTEdPHiQuru7g+ZRZWVlZDAYlDB87NgxunbtGl28eJEKCgrI4XAE5FEAyGq1UmdnJ02bNo0A0KpVq8jlclFGRgYBIFEUqaOjgyoqKignJ4dmzpxJ8+fPJ0mSlHH279+vrIfNpbm5mdRqNYmiSBzH0bZt2wY8IOm3FczzPGw2G1566SVs3rwZFosFqampePzxx5GUlKTQ1G6347vvvoPD4UBHRwdiY2MRExMT0IWQJAkTJkzAhg0bYDAYMHr0aJhMJthsNmi1WmRnZytBwefzITMzEw8++CB0Oh2mTJkCo9EIlUqltJ+nTp2KKVOmICsrC+Hh4Rg/fjxWr16N5557Dg6HAw6HA5Ik4f3338eKFSsgSZLCJo7jYDKZcOjQIajVani9XsyaNQvLli0Lms0rUuNfwrAfOzo68OWXX+Lzzz+HRqPBk08+iSVLliAtLQ1hYWF96qba2lp0dnaipqYGPM9j9erVAdf908zlciEjI0OJ1iUlJZg/f37otR4Rwev1oqysDDabDVlZWRg7dmy/7Qm2Aw0NDThx4gSmT5+O9vZ2GAwGZGRkKBpjs9mUrgDrHviLNtMZ/8jqL9As2WUM9deT3lU+0zP2HgIb2z8wqVQqNDY2oqSkBOnp6Zg7d66in70tMjISERERA3c4/TPyYE18FkXKy8tRV1enTDI3N1cBp7S0dET/1WMkelFqtRo6nQ5utxudnZ1BXY6IYDAYMHHixOBA+YfiUNu3AFBRUYHq6mpoNBpERUVh4cKFGDVqFO4HE0Op80K1xMREVFVVwWKxICkpCdHR0cN+g/deG/OiYR8usIjComBVVRW0Wi1SUlL+Eb3uf8wBaH+Z7L0+NRlp44fLpMLCwoD/nvIX//vKhtJmYRlsSUkJAaA1a9b0+x7T/WKDBsr/TeGIiAjavHkzNTU1DelN23+TiYNkHziOQ1NTE/bu3YtTp07h4Ycfxn+DDUrMGVAWiwXx8fFQqVSKVt0v0e2ORL27+TbJvbb/ALRjcTY5WyRvAAAAAElFTkSuQmCC';
-document.getElementById('navLogo').src = 'data:image/png;base64,' + LOGO_B64;
-
+document.getElementById('loginLogo').src = 'data:image/png;base64,' + LOGO_B64;
+document.getElementById('appLogo').src   = 'data:image/png;base64,' + LOGO_B64;
 
 const SKILLS_META = [
-  {id:'fg', label:'Forehand Grip',            cat:'fh'},
-  {id:'ft', label:'Forehand Tapping',         cat:'fh'},
-  {id:'fs', label:'Forehand Serves',          cat:'fh'},
-  {id:'fc', label:'Forehand Clear',           cat:'fh'},
-  {id:'fd', label:'Forehand Drive',           cat:'fh'},
-  {id:'fdp',label:'Forehand Drops',           cat:'fh'},
-  {id:'fn', label:'Forehand Netshot',         cat:'fh'},
-  {id:'bg', label:'Backhand Grip',            cat:'bh'},
-  {id:'bs', label:'Backhand Serves',          cat:'bh'},
-  {id:'bc', label:'Backhand Clear',           cat:'bh'},
-  {id:'bdr',label:'Backhand Drive',           cat:'bh'},
-  {id:'bdp',label:'Backhand Drops',           cat:'bh'},
-  {id:'bn', label:'Backhand Netshots',        cat:'bh'},
-  {id:'rs', label:'Ready Stance & Balance',   cat:'ft'},
-  {id:'fw', label:'Footwork',                 cat:'ft'},
-  {id:'sa', label:'Speed and Agility',        cat:'ft'},
-  {id:'an', label:'Anticipation',             cat:'ft'},
-  {id:'gs', label:'Game Strategy',            cat:'ft'},
-  {id:'fi', label:'Follows Instructions',     cat:'at'},
-  {id:'et', label:'Effort and Teamwork',      cat:'at'},
+  {id:'fg', label:'Forehand Grip',           cat:'fh'},
+  {id:'ft', label:'Forehand Tapping',        cat:'fh'},
+  {id:'fs', label:'Forehand Serves',         cat:'fh'},
+  {id:'fc', label:'Forehand Clear',          cat:'fh'},
+  {id:'fd', label:'Forehand Drive',          cat:'fh'},
+  {id:'fdp',label:'Forehand Drops',          cat:'fh'},
+  {id:'fn', label:'Forehand Netshot',        cat:'fh'},
+  {id:'bg', label:'Backhand Grip',           cat:'bh'},
+  {id:'bs', label:'Backhand Serves',         cat:'bh'},
+  {id:'bc', label:'Backhand Clear',          cat:'bh'},
+  {id:'bdr',label:'Backhand Drive',          cat:'bh'},
+  {id:'bdp',label:'Backhand Drops',          cat:'bh'},
+  {id:'bn', label:'Backhand Netshots',       cat:'bh'},
+  {id:'rs', label:'Ready Stance & Balance',  cat:'ft'},
+  {id:'fw', label:'Footwork',                cat:'ft'},
+  {id:'sa', label:'Speed and Agility',       cat:'ft'},
+  {id:'an', label:'Anticipation',            cat:'ft'},
+  {id:'gs', label:'Game Strategy',           cat:'ft'},
+  {id:'fi', label:'Follows Instructions',    cat:'at'},
+  {id:'et', label:'Effort and Teamwork',     cat:'at'},
   {id:'sl', label:'Skill Learning Willingness',cat:'at'},
 ];
-const CATS=[
+const CATS = [
   {id:'fh',name:'Forehand',    color:'#4f46e5'},
   {id:'bh',name:'Backhand',    color:'#059669'},
   {id:'ft',name:'Fundamentals',color:'#0284c7'},
   {id:'at',name:'Attitude',    color:'#ea580c'},
 ];
-const LEVEL_ORDER=['Rookie','Amateur','Intermediate - Riser','Intermediate - Skilled','Intermediate - Expert','Advanced - Skilled','Advanced - Expert','Elite','Pro'];
-const LEVEL_CFG={
+const SHORT = {
+  'Forehand Grip':'FH Grip','Forehand Tapping':'FH Tap','Forehand Serves':'FH Serve',
+  'Forehand Clear':'FH Clear','Forehand Drive':'FH Drive','Forehand Drops':'FH Drops',
+  'Forehand Netshot':'FH Net','Backhand Grip':'BH Grip','Backhand Serves':'BH Serve',
+  'Backhand Clear':'BH Clear','Backhand Drive':'BH Drive','Backhand Drops':'BH Drops',
+  'Backhand Netshots':'BH Net','Ready Stance & Balance':'Stance','Footwork':'Footwork',
+  'Speed and Agility':'Speed','Anticipation':'Anticip.','Game Strategy':'Strategy',
+  'Follows Instructions':'Follows','Effort and Teamwork':'Effort','Skill Learning Willingness':'Learning',
+};
+const LEVEL_ORDER = ['Rookie','Amateur','Intermediate - Riser','Intermediate - Skilled','Intermediate - Expert','Advanced - Skilled','Advanced - Expert','Elite','Pro'];
+const LEVEL_CFG = {
   'Rookie':               {col:'#dc4c3a',bg:'#fef2f0',br:'#fca5a5'},
   'Amateur':              {col:'#d97706',bg:'#fffbeb',br:'#fcd34d'},
   'Intermediate - Riser': {col:'#2563b0',bg:'#eff6ff',br:'#93c5fd'},
@@ -426,244 +710,644 @@ const LEVEL_CFG={
   'Elite':                {col:'#a16207',bg:'#fefce8',br:'#fde047'},
   'Pro':                  {col:'#be185d',bg:'#fdf2f8',br:'#f9a8d4'},
 };
-const AV_PAL=['#4f46e5','#059669','#0284c7','#ea580c','#7c3aed','#0891b2','#c2690a','#a16207'];
-const SHORT={
-  'Forehand Grip':'FH Grip','Forehand Tapping':'FH Tap','Forehand Serves':'FH Serve',
-  'Forehand Clear':'FH Clear','Forehand Drive':'FH Drive','Forehand Drops':'FH Drops',
-  'Forehand Netshot':'FH Net','Backhand Grip':'BH Grip','Backhand Serves':'BH Serve',
-  'Backhand Clear':'BH Clear','Backhand Drive':'BH Drive','Backhand Drops':'BH Drops',
-  'Backhand Netshots':'BH Net','Ready Stance & Balance':'Stance','Footwork':'Footwork',
-  'Speed and Agility':'Speed','Anticipation':'Anticip.','Game Strategy':'Strategy',
-  'Follows Instructions':'Follows','Effort and Teamwork':'Effort','Skill Learning Willingness':'Learning',
-};
-const DB_KEY='club7_trainees_v2';
-function loadDB(){try{const r=localStorage.getItem(DB_KEY);return r?JSON.parse(r):[]}catch(e){return[]}}
-function saveDB(d){localStorage.setItem(DB_KEY,JSON.stringify(d))}
-const SEED = [{"id":"seed_1","name":"Anishka Sandeep","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_2","name":"Anaisha Sandeep","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_3","name":"Pranav Abbaraju","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_4","name":"Shriya Vanapalli","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_5","name":"Rishavh Ambrish","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_6","name":"Srivahini Valluru","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":3,"fs":3,"fc":4,"fd":4,"fdp":3,"fn":4,"bg":3,"bs":3,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":3,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_7","name":"Eva Chandra","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":1,"ft":1,"fs":1,"fc":0,"fd":0,"fdp":0,"fn":0,"bg":0,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":0,"fw":0,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_8","name":"Luka Khudyakov","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":4,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":7,"et":8,"sl":7},{"id":"seed_9","name":"Devansh Challa","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":3,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_10","name":"Smera Abhilash","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":2,"ft":1,"fs":2,"fc":1,"fd":1,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_11","name":"Vivaan Patel","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_12","name":"Anushka Barhate","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_13","name":"Avani Prashanth","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":3,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_14","name":"Julie Wang","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":4,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":4,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_15","name":"Snithika Mahavadi","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_16","name":"Sri Lokesh Grandhe","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":1,"ft":2,"fs":1,"fc":1,"fd":0,"fdp":0,"fn":0,"bg":0,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":1,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_17","name":"Kshama Ghantasala","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":2,"ft":2,"fs":1,"fc":1,"fd":1,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":1,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_18","name":"Chavi Dawra","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_19","name":"Mansha Sri Selvaraj","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_20","name":"Devika A","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_21","name":"Avaneesh Bokka","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":3,"ft":3,"fs":2,"fc":3,"fd":3,"fdp":1,"fn":2,"bg":3,"bs":1,"bc":0,"bdr":1,"bdp":0,"bn":1,"rs":2,"fw":4,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_22","name":"Ananya Bokka","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_23","name":"Nikith Kuruwita","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":1,"ft":2,"fs":1,"fc":1,"fd":0,"fdp":0,"fn":0,"bg":0,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":1,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_24","name":"Janya Badiga","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_25","name":"Rhythm Muttepawar","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":4,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_26","name":"Vihaan Kankanala","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":7,"et":8,"sl":7},{"id":"seed_27","name":"Saya","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":4,"fs":3,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":3,"sa":0,"an":0,"gs":0,"fi":9,"et":9,"sl":7},{"id":"seed_28","name":"Sayan","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":3,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_29","name":"Vijith Marre","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_30","name":"Nia Tolikani","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_31","name":"Srivatsa Sayyapureddy","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":3,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":8,"et":10,"sl":8},{"id":"seed_32","name":"Liam Papali","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":2,"ft":2,"fs":1,"fc":1,"fd":1,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_33","name":"Anwita Dasari","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_34","name":"Vedrithvik Dasari","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_35","name":"Arnab Singh","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_36","name":"Siddharth Sriram","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_37","name":"Indranil Krishnan","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_38","name":"Atharv Anup","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_39","name":"Vihaan Telukutla","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_40","name":"Sudeeksha Shashidhar","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_41","name":"Diya Ramesh","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":2,"ft":2,"fs":1,"fc":1,"fd":1,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_42","name":"Aanya Bharadwaj","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_43","name":"Sai Vandanapu","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_44","name":"Aradhya Gautam","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_45","name":"Aadhya Sopalli","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_46","name":"Aarya Sopalli","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_47","name":"Naitik Srivastava","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":3,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_48","name":"Maulik Srivastav","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":2,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":8,"et":10,"sl":8},{"id":"seed_49","name":"Vaishnavi Praveen","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":2,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":8},{"id":"seed_50","name":"Prayan Maheshwari","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":3,"fs":4,"fc":2,"fd":2,"fdp":0,"fn":2,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":2,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_51","name":"Pushthi Maheshwari","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":3,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_52","name":"Srivansh Reddy Segu","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":3,"fs":3,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_53","name":"Srika Segu","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_54","name":"Geeta Mothukuri","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":3,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_55","name":"Adrith Nadipalli","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":3,"ft":3,"fs":3,"fc":3,"fd":3,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":1,"rs":2,"fw":4,"sa":2,"an":0,"gs":0,"fi":8,"et":10,"sl":8},{"id":"seed_56","name":"Nyla Wooten","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":3,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_57","name":"Emily Park","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":1,"ft":2,"fs":1,"fc":1,"fd":0,"fdp":0,"fn":0,"bg":0,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":1,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_58","name":"Shreya Nimbala","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":1,"ft":2,"fs":1,"fc":1,"fd":0,"fdp":0,"fn":0,"bg":0,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":1,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_59","name":"Wilhelmina Lin","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":3,"fs":3,"fc":2,"fd":3,"fdp":0,"fn":2,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":2,"rs":2,"fw":3,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_60","name":"William Lin","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_61","name":"Vedanvitha Abbaraju","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":4,"an":3,"gs":3,"fi":10,"et":10,"sl":8},{"id":"seed_62","name":"Elijah Bell","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":3,"fn":4,"bg":4,"bs":3,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":4,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_63","name":"Aadithya Pamarthi","parentName":"","parentEmail":"","parentPhone":"","level":"Elite","fg":9,"ft":9,"fs":9,"fc":10,"fd":10,"fdp":9,"fn":9,"bg":9,"bs":9,"bc":9,"bdr":9,"bdp":9,"bn":9,"rs":10,"fw":9,"sa":7,"an":7,"gs":7,"fi":10,"et":10,"sl":10},{"id":"seed_64","name":"Shreyansh Vanapalli","parentName":"","parentEmail":"","parentPhone":"","level":"Elite","fg":9,"ft":9,"fs":9,"fc":10,"fd":10,"fdp":9,"fn":9,"bg":9,"bs":9,"bc":9,"bdr":9,"bdp":9,"bn":9,"rs":10,"fw":9,"sa":7,"an":7,"gs":7,"fi":10,"et":10,"sl":10},{"id":"seed_65","name":"Oscar","parentName":"","parentEmail":"","parentPhone":"","level":"Advanced - Expert","fg":8,"ft":8,"fs":9,"fc":9,"fd":9,"fdp":8,"fn":9,"bg":8,"bs":8,"bc":8,"bdr":8,"bdp":6,"bn":8,"rs":8,"fw":8,"sa":6,"an":6,"gs":6,"fi":10,"et":10,"sl":10},{"id":"seed_66","name":"August","parentName":"","parentEmail":"","parentPhone":"","level":"Advanced - Expert","fg":8,"ft":8,"fs":9,"fc":9,"fd":9,"fdp":8,"fn":9,"bg":8,"bs":8,"bc":8,"bdr":8,"bdp":6,"bn":8,"rs":8,"fw":8,"sa":6,"an":6,"gs":6,"fi":10,"et":10,"sl":10},{"id":"seed_67","name":"Ethan Luo","parentName":"","parentEmail":"","parentPhone":"","level":"Advanced - Expert","fg":8,"ft":8,"fs":9,"fc":9,"fd":9,"fdp":8,"fn":9,"bg":8,"bs":8,"bc":8,"bdr":8,"bdp":6,"bn":8,"rs":8,"fw":8,"sa":6,"an":6,"gs":6,"fi":10,"et":10,"sl":10},{"id":"seed_68","name":"Aiden Luo","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Expert","fg":6,"ft":5,"fs":5,"fc":5,"fd":5,"fdp":4,"fn":5,"bg":6,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":6,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_69","name":"Satvik Marre","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Expert","fg":6,"ft":5,"fs":5,"fc":5,"fd":5,"fdp":4,"fn":5,"bg":6,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":6,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_70","name":"Anjana Chillara","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":4,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_71","name":"Sai Rahul Alishala","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":3,"ft":4,"fs":2,"fc":3,"fd":4,"fdp":2,"fn":2,"bg":2,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":3,"sa":2,"an":0,"gs":0,"fi":8,"et":8,"sl":8}];
+const AV_PAL = ['#4f46e5','#059669','#0284c7','#ea580c','#7c3aed','#0891b2','#c2690a','#a16207','#be185d'];
 
+// ══════════════ STORAGE KEYS ══════════════
+const T_KEY = 'club7_trainees_v2';
+const U_KEY = 'club7_users_v1';
+const S_KEY = 'club7_session_v1';
+const L_KEY = 'club7_log_v1';
 
-(function seedOnce(){const e=loadDB();if(e.length===0)saveDB(SEED)})();
-const ini=n=>n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
-const avc=n=>{let h=0;for(let i=0;i<n.length;i++)h=(h*31+n.charCodeAt(i))&0xffffffff;return AV_PAL[Math.abs(h)%AV_PAL.length]};
-function calcAvg(t){const v=SKILLS_META.map(s=>t[s.id]??0);return v.reduce((a,b)=>a+b,0)/v.length}
-function uid(){return 'tr_'+Date.now()+'_'+Math.random().toString(36).slice(2,7)}
-function heatColor(v){
-  if(v===0)   return{bg:'#f5f3ef',sc:'#c8c4bc',nm:'#c8c4bc'};
-  if(v<=2)    return{bg:'#fef2f0',sc:'#dc4c3a',nm:'#b83a2a'};
-  if(v<=4)    return{bg:'#fffbeb',sc:'#d97706',nm:'#b45309'};
-  if(v<=6)    return{bg:'#eff6ff',sc:'#2563b0',nm:'#1d4ed8'};
-  if(v<=8)    return{bg:'#f0fdf4',sc:'#16a34a',nm:'#15803d'};
+// ══════════════ DEFAULT USERS ══════════════
+const DEFAULT_USERS = [
+  {id:'u1', username:'admin',  password:'admin123',  name:'Club7 Admin',     role:'admin',   active:true,
+   perms:{viewDashboard:true, editTrainees:true, manageUsers:true}},
+  {id:'u2', username:'coach',  password:'coach123',  name:'Head Coach',      role:'coach',   active:true,
+   perms:{viewDashboard:true, editTrainees:true, manageUsers:false}},
+  {id:'u3', username:'viewer', password:'view123',   name:'Parent Viewer',   role:'viewer',  active:true,
+   perms:{viewDashboard:true, editTrainees:false, manageUsers:false}},
+];
+
+// ══════════════ SEED TRAINEES ══════════════
+const SEED_TRAINEES = [{"id":"seed_1","name":"Anishka Sandeep","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_2","name":"Anaisha Sandeep","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_3","name":"Pranav Abbaraju","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_4","name":"Shriya Vanapalli","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_5","name":"Rishavh Ambrish","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_6","name":"Srivahini Valluru","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":3,"fs":3,"fc":4,"fd":4,"fdp":3,"fn":4,"bg":3,"bs":3,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":3,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_7","name":"Eva Chandra","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":1,"ft":1,"fs":1,"fc":0,"fd":0,"fdp":0,"fn":0,"bg":0,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":0,"fw":0,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_8","name":"Luka Khudyakov","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":4,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":7,"et":8,"sl":7},{"id":"seed_9","name":"Devansh Challa","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":3,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_10","name":"Smera Abhilash","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":2,"ft":1,"fs":2,"fc":1,"fd":1,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_11","name":"Vivaan Patel","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_12","name":"Anushka Barhate","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_13","name":"Avani Prashanth","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":3,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_14","name":"Julie Wang","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":4,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":4,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_15","name":"Snithika Mahavadi","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_16","name":"Sri Lokesh Grandhe","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":1,"ft":2,"fs":1,"fc":1,"fd":0,"fdp":0,"fn":0,"bg":0,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":1,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_17","name":"Kshama Ghantasala","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":2,"ft":2,"fs":1,"fc":1,"fd":1,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":1,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_18","name":"Chavi Dawra","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_19","name":"Mansha Sri Selvaraj","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_20","name":"Devika A","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_21","name":"Avaneesh Bokka","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":3,"ft":3,"fs":2,"fc":3,"fd":3,"fdp":1,"fn":2,"bg":3,"bs":1,"bc":0,"bdr":1,"bdp":0,"bn":1,"rs":2,"fw":4,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_22","name":"Ananya Bokka","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_23","name":"Nikith Kuruwita","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":1,"ft":2,"fs":1,"fc":1,"fd":0,"fdp":0,"fn":0,"bg":0,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":1,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_24","name":"Janya Badiga","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_25","name":"Rhythm Muttepawar","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":4,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_26","name":"Vihaan Kankanala","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":7,"et":8,"sl":7},{"id":"seed_27","name":"Saya","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":4,"fs":3,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":3,"sa":0,"an":0,"gs":0,"fi":9,"et":9,"sl":7},{"id":"seed_28","name":"Sayan","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":3,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_29","name":"Vijith Marre","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_30","name":"Nia Tolikani","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_31","name":"Srivatsa Sayyapureddy","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":3,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":8,"et":10,"sl":8},{"id":"seed_32","name":"Liam Papali","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":2,"ft":2,"fs":1,"fc":1,"fd":1,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_33","name":"Anwita Dasari","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_34","name":"Vedrithvik Dasari","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_35","name":"Arnab Singh","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_36","name":"Siddharth Sriram","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_37","name":"Indranil Krishnan","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_38","name":"Atharv Anup","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_39","name":"Vihaan Telukutla","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_40","name":"Sudeeksha Shashidhar","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_41","name":"Diya Ramesh","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":2,"ft":2,"fs":1,"fc":1,"fd":1,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_42","name":"Aanya Bharadwaj","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_43","name":"Sai Vandanapu","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_44","name":"Aradhya Gautam","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_45","name":"Aadhya Sopalli","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_46","name":"Aarya Sopalli","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_47","name":"Naitik Srivastava","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":3,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_48","name":"Maulik Srivastav","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":2,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":8,"et":10,"sl":8},{"id":"seed_49","name":"Vaishnavi Praveen","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":2,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":8},{"id":"seed_50","name":"Prayan Maheshwari","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":3,"fs":4,"fc":2,"fd":2,"fdp":0,"fn":2,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":2,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_51","name":"Pushthi Maheshwari","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":3,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_52","name":"Srivansh Reddy Segu","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":3,"fs":3,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_53","name":"Srika Segu","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":2,"fs":2,"fc":2,"fd":2,"fdp":0,"fn":0,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":2,"fw":2,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_54","name":"Geeta Mothukuri","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":3,"ft":4,"fs":3,"fc":4,"fd":4,"fdp":2,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_55","name":"Adrith Nadipalli","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":3,"ft":3,"fs":3,"fc":3,"fd":3,"fdp":1,"fn":2,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":1,"rs":2,"fw":4,"sa":2,"an":0,"gs":0,"fi":8,"et":10,"sl":8},{"id":"seed_56","name":"Nyla Wooten","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":2,"fn":3,"bg":3,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_57","name":"Emily Park","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":1,"ft":2,"fs":1,"fc":1,"fd":0,"fdp":0,"fn":0,"bg":0,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":1,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_58","name":"Shreya Nimbala","parentName":"","parentEmail":"","parentPhone":"","level":"Rookie","fg":1,"ft":2,"fs":1,"fc":1,"fd":0,"fdp":0,"fn":0,"bg":0,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":0,"rs":1,"fw":1,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_59","name":"Wilhelmina Lin","parentName":"","parentEmail":"","parentPhone":"","level":"Amateur","fg":2,"ft":3,"fs":3,"fc":2,"fd":3,"fdp":0,"fn":2,"bg":1,"bs":0,"bc":0,"bdr":0,"bdp":0,"bn":2,"rs":2,"fw":3,"sa":0,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_60","name":"William Lin","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_61","name":"Vedanvitha Abbaraju","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":5,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":4,"an":3,"gs":3,"fi":10,"et":10,"sl":8},{"id":"seed_62","name":"Elijah Bell","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":4,"ft":4,"fs":4,"fc":4,"fd":4,"fdp":3,"fn":4,"bg":4,"bs":3,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":4,"fw":4,"sa":2,"an":0,"gs":0,"fi":10,"et":10,"sl":10},{"id":"seed_63","name":"Aadithya Pamarthi","parentName":"","parentEmail":"","parentPhone":"","level":"Elite","fg":9,"ft":9,"fs":9,"fc":10,"fd":10,"fdp":9,"fn":9,"bg":9,"bs":9,"bc":9,"bdr":9,"bdp":9,"bn":9,"rs":10,"fw":9,"sa":7,"an":7,"gs":7,"fi":10,"et":10,"sl":10},{"id":"seed_64","name":"Shreyansh Vanapalli","parentName":"","parentEmail":"","parentPhone":"","level":"Elite","fg":9,"ft":9,"fs":9,"fc":10,"fd":10,"fdp":9,"fn":9,"bg":9,"bs":9,"bc":9,"bdr":9,"bdp":9,"bn":9,"rs":10,"fw":9,"sa":7,"an":7,"gs":7,"fi":10,"et":10,"sl":10},{"id":"seed_65","name":"Oscar","parentName":"","parentEmail":"","parentPhone":"","level":"Advanced - Expert","fg":8,"ft":8,"fs":9,"fc":9,"fd":9,"fdp":8,"fn":9,"bg":8,"bs":8,"bc":8,"bdr":8,"bdp":6,"bn":8,"rs":8,"fw":8,"sa":6,"an":6,"gs":6,"fi":10,"et":10,"sl":10},{"id":"seed_66","name":"August","parentName":"","parentEmail":"","parentPhone":"","level":"Advanced - Expert","fg":8,"ft":8,"fs":9,"fc":9,"fd":9,"fdp":8,"fn":9,"bg":8,"bs":8,"bc":8,"bdr":8,"bdp":6,"bn":8,"rs":8,"fw":8,"sa":6,"an":6,"gs":6,"fi":10,"et":10,"sl":10},{"id":"seed_67","name":"Ethan Luo","parentName":"","parentEmail":"","parentPhone":"","level":"Advanced - Expert","fg":8,"ft":8,"fs":9,"fc":9,"fd":9,"fdp":8,"fn":9,"bg":8,"bs":8,"bc":8,"bdr":8,"bdp":6,"bn":8,"rs":8,"fw":8,"sa":6,"an":6,"gs":6,"fi":10,"et":10,"sl":10},{"id":"seed_68","name":"Aiden Luo","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Expert","fg":6,"ft":5,"fs":5,"fc":5,"fd":5,"fdp":4,"fn":5,"bg":6,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":6,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_69","name":"Satvik Marre","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Expert","fg":6,"ft":5,"fs":5,"fc":5,"fd":5,"fdp":4,"fn":5,"bg":6,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":6,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_70","name":"Anjana Chillara","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Skilled","fg":5,"ft":5,"fs":4,"fc":4,"fd":5,"fdp":4,"fn":5,"bg":5,"bs":5,"bc":3,"bdr":3,"bdp":1,"bn":3,"rs":5,"fw":5,"sa":5,"an":3,"gs":3,"fi":10,"et":10,"sl":10},{"id":"seed_71","name":"Sai Rahul Alishala","parentName":"","parentEmail":"","parentPhone":"","level":"Intermediate - Riser","fg":3,"ft":4,"fs":2,"fc":3,"fd":4,"fdp":2,"fn":2,"bg":2,"bs":2,"bc":1,"bdr":2,"bdp":1,"bn":3,"rs":3,"fw":3,"sa":2,"an":0,"gs":0,"fi":8,"et":8,"sl":8}];
+
+// ══════════════ DB HELPERS ══════════════
+const loadDB   = () => { try { return JSON.parse(localStorage.getItem(T_KEY)||'[]'); } catch(e){return []} };
+const saveDB   = d => localStorage.setItem(T_KEY, JSON.stringify(d));
+const loadUsers = () => { try { return JSON.parse(localStorage.getItem(U_KEY)||'null') || DEFAULT_USERS; } catch(e){return DEFAULT_USERS} };
+const saveUsers = u => localStorage.setItem(U_KEY, JSON.stringify(u));
+const loadLog   = () => { try { return JSON.parse(localStorage.getItem(L_KEY)||'[]'); } catch(e){return []} };
+const saveLog   = l => localStorage.setItem(L_KEY, JSON.stringify(l.slice(0,100)));
+
+function addLog(msg, type='info') {
+  const log = loadLog();
+  log.unshift({msg, type, time: new Date().toISOString(), user: currentUser?.username||'system'});
+  saveLog(log);
+}
+
+// ══════════════ SESSION ══════════════
+let currentUser = null;
+
+function getSession() {
+  try { const s = JSON.parse(sessionStorage.getItem(S_KEY)); return s; } catch(e) { return null; }
+}
+function setSession(u) {
+  sessionStorage.setItem(S_KEY, JSON.stringify({id:u.id, username:u.username, name:u.name, role:u.role, perms:u.perms}));
+}
+function clearSession() { sessionStorage.removeItem(S_KEY); }
+
+// ══════════════ AUTH ══════════════
+function doLogin() {
+  const uname = document.getElementById('loginUser').value.trim();
+  const pass  = document.getElementById('loginPass').value;
+  const btn   = document.getElementById('loginBtn');
+  const err   = document.getElementById('loginErr');
+
+  if (!uname || !pass) {
+    showLoginErr('Please enter your username and password.');
+    return;
+  }
+
+  btn.disabled = true;
+  btn.textContent = 'Signing in…';
+
+  setTimeout(() => {
+    const users = loadUsers();
+    const user  = users.find(u => u.username === uname && u.password === pass && u.active);
+
+    if (!user) {
+      showLoginErr('Incorrect username or password, or your account is inactive.');
+      const inp = document.getElementById('loginPass');
+      inp.classList.add('shake');
+      setTimeout(() => inp.classList.remove('shake'), 500);
+      btn.disabled = false;
+      btn.innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Sign In';
+      return;
+    }
+
+    currentUser = user;
+    setSession(user);
+    addLog(`Login successful`, 'login');
+    err.classList.remove('show');
+
+    // Init app
+    initApp();
+    document.getElementById('loginLayer').classList.remove('active');
+    document.getElementById('adminLayer').classList.add('active');
+  }, 600);
+}
+
+function showLoginErr(msg) {
+  const e = document.getElementById('loginErr');
+  document.getElementById('loginErrMsg').textContent = msg;
+  e.classList.add('show');
+}
+
+function doLogout() {
+  addLog('Logged out', 'logout');
+  currentUser = null;
+  clearSession();
+  document.getElementById('adminLayer').classList.remove('active');
+  document.getElementById('loginLayer').classList.add('active');
+  document.getElementById('loginUser').value = '';
+  document.getElementById('loginPass').value = '';
+  document.getElementById('loginErr').classList.remove('show');
+  document.getElementById('loginBtn').disabled = false;
+  document.getElementById('loginBtn').innerHTML = '<svg width="15" height="15" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M15 3h4a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-4"/><polyline points="10 17 15 12 10 7"/><line x1="15" y1="12" x2="3" y2="12"/></svg>Sign In';
+}
+
+// ══════════════ INIT ══════════════
+function initApp() {
+  // Seed trainees on first load
+  if (loadDB().length === 0) saveDB(SEED_TRAINEES);
+  // Ensure users exist
+  if (!localStorage.getItem(U_KEY)) saveUsers(DEFAULT_USERS);
+
+  const u = currentUser;
+  document.getElementById('currentUserLabel').textContent = `${u.name} (${u.role})`;
+
+  // Show tabs based on permissions
+  document.getElementById('tab-entry').style.display = u.perms.editTrainees ? 'flex' : 'none';
+  document.getElementById('tab-users').style.display = u.perms.manageUsers ? 'flex' : 'none';
+  document.getElementById('tc-users').textContent = loadUsers().length;
+
+  buildSkillSliders();
+  refreshDashboard();
+  switchTab('dash');
+}
+
+// ══════════════ TAB SWITCHING ══════════════
+let currentTab = 'dash';
+function switchTab(tab) {
+  // Permission check
+  if (tab === 'entry' && !currentUser.perms.editTrainees) { showToast('You do not have permission to edit trainees.','error'); return; }
+  if (tab === 'users' && !currentUser.perms.manageUsers)  { showToast('Admin access required.','error'); return; }
+
+  currentTab = tab;
+  document.querySelectorAll('.admin-tab').forEach(t => t.classList.remove('active'));
+  document.querySelectorAll('.admin-section').forEach(s => s.classList.remove('active'));
+  document.getElementById('tab-'+tab).classList.add('active');
+  document.getElementById('sec-'+tab).classList.add('active');
+
+  if (tab === 'users') renderUserList();
+}
+
+// ══════════════ HELPERS ══════════════
+const ini  = n => n.split(' ').map(w=>w[0]).join('').slice(0,2).toUpperCase();
+const avc  = n => { let h=0; for(let i=0;i<n.length;i++) h=(h*31+n.charCodeAt(i))&0xffffffff; return AV_PAL[Math.abs(h)%AV_PAL.length]; };
+const calcAvg = t => { const v=SKILLS_META.map(s=>t[s.id]??0); return v.reduce((a,b)=>a+b,0)/v.length; };
+const uid  = () => 'id_'+Date.now()+'_'+Math.random().toString(36).slice(2,6);
+
+function heatColor(v) {
+  if(v===0)  return{bg:'#f5f3ef',sc:'#c8c4bc',nm:'#c8c4bc'};
+  if(v<=2)   return{bg:'#fef2f0',sc:'#dc4c3a',nm:'#b83a2a'};
+  if(v<=4)   return{bg:'#fffbeb',sc:'#d97706',nm:'#b45309'};
+  if(v<=6)   return{bg:'#eff6ff',sc:'#2563b0',nm:'#1d4ed8'};
+  if(v<=8)   return{bg:'#f0fdf4',sc:'#16a34a',nm:'#15803d'};
   return{bg:'#fefce8',sc:'#a16207',nm:'#854d0e'};
 }
-let editingId=null;
-function showPage(page){
-  document.querySelectorAll('.page').forEach(p=>p.classList.remove('active'));
-  document.querySelectorAll('.nav-tab').forEach(t=>t.classList.remove('active'));
-  document.getElementById('page-'+page).classList.add('active');
-  document.getElementById('tab-'+page).classList.add('active');
-  if(page==='dashboard')refreshDashboard();
-  if(page==='entry'&&!editingId)resetForm();
-}
-function buildSkillSliders(){
-  const cm={fh:'fh-skills',bh:'bh-skills',ft:'ft-skills',at:'at-skills'};
-  SKILLS_META.forEach(sk=>{
-    const c=document.getElementById(cm[sk.cat]);
-    const d=document.createElement('div');
-    d.className='rank-group';
-    d.innerHTML=`<label class="field-label">${sk.label}</label><div class="rank-row"><div class="rank-track"><input type="range" class="rank-input" id="sk-${sk.id}" min="0" max="10" value="0" oninput="document.getElementById('sv-${sk.id}').textContent=this.value;updateSliderColor(this)"></div><div class="rank-val" id="sv-${sk.id}">0</div></div>`;
-    c.appendChild(d);
-  });
-}
-function updateSliderColor(inp){
-  const p=parseInt(inp.value)*10;
-  inp.style.background=`linear-gradient(to right,#1c1917 0%,#1c1917 ${p}%,#eceae5 ${p}%,#eceae5 100%)`;
-}
-function resetForm(){
-  editingId=null;
-  document.getElementById('formTitle').textContent='Add New Trainee';
-  document.getElementById('formSubtitle').innerHTML='Fill in the trainee details below. Fields marked <span style="color:#dc4c3a">*</span> are required.';
-  document.getElementById('saveBtnTxt').textContent='Save Trainee';
-  ['f-name','f-parent-name','f-parent-email','f-parent-phone'].forEach(id=>{
-    const e=document.getElementById(id);e.value='';e.classList.remove('error');
-  });
-  document.getElementById('f-level').value='';
-  document.getElementById('f-level').classList.remove('error');
-  SKILLS_META.forEach(sk=>{
-    const e=document.getElementById('sk-'+sk.id);
-    e.value=0;document.getElementById('sv-'+sk.id).textContent='0';updateSliderColor(e);
-  });
-}
-function populateForm(t){
-  document.getElementById('f-name').value=t.name||'';
-  document.getElementById('f-parent-name').value=t.parentName||'';
-  document.getElementById('f-parent-email').value=t.parentEmail||'';
-  document.getElementById('f-parent-phone').value=t.parentPhone||'';
-  document.getElementById('f-level').value=t.level||'';
-  SKILLS_META.forEach(sk=>{
-    const e=document.getElementById('sk-'+sk.id);
-    e.value=t[sk.id]??0;
-    document.getElementById('sv-'+sk.id).textContent=e.value;
-    updateSliderColor(e);
-  });
-}
-function cancelEdit(){editingId=null;resetForm();showPage('dashboard')}
-function validateForm(){
-  let ok=true;
-  const fields=[
-    {id:'f-name',check:v=>v.trim()},
-    {id:'f-parent-name',check:v=>v.trim()},
-    {id:'f-parent-phone',check:v=>v.trim()},
-    {id:'f-level',check:v=>v.trim()},
-  ];
-  fields.forEach(f=>{
-    const e=document.getElementById(f.id);
-    const valid=f.check(e.value);
-    e.classList.toggle('error',!valid);
-    if(!valid)ok=false;
-  });
-  const em=document.getElementById('f-parent-email');
-  const emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(em.value.trim());
-  em.classList.toggle('error',!emailOk);
-  if(!emailOk)ok=false;
-  return ok;
-}
-function saveTrainee(){
-  if(!validateForm()){showToast('Please fill in all required fields.','error');return}
-  const db=loadDB();
-  const skills={};
-  SKILLS_META.forEach(sk=>{skills[sk.id]=parseInt(document.getElementById('sk-'+sk.id).value)});
-  const t={
-    id:editingId||uid(),
-    name:document.getElementById('f-name').value.trim(),
-    parentName:document.getElementById('f-parent-name').value.trim(),
-    parentEmail:document.getElementById('f-parent-email').value.trim(),
-    parentPhone:document.getElementById('f-parent-phone').value.trim(),
-    level:document.getElementById('f-level').value,
-    ...skills
-  };
-  if(editingId){const i=db.findIndex(x=>x.id===editingId);if(i!==-1)db[i]=t;showToast('Trainee updated successfully!','success')}
-  else{db.push(t);showToast('Trainee added successfully!','success')}
-  saveDB(db);editingId=null;resetForm();showPage('dashboard');
-  setTimeout(()=>pickStudent(t.id),100);
-}
-function editCurrent(){
-  if(!currentStudentId)return;
-  const t=loadDB().find(x=>x.id===currentStudentId);if(!t)return;
-  editingId=t.id;
-  document.getElementById('formTitle').textContent='Edit Trainee';
-  document.getElementById('formSubtitle').textContent='Editing: '+t.name;
-  document.getElementById('saveBtnTxt').textContent='Update Trainee';
-  populateForm(t);showPage('entry');window.scrollTo(0,0);
-}
-function confirmDelete(){
-  if(!currentStudentId)return;
-  const t=loadDB().find(x=>x.id===currentStudentId);
-  if(t)document.getElementById('confirmMsg').textContent='Delete "'+t.name+'"? This cannot be undone.';
-  document.getElementById('confirmOverlay').classList.add('open');
-}
-function closeConfirm(){document.getElementById('confirmOverlay').classList.remove('open')}
-function deleteConfirmed(){
-  let db=loadDB().filter(t=>t.id!==currentStudentId);
-  saveDB(db);closeConfirm();currentStudentId=null;
-  showToast('Trainee deleted.','success');refreshDashboard();
-}
-let currentStudentId=null,dashView=[];
-function refreshDashboard(){
-  const db=loadDB();
-  document.getElementById('dash-count').textContent=db.length;
-  const lsel=document.getElementById('filterLevel');
-  const curLvl=lsel.value;
-  lsel.innerHTML='<option value="">All levels</option>'+
+
+// ══════════════ DASHBOARD ══════════════
+let dashView = [], currentStudentId = null;
+
+function refreshDashboard() {
+  const db = loadDB();
+  document.getElementById('tc-dash').textContent = db.length;
+
+  // Level filter options
+  const lsel = document.getElementById('filterLevel');
+  const cur  = lsel.value;
+  lsel.innerHTML = '<option value="">All levels</option>' +
     LEVEL_ORDER.filter(l=>db.some(t=>t.level===l)).map(l=>`<option value="${l}">${l}</option>`).join('');
-  lsel.value=curLvl;
-  const pills=document.getElementById('levelPills');
-  pills.innerHTML=LEVEL_ORDER.filter(l=>db.some(t=>t.level===l)).map(l=>{
-    const cnt=db.filter(t=>t.level===l).length;
-    const cfg=LEVEL_CFG[l]||{col:'#888',bg:'#eee',br:'#ccc'};
-    const sh=l.replace('Intermediate - ','Int. ').replace('Advanced - ','Adv. ');
-    return`<span class="hpill" style="background:${cfg.bg};color:${cfg.col};border-color:${cfg.br}">${sh} · ${cnt}</span>`;
+  lsel.value = cur;
+
+  // Pills
+  const pills = document.getElementById('levelPills');
+  pills.innerHTML = LEVEL_ORDER.filter(l=>db.some(t=>t.level===l)).map(l => {
+    const cnt = db.filter(t=>t.level===l).length;
+    const cfg = LEVEL_CFG[l]||{col:'#888',bg:'#eee',br:'#ccc'};
+    return `<span class="hpill" style="background:${cfg.bg};color:${cfg.col};border-color:${cfg.br}">${l.replace('Intermediate - ','Int. ').replace('Advanced - ','Adv. ')} · ${cnt}</span>`;
   }).join('');
-  applyDashFilter();
+
+  applyFilter();
 }
-function applyDashFilter(){
-  const db=loadDB();
-  const lv=document.getElementById('filterLevel').value;
-  const q=document.getElementById('filterSearch').value.toLowerCase();
-  dashView=[...db]
+
+function applyFilter() {
+  const db = loadDB();
+  const lv = document.getElementById('filterLevel').value;
+  const q  = document.getElementById('filterSearch').value.toLowerCase();
+  dashView = [...db]
     .filter(t=>(!lv||t.level===lv)&&(!q||t.name.toLowerCase().includes(q)))
     .sort((a,b)=>LEVEL_ORDER.indexOf(a.level)-LEVEL_ORDER.indexOf(b.level)||a.name.localeCompare(b.name));
-  document.getElementById('studentCount').textContent=dashView.length;
-  const list=document.getElementById('studentList');
-  list.innerHTML=dashView.map(t=>{
-    const ac=avc(t.name);const cfg=LEVEL_CFG[t.level]||{col:'#888'};
-    return`<button class="s-item" data-id="${t.id}" onclick="pickStudent('${t.id}')">
+  document.getElementById('studentCount').textContent = dashView.length;
+
+  const list = document.getElementById('studentList');
+  list.innerHTML = dashView.map(t => {
+    const ac  = avc(t.name);
+    const cfg = LEVEL_CFG[t.level]||{col:'#888'};
+    return `<button class="s-item" data-id="${t.id}" onclick="pickStudent('${t.id}')">
       <div class="s-av" style="background:${ac}18;color:${ac}">${ini(t.name)}</div>
       <div class="si-info"><div class="si-name">${t.name}</div><div class="si-lvl" style="color:${cfg.col}">${t.level}</div></div>
     </button>`;
   }).join('');
-  if(dashView.length===0){
-    document.getElementById('emptyDash').style.display='flex';
-    document.getElementById('dashContent').style.display='none';
+
+  if (dashView.length === 0) {
+    document.getElementById('emptyState').style.display = 'flex';
+    document.getElementById('dashContent').style.display = 'none';
     return;
   }
-  document.getElementById('emptyDash').style.display='none';
-  document.getElementById('dashContent').style.display='block';
-  const sel=dashView.find(t=>t.id===currentStudentId)?currentStudentId:dashView[0].id;
+  document.getElementById('emptyState').style.display = 'none';
+  document.getElementById('dashContent').style.display = 'block';
+  const sel = dashView.find(t=>t.id===currentStudentId) ? currentStudentId : dashView[0].id;
   pickStudent(sel);
 }
-function pickStudent(id){
-  currentStudentId=id;
-  document.querySelectorAll('.s-item').forEach(el=>el.classList.toggle('active',el.dataset.id===id));
-  const db=loadDB();const t=db.find(x=>x.id===id);if(!t)return;
-  const cfg=LEVEL_CFG[t.level]||{col:'#888',bg:'#eee',br:'#ccc'};
-  const ac=avc(t.name);const avg=calcAvg(t);
-  const av=document.getElementById('profAv');
-  av.textContent=ini(t.name);
-  av.style.cssText=`background:${ac}18;color:${ac};width:58px;height:58px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:20px;font-weight:700;flex-shrink:0`;
-  document.getElementById('profName').textContent=t.name;
-  const badge=document.getElementById('profBadge');
-  badge.textContent=t.level;
-  badge.style.cssText=`color:${cfg.col};background:${cfg.bg};border:1.5px solid ${cfg.br};display:inline-flex;align-items:center;padding:5px 14px;border-radius:6px;font-size:14px;font-weight:700;font-family:'Playfair Display',serif`;
-  const allS=[...db].sort((a,b)=>calcAvg(b)-calcAvg(a));
-  const rank=allS.findIndex(x=>x.id===id)+1;
-  document.getElementById('profRank').textContent='#'+rank+' of '+db.length;
-  document.getElementById('profScore').innerHTML=avg.toFixed(2)+'<sub>/10</sub>';
-  const peers=db.filter(x=>x.level===t.level);
-  const lvlAvg=peers.reduce((a,p)=>a+calcAvg(p),0)/peers.length;
-  document.getElementById('mMyVal').textContent=avg.toFixed(2);
-  document.getElementById('mMySub').textContent='Ranked #'+rank+' overall';
-  const f1=document.getElementById('mMyFill');f1.style.width=avg*10+'%';f1.style.background=cfg.col;
-  document.getElementById('mLvlVal').textContent=lvlAvg.toFixed(2);
-  document.getElementById('mLvlSub').textContent=peers.length+' trainees in '+t.level;
-  const f2=document.getElementById('mLvlFill');f2.style.width=lvlAvg*10+'%';f2.style.background=cfg.col;
-  document.getElementById('skillBars').innerHTML=CATS.map(cat=>{
-    const sks=SKILLS_META.filter(s=>s.cat===cat.id);
-    return`<div class="cat-block">
+
+function pickStudent(id) {
+  currentStudentId = id;
+  document.querySelectorAll('.s-item').forEach(el=>el.classList.toggle('active', el.dataset.id===id));
+
+  const db  = loadDB();
+  const t   = db.find(x=>x.id===id);
+  if (!t) return;
+
+  const cfg = LEVEL_CFG[t.level]||{col:'#888',bg:'#eee',br:'#ccc'};
+  const ac  = avc(t.name);
+  const avg = calcAvg(t);
+
+  const av = document.getElementById('profAv');
+  av.textContent = ini(t.name);
+  av.style.cssText = `background:${ac}18;color:${ac};width:56px;height:56px;border-radius:50%;display:flex;align-items:center;justify-content:center;font-family:'Playfair Display',serif;font-size:19px;font-weight:700;flex-shrink:0`;
+
+  document.getElementById('profName').textContent = t.name;
+  const badge = document.getElementById('profBadge');
+  badge.textContent = t.level;
+  badge.style.cssText = `color:${cfg.col};background:${cfg.bg};border:1.5px solid ${cfg.br};display:inline-flex;align-items:center;padding:5px 14px;border-radius:6px;font-size:14px;font-weight:700;font-family:'Playfair Display',serif`;
+
+  const rank = [...db].sort((a,b)=>calcAvg(b)-calcAvg(a)).findIndex(x=>x.id===id)+1;
+  document.getElementById('profRank').textContent = `#${rank} of ${db.length}`;
+  document.getElementById('profScore').innerHTML = `${avg.toFixed(2)}<sub>/10</sub>`;
+
+  // Action buttons — only if has editTrainees permission
+  const pa = document.getElementById('profActions');
+  if (currentUser.perms.editTrainees) {
+    pa.innerHTML = `
+      <button class="btn-sm" onclick="editTrainee('${id}')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M11 4H4a2 2 0 0 0-2 2v14a2 2 0 0 0 2 2h14a2 2 0 0 0 2-2v-7"/><path d="M18.5 2.5a2.121 2.121 0 0 1 3 3L12 15l-4 1 1-4 9.5-9.5z"/></svg>Edit
+      </button>
+      <button class="btn-sm danger" onclick="deleteTrainee('${id}')">
+        <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Delete
+      </button>`;
+  } else { pa.innerHTML = ''; }
+
+  const peers  = db.filter(x=>x.level===t.level);
+  const lvlAvg = peers.reduce((a,p)=>a+calcAvg(p),0)/peers.length;
+  document.getElementById('mMyVal').textContent  = avg.toFixed(2);
+  document.getElementById('mMySub').textContent  = `Ranked #${rank} overall`;
+  const f1 = document.getElementById('mMyFill'); f1.style.width=avg*10+'%'; f1.style.background=cfg.col;
+  document.getElementById('mLvlVal').textContent = lvlAvg.toFixed(2);
+  document.getElementById('mLvlSub').textContent = `${peers.length} trainees in ${t.level}`;
+  const f2 = document.getElementById('mLvlFill'); f2.style.width=lvlAvg*10+'%'; f2.style.background=cfg.col;
+
+  document.getElementById('skillBars').innerHTML = CATS.map(cat => {
+    const sks = SKILLS_META.filter(s=>s.cat===cat.id);
+    return `<div class="cat-block">
       <div class="cat-head"><div class="cat-pip" style="background:${cat.color}"></div><span class="cat-name" style="color:${cat.color}">${cat.name}</span></div>
       ${sks.map(sk=>{const v=t[sk.id]??0;return`<div class="sk-row"><span class="sk-name">${sk.label}</span><div class="bar-track"><div class="bar-fill" style="width:${v*10}%;background:${cat.color}"></div></div><span class="sk-val">${v}</span></div>`}).join('')}
     </div>`;
   }).join('');
-  document.getElementById('hmGrid').innerHTML=CATS.map(cat=>{
-    const sks=SKILLS_META.filter(s=>s.cat===cat.id);
-    return`<div><div class="hm-cat-lbl" style="color:${cat.color}">${cat.name}</div>
-      <div class="hm-tiles">${sks.map(sk=>{const v=t[sk.id]??0,c=heatColor(v),l=SHORT[sk.label]||sk.label;
-        return`<div class="hm-tile" style="background:${c.bg}" title="${sk.label}: ${v}/10"><span class="hm-score" style="color:${c.sc}">${v}</span><span class="hm-name" style="color:${c.nm}">${l}</span></div>`;
-      }).join('')}</div></div>`;
+
+  document.getElementById('hmGrid').innerHTML = CATS.map(cat => {
+    const sks = SKILLS_META.filter(s=>s.cat===cat.id);
+    return `<div><div class="hm-cat-lbl" style="color:${cat.color}">${cat.name}</div><div class="hm-tiles">
+      ${sks.map(sk=>{const v=t[sk.id]??0,c=heatColor(v);return`<div class="hm-tile" style="background:${c.bg}" title="${sk.label}: ${v}/10"><span class="hm-score" style="color:${c.sc}">${v}</span><span class="hm-name" style="color:${c.nm}">${SHORT[sk.label]||sk.label}</span></div>`}).join('')}
+    </div></div>`;
   }).join('');
-  document.getElementById('hmLegend').innerHTML=[0,2,4,6,8,10].map(v=>{const c=heatColor(v);return`<div class="hm-swatch" style="background:${c.bg}"></div>`}).join('');
+
+  document.getElementById('hmLegend').innerHTML = [0,2,4,6,8,10].map(v=>{const c=heatColor(v);return`<div class="hm-swatch" style="background:${c.bg}"></div>`}).join('');
 }
-let toastTimer=null;
-function showToast(msg,type='success'){
-  const t=document.getElementById('toast');t.textContent=msg;
-  t.className='toast '+type+' show';
-  if(toastTimer)clearTimeout(toastTimer);
-  toastTimer=setTimeout(()=>t.classList.remove('show'),3500);
+
+// ══════════════ TRAINEE FORM ══════════════
+let editingTraineeId = null;
+
+function buildSkillSliders() {
+  const cm = {fh:'fh-skills',bh:'bh-skills',ft:'ft-skills',at:'at-skills'};
+  SKILLS_META.forEach(sk => {
+    const c = document.getElementById(cm[sk.cat]);
+    const d = document.createElement('div');
+    d.className = 'rank-group';
+    d.innerHTML = `<label class="field-lbl">${sk.label}</label><div class="rank-row"><div class="rank-track"><input type="range" class="rank-input" id="sk-${sk.id}" min="0" max="10" value="0" oninput="document.getElementById('sv-${sk.id}').textContent=this.value;updateSlider(this)"></div><div class="rank-val" id="sv-${sk.id}">0</div></div>`;
+    c.appendChild(d);
+  });
 }
-buildSkillSliders();
-document.getElementById('filterLevel').addEventListener('change',applyDashFilter);
-document.getElementById('filterSearch').addEventListener('input',applyDashFilter);
-document.getElementById('confirmOverlay').addEventListener('click',function(e){if(e.target===this)closeConfirm()});
-refreshDashboard();
+
+function updateSlider(inp) {
+  const p = parseInt(inp.value)*10;
+  inp.style.background = `linear-gradient(to right,#1c1917 0%,#1c1917 ${p}%,#eceae5 ${p}%,#eceae5 100%)`;
+}
+
+function resetEntryForm() {
+  editingTraineeId = null;
+  document.getElementById('formTitle').textContent = 'Add New Trainee';
+  document.getElementById('formSub').innerHTML = 'Fill in all details. Fields marked <span style="color:#dc4c3a">*</span> are required.';
+  document.getElementById('saveBtnTxt').textContent = 'Save Trainee';
+  ['f-name','f-pname','f-pemail','f-pphone'].forEach(id=>{const e=document.getElementById(id);e.value='';e.classList.remove('err')});
+  document.getElementById('f-level').value = '';
+  SKILLS_META.forEach(sk=>{const e=document.getElementById('sk-'+sk.id);e.value=0;document.getElementById('sv-'+sk.id).textContent='0';updateSlider(e)});
+}
+
+function editTrainee(id) {
+  if (!currentUser.perms.editTrainees) { showToast('No permission.','error'); return; }
+  const t = loadDB().find(x=>x.id===id);
+  if (!t) return;
+  editingTraineeId = id;
+  document.getElementById('formTitle').textContent = 'Edit Trainee';
+  document.getElementById('formSub').textContent   = `Editing: ${t.name}`;
+  document.getElementById('saveBtnTxt').textContent = 'Update Trainee';
+  document.getElementById('f-name').value    = t.name||'';
+  document.getElementById('f-pname').value   = t.parentName||'';
+  document.getElementById('f-pemail').value  = t.parentEmail||'';
+  document.getElementById('f-pphone').value  = t.parentPhone||'';
+  document.getElementById('f-level').value   = t.level||'';
+  SKILLS_META.forEach(sk=>{const e=document.getElementById('sk-'+sk.id);e.value=t[sk.id]??0;document.getElementById('sv-'+sk.id).textContent=e.value;updateSlider(e)});
+  switchTab('entry');
+  window.scrollTo(0,0);
+}
+
+function saveTrainee() {
+  if (!currentUser.perms.editTrainees) { showToast('No permission.','error'); return; }
+  let ok = true;
+  const name = document.getElementById('f-name'); if(!name.value.trim()){name.classList.add('err');ok=false}else name.classList.remove('err');
+  const pn   = document.getElementById('f-pname'); if(!pn.value.trim()){pn.classList.add('err');ok=false}else pn.classList.remove('err');
+  const pe   = document.getElementById('f-pemail'); const emailOk=/^[^\s@]+@[^\s@]+\.[^\s@]+$/.test(pe.value.trim()); if(!emailOk){pe.classList.add('err');ok=false}else pe.classList.remove('err');
+  const pp   = document.getElementById('f-pphone'); if(!pp.value.trim()){pp.classList.add('err');ok=false}else pp.classList.remove('err');
+  const lv   = document.getElementById('f-level'); if(!lv.value){lv.classList.add('err');ok=false}else lv.classList.remove('err');
+  if (!ok) { showToast('Please fill in all required fields.','error'); return; }
+
+  const db = loadDB();
+  const skills = {};
+  SKILLS_META.forEach(sk=>{ skills[sk.id]=parseInt(document.getElementById('sk-'+sk.id).value); });
+  const t = {id:editingTraineeId||uid(),name:name.value.trim(),parentName:pn.value.trim(),parentEmail:pe.value.trim(),parentPhone:pp.value.trim(),level:lv.value,...skills};
+
+  if (editingTraineeId) {
+    const i=db.findIndex(x=>x.id===editingTraineeId);if(i!==-1)db[i]=t;
+    addLog(`Updated trainee: ${t.name}`,'edit');
+    showToast('Trainee updated!','success');
+  } else {
+    db.push(t);
+    addLog(`Added trainee: ${t.name}`,'add');
+    showToast('Trainee added!','success');
+  }
+  saveDB(db); editingTraineeId=null; resetEntryForm();
+  refreshDashboard(); switchTab('dash');
+  setTimeout(()=>pickStudent(t.id),120);
+}
+
+function deleteTrainee(id) {
+  if (!currentUser.perms.editTrainees) { showToast('No permission.','error'); return; }
+  const t = loadDB().find(x=>x.id===id);
+  showConfirm('Delete Trainee?', `Permanently delete "${t?.name}"? This cannot be undone.`, ()=>{
+    let db = loadDB().filter(x=>x.id!==id);
+    saveDB(db);
+    addLog(`Deleted trainee: ${t?.name}`,'delete');
+    showToast('Trainee deleted.','success');
+    currentStudentId=null; refreshDashboard();
+  }, 'Delete');
+}
+
+// ══════════════ USER MANAGEMENT ══════════════
+let selectedUserId = null;
+
+function renderUserList() {
+  document.getElementById('tc-users').textContent = loadUsers().length;
+  const users = loadUsers();
+  const list  = document.getElementById('userList');
+  list.innerHTML = users.map(u => {
+    const ac = avc(u.username);
+    const roleMeta = {
+      admin:  {label:'Admin', bg:'#1c1917', col:'#fff'},
+      coach:  {label:'Coach', bg:'#eff6ff', col:'#2563b0'},
+      viewer: {label:'Viewer',bg:'#f5f3ff', col:'#7c3aed'},
+    }[u.role] || {label:u.role, bg:'#eee', col:'#555'};
+    return `<button class="u-item${selectedUserId===u.id?' selected':''}" data-uid="${u.id}" onclick="selectUser('${u.id}')">
+      <div class="u-av" style="background:${ac}18;color:${ac}">${ini(u.name)}</div>
+      <div class="u-details">
+        <div class="u-name">${u.name}</div>
+        <div class="u-meta">@${u.username} · ${u.active?'Active':'Inactive'}</div>
+      </div>
+      <span class="u-role-chip" style="background:${roleMeta.bg};color:${roleMeta.col}">${roleMeta.label}</span>
+      <div class="u-status-dot" style="background:${u.active?'#16a34a':'#a8a29e'}"></div>
+    </button>`;
+  }).join('');
+}
+
+function selectUser(id) {
+  selectedUserId = id;
+  renderUserList();
+  const u = loadUsers().find(x=>x.id===id);
+  if (!u) return;
+  renderUserEditForm(u);
+}
+
+function startNewUser() {
+  selectedUserId = null;
+  renderUserList();
+  renderNewUserForm();
+}
+
+function renderUserEditForm(u) {
+  const ac = avc(u.username);
+  const isMe = u.id === currentUser.id;
+  document.getElementById('userEditArea').innerHTML = `
+    <div class="user-form-card">
+      <div class="ufc-header">
+        <div class="ufc-av" style="background:${ac}18;color:${ac}">${ini(u.name)}</div>
+        <div>
+          <div class="ufc-name">${u.name}</div>
+          <div class="ufc-email">@${u.username}</div>
+        </div>
+      </div>
+      <div class="form-grid">
+        <div class="field-g"><label class="field-lbl">Full Name <span class="req">*</span></label><input type="text" class="field-inp" id="eu-name" value="${u.name}"></div>
+        <div class="field-g"><label class="field-lbl">Username <span class="req">*</span></label><input type="text" class="field-inp" id="eu-uname" value="${u.username}" ${isMe?'disabled':''}></div>
+        <div class="field-g"><label class="field-lbl">New Password <span style="font-weight:400;color:var(--ink4)">(leave blank to keep current)</span></label><input type="password" class="field-inp" id="eu-pass" placeholder="Enter new password…"></div>
+        <div class="field-g"><label class="field-lbl">Status</label>
+          <select class="field-inp" id="eu-active" ${isMe?'disabled':''}>
+            <option value="true" ${u.active?'selected':''}>Active</option>
+            <option value="false" ${!u.active?'selected':''}>Inactive</option>
+          </select>
+        </div>
+      </div>
+      <div class="field-lbl" style="margin-bottom:10px">Role</div>
+      <div class="role-cards">
+        ${['admin','coach','viewer'].map(r=>`
+          <div class="role-card${u.role===r?' selected':''}" onclick="selectRole(this,'${r}','${u.id}')" data-role="${r}">
+            <div class="rc-icon">${{admin:'🔑',coach:'🏸',viewer:'👁️'}[r]}</div>
+            <div class="rc-title">${r.charAt(0).toUpperCase()+r.slice(1)}</div>
+            <div class="rc-desc">${{admin:'Full access',coach:'Edit & view',viewer:'View only'}[r]}</div>
+          </div>`).join('')}
+      </div>
+      <div style="margin-top:16px">
+        <div class="field-lbl" style="margin-bottom:10px">Permissions</div>
+        <div class="perms-grid">
+          ${[
+            {id:'viewDashboard',label:'View Dashboard',desc:'Access the main dashboard'},
+            {id:'editTrainees', label:'Edit Trainees',  desc:'Add, edit, delete trainees'},
+            {id:'manageUsers',  label:'Manage Users',   desc:'Access & edit user access'},
+          ].map(p=>`<div class="perm-toggle">
+            <div><div class="perm-label">${p.label}</div><div class="perm-sub">${p.desc}</div></div>
+            <label class="toggle-switch"><input type="checkbox" id="perm-${u.id}-${p.id}" ${u.perms[p.id]?'checked':''}><span class="toggle-slider"></span></label>
+          </div>`).join('')}
+        </div>
+      </div>
+      <div class="form-row-actions">
+        <div>
+          ${!isMe?`<button class="btn-danger" onclick="deleteUser('${u.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><polyline points="3 6 5 6 21 6"/><path d="M19 6l-1 14a2 2 0 0 1-2 2H8a2 2 0 0 1-2-2L5 6"/></svg>Delete User
+          </button>`:'<span style="font-size:11.5px;color:var(--ink3)">&#9432; You are editing your own account</span>'}
+        </div>
+        <div class="action-group">
+          <button class="btn-secondary" onclick="renderUserList();document.getElementById('userEditArea').innerHTML='<div class=\'um-empty\'><h3>Select a user</h3></div>'">Cancel</button>
+          <button class="btn-primary" onclick="saveUser('${u.id}')">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 21H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h11l5 5v11a2 2 0 0 1-2 2z"/><polyline points="17 21 17 13 7 13 7 21"/><polyline points="7 3 7 8 15 8"/></svg>
+            Save Changes
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function renderNewUserForm() {
+  document.getElementById('userEditArea').innerHTML = `
+    <div class="user-form-card">
+      <div class="ufc-header">
+        <div class="ufc-av" style="background:#f5f3ef;color:#a8a29e;font-size:22px">+</div>
+        <div><div class="ufc-name">New User</div><div class="ufc-email">Create a new system account</div></div>
+      </div>
+      <div class="form-grid">
+        <div class="field-g"><label class="field-lbl">Full Name <span class="req">*</span></label><input type="text" class="field-inp" id="nu-name" placeholder="Full name"></div>
+        <div class="field-g"><label class="field-lbl">Username <span class="req">*</span></label><input type="text" class="field-inp" id="nu-uname" placeholder="Unique username"></div>
+        <div class="field-g"><label class="field-lbl">Password <span class="req">*</span></label><input type="password" class="field-inp" id="nu-pass" placeholder="Set a password"></div>
+        <div class="field-g" style="display:flex;align-items:flex-end">
+          <div style="width:100%"><label class="field-lbl" style="margin-bottom:5px">Status</label>
+            <select class="field-inp" id="nu-active"><option value="true">Active</option><option value="false">Inactive</option></select>
+          </div>
+        </div>
+      </div>
+      <div class="field-lbl" style="margin-bottom:10px">Role</div>
+      <div class="role-cards">
+        ${['admin','coach','viewer'].map((r,i)=>`
+          <div class="role-card${i===1?' selected':''}" onclick="selectRoleNew(this,'${r}')" data-role="${r}">
+            <div class="rc-icon">${{admin:'🔑',coach:'🏸',viewer:'👁️'}[r]}</div>
+            <div class="rc-title">${r.charAt(0).toUpperCase()+r.slice(1)}</div>
+            <div class="rc-desc">${{admin:'Full access',coach:'Edit & view',viewer:'View only'}[r]}</div>
+          </div>`).join('')}
+      </div>
+      <div class="form-row-actions">
+        <div></div>
+        <div class="action-group">
+          <button class="btn-secondary" onclick="document.getElementById('userEditArea').innerHTML='<div class=\'um-empty\'><h3>Select a user</h3></div>'">Cancel</button>
+          <button class="btn-primary" onclick="createUser()">
+            <svg width="13" height="13" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M12 5v14M5 12h14"/></svg>Create User
+          </button>
+        </div>
+      </div>
+    </div>`;
+}
+
+function selectRole(el, role, uid) {
+  el.closest('.role-cards').querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+  // Auto-set permissions based on role
+  const rolePerms = {
+    admin:  {viewDashboard:true, editTrainees:true,  manageUsers:true},
+    coach:  {viewDashboard:true, editTrainees:true,  manageUsers:false},
+    viewer: {viewDashboard:true, editTrainees:false, manageUsers:false},
+  }[role];
+  Object.entries(rolePerms).forEach(([k,v])=>{
+    const cb = document.getElementById(`perm-${uid}-${k}`);
+    if(cb) cb.checked = v;
+  });
+}
+
+function selectRoleNew(el, role) {
+  el.closest('.role-cards').querySelectorAll('.role-card').forEach(c=>c.classList.remove('selected'));
+  el.classList.add('selected');
+}
+
+function saveUser(id) {
+  const users = loadUsers();
+  const idx   = users.findIndex(u=>u.id===id);
+  if (idx===-1) return;
+  const u = users[idx];
+
+  const name  = document.getElementById('eu-name').value.trim();
+  const uname = u.id===currentUser.id ? u.username : document.getElementById('eu-uname').value.trim();
+  const pass  = document.getElementById('eu-pass').value;
+  const active= document.getElementById('eu-active').value === 'true';
+
+  if (!name || !uname) { showToast('Name and username are required.','error'); return; }
+  if (users.some(x=>x.username===uname && x.id!==id)) { showToast('Username already taken.','error'); return; }
+
+  const role = document.querySelector(`#userEditArea .role-card.selected`)?.dataset.role || u.role;
+  const perms = {
+    viewDashboard: document.getElementById(`perm-${id}-viewDashboard`)?.checked ?? u.perms.viewDashboard,
+    editTrainees:  document.getElementById(`perm-${id}-editTrainees`)?.checked  ?? u.perms.editTrainees,
+    manageUsers:   document.getElementById(`perm-${id}-manageUsers`)?.checked   ?? u.perms.manageUsers,
+  };
+
+  users[idx] = {...u, name, username:uname, role, active, perms};
+  if (pass) users[idx].password = pass;
+  saveUsers(users);
+
+  // Update session if editing self
+  if (id === currentUser.id) {
+    currentUser = users[idx];
+    setSession(currentUser);
+    document.getElementById('currentUserLabel').textContent = `${currentUser.name} (${currentUser.role})`;
+  }
+
+  addLog(`Updated user: ${name}`, 'edit');
+  showToast('User saved!','success');
+  renderUserList();
+  selectUser(id);
+}
+
+function createUser() {
+  const users = loadUsers();
+  const name  = document.getElementById('nu-name').value.trim();
+  const uname = document.getElementById('nu-uname').value.trim();
+  const pass  = document.getElementById('nu-pass').value;
+  const active= document.getElementById('nu-active').value === 'true';
+
+  if (!name || !uname || !pass) { showToast('All fields are required.','error'); return; }
+  if (users.some(u=>u.username===uname)) { showToast('Username already taken.','error'); return; }
+
+  const role = document.querySelector('#userEditArea .role-card.selected')?.dataset.role || 'viewer';
+  const rolePerms = {
+    admin:  {viewDashboard:true, editTrainees:true,  manageUsers:true},
+    coach:  {viewDashboard:true, editTrainees:true,  manageUsers:false},
+    viewer: {viewDashboard:true, editTrainees:false, manageUsers:false},
+  }[role];
+
+  const newUser = {id:uid(), username:uname, password:pass, name, role, active, perms:rolePerms};
+  users.push(newUser);
+  saveUsers(users);
+  document.getElementById('tc-users').textContent = users.length;
+  addLog(`Created user: ${name}`,'add');
+  showToast('User created!','success');
+  selectedUserId = newUser.id;
+  renderUserList();
+  selectUser(newUser.id);
+}
+
+function deleteUser(id) {
+  if (id === currentUser.id) { showToast('You cannot delete your own account.','error'); return; }
+  const u = loadUsers().find(x=>x.id===id);
+  showConfirm('Delete User?', `Remove "${u?.name}" (@${u?.username})? They will no longer be able to sign in.`, ()=>{
+    const users = loadUsers().filter(x=>x.id!==id);
+    saveUsers(users);
+    document.getElementById('tc-users').textContent = users.length;
+    addLog(`Deleted user: ${u?.name}`,'delete');
+    showToast('User deleted.','success');
+    selectedUserId = null;
+    renderUserList();
+    document.getElementById('userEditArea').innerHTML = '<div class="um-empty"><h3 style="font-family:&quot;Playfair Display&quot;,serif;font-size:18px">Select a user</h3></div>';
+  }, 'Delete User');
+}
+
+// ══════════════ UI UTILS ══════════════
+let toastTimer = null;
+function showToast(msg, type='success') {
+  const t = document.getElementById('toast');
+  t.textContent = msg; t.className = `toast ${type} show`;
+  if (toastTimer) clearTimeout(toastTimer);
+  toastTimer = setTimeout(()=>t.classList.remove('show'), 3500);
+}
+
+function showConfirm(title, msg, onOk, btnLabel='Confirm') {
+  document.getElementById('confirmTitle').textContent = title;
+  document.getElementById('confirmMsg').textContent   = msg;
+  document.getElementById('confirmOkBtn').textContent = btnLabel;
+  document.getElementById('confirmOkBtn').onclick = ()=>{ closeConfirm(); onOk(); };
+  document.getElementById('confirmOverlay').classList.add('open');
+}
+function closeConfirm() { document.getElementById('confirmOverlay').classList.remove('open'); }
+document.getElementById('confirmOverlay').addEventListener('click', function(e){ if(e.target===this)closeConfirm(); });
+
+// ══════════════ AUTO-LOGIN FROM SESSION ══════════════
+(function autoLogin() {
+  const s = getSession();
+  if (s) {
+    const users = loadUsers();
+    const u = users.find(x=>x.id===s.id && x.active);
+    if (u) {
+      currentUser = u;
+      initApp();
+      document.getElementById('loginLayer').classList.remove('active');
+      document.getElementById('adminLayer').classList.add('active');
+    }
+  }
+})();
 </script>
 </body>
 </html>
