@@ -498,6 +498,34 @@ select.op-inp:disabled{cursor:default}
 .memtype-spouse{background:#fdf2f8;color:#be185d}
 .memtype-child{background:#ecfeff;color:#0891b2}
 </style>
+<script src="https://cdn.jsdelivr.net/npm/xlsx@0.18.5/dist/xlsx.full.min.js">
+function opDownloadTemplate() {
+  // Generate a template Excel using SheetJS
+  if (typeof XLSX === 'undefined') {
+    showToast('XLSX library not loaded yet. Try again in a moment.', 'warn');
+    return;
+  }
+  var wb = XLSX.utils.book_new();
+  var headers = [
+    'First Name','Last Name','Email','Mobile',
+    'Customer Since','Membership','Gender'
+  ];
+  var example = [
+    ['John','Smith','john@example.com','4041234567',
+     'Jan 01, 2025','Individual Monthly Membership','Male'],
+    ['Jane','Smith','jane@example.com','',
+     'Jan 01, 2025','Spouse / Child Monthly Membership','Female'],
+  ];
+  var data = [headers].concat(example);
+  var ws = XLSX.utils.aoa_to_sheet(data);
+  // Column widths
+  ws['!cols'] = [{wch:14},{wch:14},{wch:30},{wch:14},{wch:16},{wch:36},{wch:10}];
+  XLSX.utils.book_append_sheet(wb, ws, 'Open Play Members');
+  XLSX.writeFile(wb, 'Club7_OpenPlay_Import_Template.xlsx');
+  showToast('Template downloaded!', 'success');
+}
+
+</script>
 </head>
 <body>
 
@@ -725,7 +753,20 @@ select.op-inp:disabled{cursor:default}
         <!-- Sidebar list -->
         <div class="op-sidebar">
           <div class="op-sidebar-head">
-            <div class="op-sidebar-title">Open Play Members</div>
+            <div style="display:flex;align-items:center;justify-content:space-between;gap:8px;margin-bottom:3px">
+              <div class="op-sidebar-title">Open Play Members</div>
+              <div style="display:flex;gap:6px;flex-shrink:0">
+                <button class="btn-sm" onclick="opDownloadTemplate()" title="Download blank import template" style="padding:4px 9px;font-size:11px">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg>
+                  Template
+                </button>
+                <label title="Import members from Excel or CSV" style="cursor:pointer;display:inline-flex;align-items:center;gap:5px;padding:4px 9px;border-radius:6px;border:1.5px solid var(--border2);background:var(--surface2);font-size:11px;font-weight:600;color:var(--ink2);white-space:nowrap">
+                  <svg width="11" height="11" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg>
+                  Import
+                  <input type="file" accept=".xlsx,.xls,.csv" style="display:none" onchange="opImportFile(this)">
+                </label>
+              </div>
+            </div>
             <div class="op-sidebar-sub" id="op-count-sub">0 members</div>
           </div>
           <div class="op-filters">
@@ -986,6 +1027,7 @@ const AV_PAL = ['#4f46e5','#059669','#0284c7','#ea580c','#7c3aed','#0891b2','#c2
 // ══════════════ STORAGE KEYS ══════════════
 const T_KEY = 'club7_trainees_v2';
 const OP_KEY = 'club7_openplay_v1';
+const OP_SEED = [{"id":"op_import_1","name":"Alexandria Audritsh","email":"alexandriaaudritsh@gmail.com","phone":"","memberSince":"Nov 02, 2025","memberType":"Spouse","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Female","membershipRaw":"Spouse / Child Monthly Membership"},{"id":"op_import_2","name":"Anjaneya Telukutla","email":"anjaneya_r@yahoo.com","phone":"4257853703","memberSince":"Oct 25, 2023","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_3","name":"Anwar Abdul","email":"solutionsheytech@gmail.com","phone":"3142998484","memberSince":"Feb 05, 2026","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_4","name":"Chandramouli Katari","email":"chandramouli.katari@gmail.com","phone":"","memberSince":"Nov 10, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_5","name":"Chirag Almoula","email":"","phone":"3023165104","memberSince":"Jun 12, 2024","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_6","name":"Harish Nadipalli","email":"harish.nadipalli@gmail.com","phone":"9802023339","memberSince":"Nov 01, 2023","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_7","name":"Krishna Alla","email":"vanagile@gmail.com","phone":"9802754111","memberSince":"Dec 08, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_8","name":"Lakshimi Priya","email":"kb.priyacse@gmail.com","phone":"","memberSince":"Nov 03, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Female","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_9","name":"Mokshith\u00a0Reddy Chandupatla","email":"mokshith.chr@gmail.com","phone":"9452177747","memberSince":"Oct 28, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_10","name":"Murali Krishna","email":"murali.kandikatla@gmail.com","phone":"8184891837","memberSince":"Oct 22, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_11","name":"Naresh Telukutla","email":"naresh.niftydigit@gmail.com","phone":"9378676327","memberSince":"May 19, 2024","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_12","name":"Naveen Kasarla","email":"shop.naveenreddy@gmail.com","phone":"3373033153","memberSince":"Oct 02, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_13","name":"Naveen Naragatti","email":"naveenshweta1986@gmail.com","phone":"7043097369","memberSince":"Jan 04, 2026","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_14","name":"Pramod Kankanala","email":"kpramodreddy@yahoo.com","phone":"","memberSince":"Dec 09, 2023","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_15","name":"Raja\u00a0sekhar Yellanki","email":"rsekhar7@outlook.com","phone":"5732028029","memberSince":"Jul 17, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_16","name":"RAMESH VASIREDDY","email":"vasireddyramesh@gmail.com","phone":"8019136526","memberSince":"Nov 03, 2023","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_17","name":"Ranga Vadapalli","email":"ranga.palli@gmail.com","phone":"8168073534","memberSince":"Jun 07, 2024","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_18","name":"Ravi\u00a0teja Puli","email":"travi2869@gmail.com","phone":"2488613128","memberSince":"Aug 06, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_19","name":"Rekha Naidu","email":"naidurekha6@gmail.com","phone":"6674031104","memberSince":"Jun 08, 2024","memberType":"Spouse","membershipType":"Annual","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Female","membershipRaw":"Spouse / Child Annual Membership"},{"id":"op_import_20","name":"Sadish\u00a0Kumar Jayachandran","email":"jayachandransadish@gmail.com","phone":"8034156335","memberSince":"Dec 20, 2023","memberType":"Primary","membershipType":"Annual","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Annual Membership"},{"id":"op_import_21","name":"Saicharan Vemasani","email":"saicharanvemasani@gmail.com","phone":"3134135127","memberSince":"Aug 27, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_22","name":"Santosh Kumar","email":"tanneerkumar@gmail.com","phone":"2134000150","memberSince":"Aug 05, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_23","name":"Saraswathi Telukutla","email":"saraswathi543@gmail.com","phone":"3369295138","memberSince":"Jan 05, 2025","memberType":"Spouse","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Female","membershipRaw":"Spouse / Child Monthly Membership"},{"id":"op_import_24","name":"Satheesh Kumar","email":"mstraudio@gmail.com","phone":"7049043025","memberSince":"Feb 12, 2024","memberType":"Primary","membershipType":"Annual","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Annual Membership"},{"id":"op_import_25","name":"Satvik Marre","email":"satvikmarre@gmail.com","phone":"","memberSince":"Feb 07, 2025","memberType":"Spouse","membershipType":"Annual","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Spouse / Child Annual Membership"},{"id":"op_import_26","name":"Seetharam Sannidhanam","email":"","phone":"4752390303","memberSince":"Jul 03, 2024","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_27","name":"Sergey Khudyakov","email":"skhudyak@outlook.com","phone":"6462367624","memberSince":"Oct 27, 2023","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_28","name":"Sri\u00a0Harsha Chattu","email":"ch.sriharsha1@gmail.com","phone":"5714242197","memberSince":"Jun 29, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_29","name":"Suganya Kannan","email":"suganya.kannan2008@gmail.com","phone":"8609943672","memberSince":"Nov 14, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Female","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_30","name":"Suresh Raparti","email":"suresh.raparti@gmail.com","phone":"","memberSince":"Mar 24, 2025","memberType":"Primary","membershipType":"Monthly","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Monthly Membership"},{"id":"op_import_31","name":"Surya Marre","email":"devikanths@gmail.com","phone":"9802829484","memberSince":"Feb 05, 2025","memberType":"Primary","membershipType":"Annual","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Annual Membership"},{"id":"op_import_32","name":"Tejdeep Bathini Ethirajalu","email":"tejdeep20@gmail.com","phone":"7164319289","memberSince":"Jun 05, 2024","memberType":"Primary","membershipType":"Annual","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Female","membershipRaw":"Individual Annual Membership"},{"id":"op_import_33","name":"Vijith Marre","email":"","phone":"","memberSince":"Feb 25, 2025","memberType":"Spouse","membershipType":"Annual","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Spouse / Child Annual Membership"},{"id":"op_import_34","name":"Wai Hong Henrik Lam","email":"henrik.hong@gmail.com","phone":"8622858073","memberSince":"Nov 01, 2023","memberType":"Primary","membershipType":"Annual","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Annual Membership"},{"id":"op_import_35","name":"Zi Yao Ngai","email":"ziyaongai1995@gmail.com","phone":"6127075059","memberSince":"Oct 31, 2023","memberType":"Primary","membershipType":"Annual","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Male","membershipRaw":"Individual Annual Membership"},{"id":"op_import_36","name":"Reshmi Abhilash","email":"reshkr404@gmail.com","phone":"","memberSince":"Feb 02, 2026","memberType":"Primary","membershipType":"Annual","membershipPrice":"","packageOption":"","packageExpiry":"","walkinPrice":"","checkIns":0,"gender":"Female","membershipRaw":"Individual Annual Membership"}];
 const U_KEY = 'club7_users_v1';
 const S_KEY = 'club7_session_v1';
 const L_KEY = 'club7_log_v1';
@@ -1714,8 +1756,8 @@ document.getElementById('confirmOverlay').addEventListener('click', function(e){
 
 
 // ══════════════ OPEN PLAY MEMBERS ══════════════
-const loadOP   = () => { try { return JSON.parse(localStorage.getItem(OP_KEY)||'[]'); } catch(e){return[]} };
-const saveOP   = d => localStorage.setItem(OP_KEY, JSON.stringify(d));
+const loadOP = () => { try { return JSON.parse(localStorage.getItem(OP_KEY)||'null') || OP_SEED; } catch(e){return OP_SEED} };
+const saveOP = d => localStorage.setItem(OP_KEY, JSON.stringify(d));
 
 const OP_AV_PAL = ['#4f46e5','#059669','#0284c7','#ea580c','#7c3aed','#0891b2','#be185d','#c2690a'];
 const opAvc = n => { let h=0; for(let i=0;i<n.length;i++) h=(h*31+n.charCodeAt(i))&0xffffffff; return OP_AV_PAL[Math.abs(h)%OP_AV_PAL.length]; };
@@ -2054,6 +2096,172 @@ function opDeleteCurrent() {
     document.getElementById('tc-openplay').textContent = db.length;
     opRefresh();
   }, 'Delete Member');
+}
+
+
+// OPEN PLAY EXCEL IMPORT
+function opImportFile(input) {
+  var file = input.files[0];
+  if (!file) return;
+  var ext = file.name.split('.').pop().toLowerCase();
+  var reader = new FileReader();
+
+  if (ext === 'xlsx' || ext === 'xls') {
+    // Use SheetJS for Excel files
+    reader.onload = function(e) {
+      try {
+        var wb = XLSX.read(e.target.result, {type:'array', cellDates:true});
+        var ws = wb.Sheets[wb.SheetNames[0]];
+        var rows = XLSX.utils.sheet_to_json(ws, {defval:''});
+        if (!rows || rows.length === 0) {
+          showToast('No data found in Excel file.', 'error');
+          return;
+        }
+        opProcessRows(rows, file.name);
+      } catch(err) {
+        showToast('Could not read Excel file: ' + err.message, 'error');
+      }
+    };
+    reader.readAsArrayBuffer(file);
+  } else {
+    // CSV fallback
+    reader.onload = function(e) {
+      var rows = opParseCSV(e.target.result);
+      if (!rows || rows.length === 0) {
+        showToast('No readable data found in CSV.', 'error');
+        return;
+      }
+      opProcessRows(rows, file.name);
+    };
+    reader.readAsText(file, 'utf-8');
+  }
+  input.value = '';
+}
+
+function opParseCSV(text) {
+  var lines = [];
+  var raw = text.replace(/\r\n/g, '\n').replace(/\r/g, '\n').split('\n');
+  for (var i = 0; i < raw.length; i++) {
+    if (raw[i].trim()) lines.push(raw[i]);
+  }
+  if (lines.length < 2) return [];
+  var headers = opSplitCSVRow(lines[0]);
+  var result = [];
+  for (var j = 1; j < lines.length; j++) {
+    var vals = opSplitCSVRow(lines[j]);
+    var obj = {};
+    for (var k = 0; k < headers.length; k++) {
+      obj[headers[k].trim()] = (vals[k] || '').trim();
+    }
+    result.push(obj);
+  }
+  return result;
+}
+
+function opSplitCSVRow(row) {
+  var result = [], cur = '', inQ = false;
+  for (var i = 0; i < row.length; i++) {
+    var ch = row[i];
+    if (ch === '"') { inQ = !inQ; }
+    else if (ch === ',' && !inQ) { result.push(cur); cur = ''; }
+    else { cur += ch; }
+  }
+  result.push(cur);
+  return result;
+}
+
+function opMapMembershipType(raw) {
+  var r = (raw || '').toLowerCase();
+  if (r.indexOf('annual') > -1)  return 'Annual';
+  if (r.indexOf('monthly') > -1) return 'Monthly';
+  if (r.indexOf('package') > -1) return 'Package';
+  if (r.indexOf('walk') > -1)    return 'Walk-in';
+  return 'Monthly';
+}
+
+function opMapMemberType(raw) {
+  var r = (raw || '').toLowerCase();
+  if (r.indexOf('spouse') > -1 || r.indexOf('child') > -1) return 'Spouse';
+  return 'Primary';
+}
+
+function opNorm(v) {
+  var s = (v || '').toString().trim();
+  return (s === '---' || s === '-' || s.toLowerCase() === 'nan' || s === '') ? '' : s;
+}
+
+function opFmtDate(v) {
+  if (!v && v !== 0) return '';
+  // Handle JS Date objects (from SheetJS cellDates:true)
+  if (v instanceof Date) {
+    var yr = v.getFullYear(), mo = String(v.getMonth()+1).padStart(2,'0'), dy = String(v.getDate()).padStart(2,'0');
+    return yr + '-' + mo + '-' + dy;
+  }
+  v = opNorm(String(v));
+  if (!v) return '';
+  if (/^\d{4}-\d{2}-\d{2}$/.test(v)) return v;
+  var months = {Jan:'01',Feb:'02',Mar:'03',Apr:'04',May:'05',Jun:'06',Jul:'07',Aug:'08',Sep:'09',Oct:'10',Nov:'11',Dec:'12'};
+  var m = v.match(/([A-Za-z]{3})\s+(\d{1,2}),?\s+(\d{4})/);
+  if (m) return m[3] + '-' + (months[m[1]] || '01') + '-' + (m[2].length < 2 ? '0' + m[2] : m[2]);
+  var m2 = v.match(/(\d{1,2})\/(\d{1,2})\/(\d{4})/);
+  if (m2) return m2[3] + '-' + (m2[1].length < 2 ? '0' + m2[1] : m2[1]) + '-' + (m2[2].length < 2 ? '0' + m2[2] : m2[2]);
+  return v;
+}
+
+function opProcessRows(rows, fileName) {
+  if (!rows || rows.length === 0) { showToast('No data found in file.', 'error'); return; }
+  var headers = Object.keys(rows[0]);
+  function get(row) {
+    var keys = Array.prototype.slice.call(arguments, 1);
+    for (var i = 0; i < keys.length; i++) {
+      for (var j = 0; j < headers.length; j++) {
+        if (headers[j].toLowerCase().indexOf(keys[i].toLowerCase()) > -1) {
+          return opNorm(row[headers[j]]);
+        }
+      }
+    }
+    return '';
+  }
+  var db = loadOP();
+  var added = 0, skipped = 0;
+  for (var i = 0; i < rows.length; i++) {
+    var row = rows[i];
+    var firstName = get(row, 'first name', 'firstname', 'first');
+    var lastName  = get(row, 'last name', 'lastname', 'last');
+    var name = (firstName + ' ' + lastName).trim() || get(row, 'name', 'member name', 'customer');
+    if (!name) { skipped++; continue; }
+    var mshipRaw = get(row, 'membership', 'membership type', 'type');
+    var emailRaw = get(row, 'email', 'email address');
+    var phoneRaw = get(row, 'mobile', 'phone', 'telephone', 'cell');
+    var sinceRaw = get(row, 'customer since', 'member since', 'since', 'start');
+    var mshipType = opMapMembershipType(mshipRaw);
+    var memType   = opMapMemberType(mshipRaw);
+    var email     = (emailRaw !== '---') ? emailRaw : '';
+    var phone     = (phoneRaw !== '---') ? phoneRaw : '';
+    var isDup = false;
+    for (var d = 0; d < db.length; d++) {
+      if (db[d].name.toLowerCase() === name.toLowerCase() && db[d].email === email) { isDup = true; break; }
+    }
+    if (isDup) { skipped++; continue; }
+    db.push({
+      id: 'import_' + Date.now() + '_' + i,
+      name: name, email: email, phone: phone,
+      memberSince: opFmtDate(sinceRaw),
+      memberType: memType, membershipType: mshipType,
+      membershipPrice: '', packageOption: '', packageExpiry: '', walkinPrice: '',
+      importedFrom: fileName
+    });
+    added++;
+  }
+  saveOP(db);
+  opCurrentId = null;
+  opRefresh();
+  if (added > 0 && skipped === 0)
+    showToast('Imported ' + added + ' member' + (added !== 1 ? 's' : '') + ' successfully!', 'success');
+  else if (added > 0)
+    showToast('Imported ' + added + ' member' + (added !== 1 ? 's' : '') + '. ' + skipped + ' skipped (duplicates or empty).', 'success');
+  else
+    showToast('No new members imported. ' + skipped + ' were duplicates or empty rows.', 'warn');
 }
 
 </script>
